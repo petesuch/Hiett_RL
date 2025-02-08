@@ -286,14 +286,16 @@ struct NeuralACEASEStruct
 {
   WORD ZeroiseWeights;
   WORD UseSimulationWeights;
-  WORD WeightsFromFile;
+  WORD WeightFromFile;
   char WeightFileName[40];
   WORD Uniform;
+
 
 //-----------------------------------------------------------------------------
 //  Page 101
 
-WORD Nonuniform;
+
+  WORD Nonuniform;
   WORD CMAC;
   char NumThetaBoxes[10];
   char NumDThetaBoxes[10];
@@ -335,19 +337,17 @@ struct TSinWavRefParam
 };
 
 #include "ip.h"
-#include "unh_cmac.h" // CMAC
-#include "unh_cmac.c"
+#include "unh_cmac.h" // CMAC header files
+#include "unh_cmac.c"  //  CMAC functions
 
 extern "C"
 {
-#include "alexfunc.c"
+#include "alexfunc.c"  //  Chris Alexanders Functions
 }
 
-#include "ipdlg3_1.cpp" // Dialog definitions
-#include "acease48.cpp" // Neural ACE, ASE
-
+#include "ipdlg3_1.cpp" // Definitions for Dialog functions
+#include "acease48.cpp" // Neural ACE, ASE control algorithm
 //-----------------------------------------------------------------------------
-
 class TIPWindow : public TFrameWindow
 {
   int xMax, yMax; // Max client area coordinates
@@ -356,60 +356,65 @@ class TIPWindow : public TFrameWindow
 //-----------------------------------------------------------------------------
 //  Page 102
 
-int yOffset, xOffset;
+  int yOffset, xOffset;
 
   public:
-  TIPWindow(TWindow parent);
+  TIPWindow(TWindow* parent);
   ~TIPWindow(); // For Destructor
-  const PIDStruct *GetPIDOptions() { return &PIDOptions; }
-  const TCalibration *GetCalibOptions() { return &Calibration; }
-  const TGraphics *GetGraphics() { return &Graphics; }
-  const RUNStruct *GetRUNOptions() { return &RUNOptions; }
-  float far NeuralACEASE(int IC, int ij, double states[]);
-  void ClusterInputSpace(TDC &);
+  const PIDStruct* GetPIDOptions() { return &PIDOptions; }
+  const TCalibration* GetCalibOptions() { return &Calibration; }
+  const TGraphics* GetGraphics() { return &Graphics; }
+  const RUNStruct* GetRUNOptions() { return &RUNOptions; }
+  float far NeuralACEASE(int IC, int jj, double states[]);
+  void ClusterInputSpace(TDC&);
   void TrainCMAC();
   int RunWeightSave();
   void CmEmpInput();
   void CmFrequency();
-  void SetupGraph(TDC &);
-  void Graph(float far Angle[], float far Refinput[];
-      float far CompOutput[], int TimeStep);
+  void SetupGraph(TDC&);
+  void Graph(float far Angle[], float far RefInput[];
+  float far CompOutput[], int TimeStep);
   char DataFileName[50];
   char MasterFileName[50];
   char FilePath[200];
   void SetMaxCoordinates();
-  void DrawGrid(TDC &dc);
+  void DrawGrid(TDC& dc);
   BOOL EvEraseBkgnd(HDC);
-  void Line(HDC hDC, int x1, int y1, int x2, int y2, /
-      COLORREF color)
-    .void EvChar(UINT, UINT, UINT);
+  void Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color)
+  void EvChar(UINT, UINT, UINT);
   int NumOfDataPoints;
 
   private:
-  TDataParamStruct DataParamStruct, TFrequency Frequency,
-                   PIDStruct PIDOptions;
+
+  TDataParamStruct DataParamStruct;
+  TFrequency Frequency;
+  PIDStruct PIDOptions;
   RUNStruct RUNOptions;
   TCalibration Calibration;
   TGraphics Graphics;
   TWindowOptions WindowOptions;
   TSinWavRefParam SinWavRefParam;
-  TMenu *windowMenu;
+  TMenu* windowMenu;
 
   protected:
-  void Paint(TDC &, BOOL, TRect &);
+
+  void Paint(TDC&, BOOL, TRect&);
   void SetupWindow();
   void CmFileExit();
   void CmSimulate();
   void CmNIDAQEnable();
   void CmSetupData();
   void InitOptions();
-  TOpenSaveDialog::TData *FileData;
+  TOpenSaveDialog::TData* FileData;
   void CmFileOpen();
   void CmFileSave();
-  void CmPID() : void CmNeuralACEASE();
+  void CmPID();
+  void CmNeuralACEASE();
+
 
 //-----------------------------------------------------------------------------
 //  Page 103
+
 
   void CmCalibration();
   void CmDisplay();
