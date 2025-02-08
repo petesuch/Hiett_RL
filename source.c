@@ -15,44 +15,48 @@
 
 
 //-----------------------------------------------------------------------------
-//  Page 96 SOURCE CODE filename;
+//  Page 96
 
-
-//  ip.h #include <owl\owlpch.h>
-//  #include <owl\applicat.h>
-//  #include <owl\dialog.h>
-//  #include <owl\framewin.h>
-//  #include <owl\edit.h>
-//  #include <owl\checkbox.h>
-//  #include <owl\validate.h>
-//  #include <owl\inputdia.h>
-//  #include <owl\opensave.h>
-//  #include <owl\radiobut.h>
-//  #include <owl\menu.h>
-//  #include <owl\scrollba.h>
-//  #include <owl\gdiobjec.h>
-//  #include <owl\dc.h>
-
+// filename ip.h
+#include <owl\owlpch.h>
+#include <owl\applicat.h>
+#include <owl\dialog.h>
+#include <owl\framewin.h>
+#include <owl\edit.h>
+#include <owl\checkbox.h>
+#include <owl\validate.h>
+#include <owl\inputdia.h>
+#include <owl\opensave.h>
+#include <owl\radiobut.h>
+#include <owl\menu.h>
+#include <owl\scrollba.h>
+#include <owl\gdiobjec.h>
+#include <owl\dc.h>
 #include <string.h>  // for strcpy and strcat #include <stdlib.h>  // for atoi
+#include <stdlib.h>
 #include <ctype.h>  // for isdigit and isalpha
 #include <conio.h>
 #include <float.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
 #include <time.h>
-//#include "wdaq_bc.h"
-//#include "ip.rh" Physical System Constants
+#include "wdaq_bc.h"
+#include "ip.rh"
+
+// Physical System Constants
 #define MOTORVOLT_GAIN 10.58 // See Alexander Thesis
 //#define PIE 3.141592654
 #define   PIE 3.14159265358979323846
 
+// Sample Dialog Constants
 #define MAXNAMELEN 35
 #define MAXSSLEN 12
 #define MAXIDLEN 4
 #define MAXDEPTLEN 7
 #define MAXSECLEN 3
-#define MAXCUSTOMLEN 20 Data Parameter Constants
+#define MAXCUSTOMLEN 20
+
+//Data Parameter Constants
 #define MAXDATAFILENAMELEN 20
 #define MAXPOINTDIG 5
 
@@ -60,14 +64,15 @@
 #define TIMER_ID 555
 
 // Special Dialog Controls
-//const WORD IDC_BANGBANGSLIDE = 200;
-const int IDC_BANGBANGSLIDE = 200;
+const WORD IDC_BANGBANGSLIDE = 200;
+
 
 //-----------------------------------------------------------------------------
 // Page 97
 
-//const WORD IDC_BANGBANGVALUE = 201;
-const int IDC_BANGBANGVALUE = 201;
+
+const WORD IDC_BANGBANGVALUE = 201;
+
 #define DEFMASTERFILENAME "master.fle"
 #define DEFDATAFILENAME "output.dat"
 #define DEFWEIGHTFILENAME "weights.wgt"
@@ -97,7 +102,6 @@ const int IDC_BANGBANGVALUE = 201;
 #define SPACEATRIGHT 40      // Reserved pixels at right of chart
 #define YSCALEMAX 100.0      // Maximum Y scale value
 #define YSCALEINCREMENT 10.0 // Increment for Y scale markers
-
 // DISPLAY VARIABLES Constant expressions
 #define SPACEVERTICAL (SPACEATTOP + SPACEATBOTTOM)
 #define SPACEHORIZONTAL (SPACEATLEFT + SPACEATRIGHT)
@@ -108,7 +112,6 @@ const int IDC_BANGBANGVALUE = 201;
 #define YAXISY (SPACEATTOP / 2)
 #define YMARKERX1 (SPACEATLEFT / 4)
 #define YMARKERX2 (YMARKERX1 + (SPACEATLEFT / 2))
-
 // GRAPH PARAMETERS
 #define YAXISDEFMAXVALUE 100
 #define DEFVOLTSTODEGREES 25;
@@ -119,13 +122,14 @@ const int IDC_BANGBANGVALUE = 201;
 #define PID 0;
 #define NEURAL_ACE_ASE 1;
 
+
 //-----------------------------------------------------------------------------
 //  Page 98
+
 
 #define FUZZY 2; // Not implemented
                  
 // DEFAULTS FOR SYSTEM MODEL
-
 #define NS 2 // Number of States in State Space Model
 double pi = PIE;
 
@@ -153,7 +157,6 @@ float rads;
 #define DEF_DTHETA_EXTREME 50.0 // deg/sec
 #define THETA_MAX 90
 #define DTHETA_MAX 50
-
 // Global ACE and ASE variables
 int NumThetaBoxes = DEF_NUM_OF_THETA_BOXES;
 int NumDThetaBoxes = DEF_NUM_OF_DTHETA_BOXES;
@@ -164,19 +167,19 @@ int trx[100];
 int TrialNum = 0, RunNum = 0;
 int Trials[MAX_TRIALS], Runs[MAX_RUNS], steps, t, Alpha;
 int LifeTime[MAX_RUNS][MAX_TRIALS];
-
 double wt[MAX_NUM_NODES], vt[MAX_NUM_NODES];
 double elg[MAX_NUM_NODES], elg0[MAX_NUM_NODES], xbar[MAX_NUM_NODES];
 double tempelg[MAX_NUM_NODES], vtseq[MAX_NUM_NODES], wtseq[MAX_NUM_NODES];
-double wt[MAX_NUM_NODES], vt[MAX_NUM_NODES];
 double ncy[MAX_NUM_NODES];
 double ncx[MAX_NUM_NODES];
 double ISNode[MAX_NUM_NODES];
 double predlast, pred, tstep, Delta;
 int reinf;
 
+
 //-----------------------------------------------------------------------------
 //  Page 99
+
 
 double internal_reinf;
 float BangBangGain = DEF_BANG_BANG_GAIN;
@@ -197,12 +200,10 @@ double ys1[NS], ys2[NS], ys3[NS], ys4[NS];
 int prevt;
 float MaxAngMag = 1.0, MaxAngVelMag = 1.0;
 // float xbox[MAX_BOXES]; // Box Membership Value
-
 // constants
 double Rad2Ang = 180/PIE;
 double Ang2Rad = PIE/180;
 float FailAng;
-
 // functions
 void InitializeNeuralACEASE(int, int);
 int huge U[MAX_NUM_NODES][MAX_STEPS]; // Membership for Clustering Algorithm
@@ -215,16 +216,9 @@ double angle, dtheta;
 void decoder();
 void PoleModelSolve();
 void PoleStateSpaceModel(double dtdx[], double t, double states2[], float u);
-enum TrapezoidType
-{
-  reg,
-  left,
-  right
-} Typ;
-float Trap(TrapezoidType Typ, float a, float b, float c, float d, float in);
+enum TrapezoidType { reg, left, right } Typ;
 // a,b,c,d corner points of trapezoid from left to right
-
-
+float Trap(TrapezoidType Typ, float a, float b, float c, float d, float in);
 // MISCELANEOUS GLOBAL VARIABLES
 char gs[200] = "TEST";
 char ex[5] = "NoNe";
@@ -237,8 +231,10 @@ TColor white(255, 255, 255), green(0, 255, 0), black(0, 0, 0);
 TColor red(255, 0, 0), blue(0, 0, 255), yellow(255, 255, 0);
 TColor colorArray[10];
 
+
 //-----------------------------------------------------------------------------
 //  Page 100
+
 
 int delay = 0;
 int xx;
