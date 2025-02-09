@@ -17,6 +17,7 @@
 //-----------------------------------------------------------------------------
 //  Page 96
 
+
 // filename ip.h
 #include <owl\owlpch.h>
 #include <owl\applicat.h>
@@ -353,8 +354,10 @@ class TIPWindow : public TFrameWindow
   int xMax, yMax; // Max client area coordinates
   int yBase;
 
+
 //-----------------------------------------------------------------------------
 //  Page 102
+
 
   int yOffset, xOffset;
 
@@ -923,10 +926,10 @@ void TIPWindow::EvSize(UINT sizeType, TSize & size)
 
 void TIPWindow::CmNIDAQEnable() // ALLOW REAL-TIME CONTROL
 {
-      windowMenu->CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_CHECKED);
-      NIDAQENABLE = 1;
-      SIMULATE = 0;
-      windowMenu -> CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_UNCHECKED);
+  windowMenu->CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_CHECKED);
+  NIDAQENABLE = 1;
+  SIMULATE = 0;
+  windowMenu -> CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_UNCHECKED);
 }
 
 void TIPWindow::CmSimulate() // ALLOW SIMULATION
@@ -955,16 +958,15 @@ void TIPWindow::CmSetupData()
   else
     ss="You Selected Cancel";
     MessageBox(ss, GetApplication()->GetName(),MB_OK);
-          void TIPWindow::CmFrequency()
-          {
-            char s[40];
-            TClientDC dc(this);
-            if (TFreqDlg(this, "FREQUENCY", Frequency).Execute() == IDOK)
+        void TIPWindow::CmFrequency()
+        {
+          char s[40];
+          TClientDC dc(this);
+          if (TFreqDlg(this, "FREQUENCY", Frequency).Execute() == IDOK)
             {
               wsprintf(s, "%s", "John--You Selected Frequency DUDE!!");
               dc.TextOut(10, 20, s, strlen(s));
               fs atoi(Frequency.Freq);
-
             }
           }
 
@@ -1059,8 +1061,11 @@ void TIPWindow::CmSetupData()
                 TCalibDlg *CalibDlg = new TCalibDlg(this, &Calibration);
                 char Degrees[10];
 
+
 //-----------------------------------------------------------------------------
 //  Page 115
+
+
               }
               if (!NIDAQENABLE)
               {
@@ -1106,8 +1111,10 @@ void TIPWindow::CmSetupData()
                     // Get File Extension, filename, and path. Convert Chars to lower. for (i=0;i<strlen(fileloc);i++) fileloc[i]-tolower(fileloc[i]); if((p2=strchr(fileloc,'.')) != NULL) strcpy(ext,p2+1); pl-strrchr(fileloc, "W");
                     strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
 
+
 //-----------------------------------------------------------------------------
 //  Page 116
+
 
                     if (strcmp(ext, "fle") = 0)
                       strcpy(MasterFileName, filename);
@@ -1149,8 +1156,10 @@ void TIPWindow::CmSetupData()
               float temp;
               FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY OFN_FILEMUSTEXIST,"Weight Files(*.wgt)*.wgt | Data Files (*.dat)*.dat All Files (*.*)*.*", 0, "WGT", "DAT");
 
+
 //-----------------------------------------------------------------------------
 //  Page 117
+
 
               strcpy(FileData->FileName, SaveFileName);
               if (TFileSaveDialog(this, *FileData).Execute() == IDOK)
@@ -1203,8 +1212,11 @@ void TIPWindow::CmSetupData()
                               RunNum,
                               TrialNum, LifeTime[Ru / nNum][TrialNum]);
 
+
 //-----------------------------------------------------------------------------
 //  Page 118
+
+
                         }
                       }
                       SAVED ",MB_OK);
@@ -1253,6 +1265,8 @@ void TIPWindow::CmSetupData()
 
 //-----------------------------------------------------------------------------
 //  Page 119
+
+
                 }
                         s += "under the Setup Menu. It is highly likely" + nl;
                         s += "that the system will not work as expected" + nl;
@@ -1360,6 +1374,7 @@ next_sample:
 //-----------------------------------------------------------------------------
 //  Page 121
 
+
                         if(data_rec<0) goto end;
                         jj = jj + 1;
 
@@ -1418,6 +1433,7 @@ MessageBox("Sine Wave Ref OK", SinWavRefParam. Amp,MB_OK); Ref_type=0;
 //-----------------------------------------------------------------------------
 //  Page 122
 
+
                             void TIPWindow::CmRefSeriesOfSteps()
                             {
                             Ref_type=1;
@@ -1466,9 +1482,9 @@ NextStep:
                           dc.SetTextColor(green);
 
 
-
 //-----------------------------------------------------------------------------
 //  Page 123
+
 
                           dc.SetBkColor(black);
                           if (SIMULATE) steps++;
@@ -1519,6 +1535,7 @@ Interrupt: // User Interrupt or Failure Occurs then Jump to Here
             predlast = 0;
             for (i = 1; i <= NumOfNodes; i++) {
 
+
 //-----------------------------------------------------------------------------
 //  Page 124
 
@@ -1566,6 +1583,7 @@ if(RunNum > MAX_RUNS) { RunNum = 0;
 TrialNum = 0; IC = 0;
 RunWeightSave();
 goto EndACEASE; }
+
 
 //-----------------------------------------------------------------------------
 //  Page 125
@@ -1620,7 +1638,6 @@ HPEN RedPen, BluePen, WhitePen, BlackPen:
 //  Page 126
 
 
-
 HPEN hOldPen, GreenPen;
 IN=0;
 sprintf(txt, "xMax=%i yMax-%i ",xMax,yMax); dc.TextOut(10,10,txt, strlen(txt));
@@ -1660,12 +1677,8 @@ NextIteration:
 // checked. Then find group (ig)with
 
 
-
-
-
 //-----------------------------------------------------------------------------
 //  Page 127
-
 
 
 // smallest distance to point (jg) // and set that U[ig][ig]=1
@@ -1719,7 +1732,6 @@ Line(dc,cxx-50,cyy,cxx+50,cyy,white);
 Line(dc,cxx,cyy-50,cxx,cyy+50,white);
 
 
-
 //-----------------------------------------------------------------------------
 //  Page 128
 
@@ -1761,9 +1773,6 @@ return Choice;
 }
 class TIPControlApp: public TApplication {
 public:
-
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1809,8 +1818,12 @@ TIPControlApp app("IPControlApp"); return app.Run();
 
 void InitializeNeuralACEASE(int IC, int OtherWeights)
 {
+
+
 //-----------------------------------------------------------------------------
 //  Page 130
+
+
   int i, j, B;
   float s0to1, sltoб, sбto12;
   float ThetaBoxSpacing = ThetaExtreme/NumThetaBoxes;
@@ -1863,6 +1876,8 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
     V_reff[i] = 0;
   }
   // Determine Sigma (Overlap) for all centers
+
+
 //-----------------------------------------------------------------------------
 //  Page 131
 
