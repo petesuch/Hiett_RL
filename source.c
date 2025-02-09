@@ -372,20 +372,18 @@ class TIPWindow : public TFrameWindow
   void CmEmpInput();
   void CmFrequency();
   void SetupGraph(TDC&);
-  void Graph(float far Angle[], float far RefInput[];
-  float far CompOutput[], int TimeStep);
+  void Graph(float far Angle[], float far RefInput[], float far CompOutput[], int TimeStep);
   char DataFileName[50];
   char MasterFileName[50];
   char FilePath[200];
   void SetMaxCoordinates();
   void DrawGrid(TDC& dc);
   BOOL EvEraseBkgnd(HDC);
-  void Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color)
+  void Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color);
   void EvChar(UINT, UINT, UINT);
   int NumOfDataPoints;
 
   private:
-
   TDataParamStruct DataParamStruct;
   TFrequency Frequency;
   PIDStruct PIDOptions;
@@ -397,7 +395,6 @@ class TIPWindow : public TFrameWindow
   TMenu* windowMenu;
 
   protected:
-
   void Paint(TDC&, BOOL, TRect&);
   void SetupWindow();
   void CmFileExit();
@@ -422,17 +419,17 @@ class TIPWindow : public TFrameWindow
   void CmBeginControl();
   void CmRefSineWave();
   void CmRefSeriesOfSteps();
-  void EvSize(UINT sizeType, TSize &size);
+  void EvSize(UINT sizeType, TSize& size);
   void EvKeyDown(UINT key, UINT repeatCount, UINT flags);
   void EvMouseMove(UINT modKeys, TPoint &point);
-  void EvMButtonDown(UINT modKeys, TPoint &point);
-
+  void EvMButtonDown(UINT modKeys, TPoint& point);
   DECLARE_RESPONSE_TABLE(TIPWindow);
 };
 
 DEFINE_RESPONSE_TABLE1(TIPWindow, TFrameWindow)
   EV_WM_KEYDOWN,
-  EV_WM_MOUSEMOVE, EV_WM_MBUTTONDOWN,
+  EV_WM_MOUSEMOVE,
+  EV_WM_MBUTTONDOWN,
   EV_WM_ERASEBKGND,
   EV_COMMAND(CM_FREQUENCY, CmFrequency),
   EV_COMMAND(CM_FILEOPEN, CmFileOpen),
@@ -448,22 +445,24 @@ DEFINE_RESPONSE_TABLE1(TIPWindow, TFrameWindow)
   EV_COMMAND(CM_BEGINCONTROL, CmBeginControl),
   EV_COMMAND(CM_SINEWAVE, CmRefSineWave),
   EV_COMMAND(CM_SERIESOFSTEPS, CmRefSeriesOfSteps),
-  END_RESPONSE_TABLE;
+END_RESPONSE_TABLE;
 
-II MAIN WINDOW CONSTRUCTOR(INITIALIZATION) TIPWindow : TIPWindow(TWindow parent) : TFrameWindow(parent, ""),
+// MAIN WINDOW CONSTRUCTOR(INITIALIZATION)
+TIPWindow::TIPWindow(TWindow* parent) : TFrameWindow(parent, ""), TWindow(parent, "")
 {
-  TWindow(parent, "")
-    SIZE size;
+  SIZE size;
   TClientDC dc(*this);
 
-  GetTextExtentPoint(dc, "A", 1, &size); // A is arbitrary, gets text size
-  cx - size.cx;
-  cy - size.cy;
+  GetTextExtentPoint(dc, "A", 1, &size);  // A is arbitrary, gets text size
+  cx = size.cx;
+  cy = size.cy;
   FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
-      "Data Files (dat).dat/Weight Files (*.wgt)*.wgt | Master Files (*.fle) | *.fle | All Files (*.*) | *.* | ", 0, "DAT", "WGT");
+    "Data Files (*.dat)|*.dat|Weight Files (*.wgt)|*.wgt|Master Files (*.fle)|*.fle|All Files (*.*)|*.*|",0,"DAT","WGT");
+
 
 //-----------------------------------------------------------------------------
 //  Page 104
+
 
   AssignMenu(200);
   InitOptions();
