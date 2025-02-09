@@ -421,7 +421,7 @@ class TIPWindow : public TFrameWindow
   void CmRefSeriesOfSteps();
   void EvSize(UINT sizeType, TSize& size);
   void EvKeyDown(UINT key, UINT repeatCount, UINT flags);
-  void EvMouseMove(UINT modKeys, TPoint &point);
+  void EvMouseMove(UINT modKeys, TPoint& point);
   void EvMButtonDown(UINT modKeys, TPoint& point);
   DECLARE_RESPONSE_TABLE(TIPWindow);
 };
@@ -439,7 +439,8 @@ DEFINE_RESPONSE_TABLE1(TIPWindow, TFrameWindow)
   EV_COMMAND(CM_SETUPNIDAQENABLE, CmNIDAQEnable),
   EV_COMMAND(CM_SETUPDATA, CmSetupData),
   EV_COMMAND(CM_PIDCONTROL, CmPID),
-  EV_COMMAND(CM_NEURAL_ACEASE, CmNeuralACEASE).EV_COMMAND(CM_CALIBRATION, CmCalibration),
+  EV_COMMAND(CM_NEURAL_ACEASE, CmNeuralACEASE),
+  EV_COMMAND(CM_CALIBRATION, CmCalibration),
   EV_COMMAND(CM_DISPLAYSETUP, CmDisplay),
   EV_COMMAND(CM_OLD_DATA_GRAPH, CmOldDataGraph),
   EV_COMMAND(CM_BEGINCONTROL, CmBeginControl),
@@ -454,8 +455,7 @@ TIPWindow::TIPWindow(TWindow* parent) : TFrameWindow(parent, ""), TWindow(parent
   TClientDC dc(*this);
 
   GetTextExtentPoint(dc, "A", 1, &size);  // A is arbitrary, gets text size
-  cx = size.cx;
-  cy = size.cy;
+  cx = size.cx; cy = size.cy;
   FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
     "Data Files (*.dat)|*.dat|Weight Files (*.wgt)|*.wgt|Master Files (*.fle)|*.fle|All Files (*.*)|*.*|",0,"DAT","WGT");
 
@@ -472,22 +472,21 @@ TIPWindow::TIPWindow(TWindow* parent) : TFrameWindow(parent, ""), TWindow(parent
   Attr.W = Attr.X * 6;
 }
 
-void TIP Window::SetupWindow()
+void TIPWindow::SetupWindow()
 {
-  TFrame Window::SetupWindow();
-  // Create Menu Object Interface (for check marks on NIDAQ ENABLE and SIM) windowMenu = new TMenu(HWindow);
+  TFrameWindow::SetupWindow();
+  // Create Menu Object Interface (for check marks on NIDAQ ENABLE and SIM)
+  windowMenu = new TMenu(HWindow);
   if (NIDAQENABLE) // SETUP REAL-TIME vs. SIMULATION
-    windowMenu -> CheckMenuItem(CM_SETUPNIDAQENABLE,
-        MF_BYCOMMAND
-        }MF_CHECKED);
-else windowMenu->CheckMenuItem(CM_SETUPSIMULATE,
-    MF_BYCOMMAND MF_CHECKED);
+    windowMenu -> CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_CHECKED);
+  else
+    windowMenu -> CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_CHECKED);
+
+  SetCaption(WindowOptions.WindowTitle);
+  SetMaxCoordinates();
+  xOffset = 10; yOffsetyMax/2;
+  board = getBoardToUse();  // int board is in case of >1 boards on system.
 }
-SetCaption(WindowOptions.Window Title);
-SetMaxCoordinates();
-xOffset = 10;
-yOffsetyMax2;
-board = getBoardToUse(); // int board is in case of >1 boards on system.
 
 // DESTRUCTOR: They do this to free up memory.
 TIPWindow::~TIPWindow()
@@ -508,8 +507,10 @@ void TIP Window::InitOptions()
   DataParamStruct.States = FALSE;
   strcpy(Frequency.Freq, DEF_FREQUENCY);
 
+
 //-----------------------------------------------------------------------------
 //  Page 105
+
 
   PIDOptions.SingleLoop = FALSE;
   PIDOptions.DualLoop = TRUE;
@@ -563,8 +564,10 @@ void TIP Window::InitOptions()
   colorArray[1] = yellow;
   colorArray[2] = blue;
 
+
 //-----------------------------------------------------------------------------
 //  Page 106
+
 
   colorArray[3] = green;
   colorArray[4] = red;
@@ -574,7 +577,7 @@ void TIP Window::InitOptions()
   colorArray[8] = green;
   colorArray[9] = red;
   colorArray[10] = white;
-} // End TipWindow::InitOptions()
+}  // End of TipWindow::InitOptions()
 
 void TIPWindow::Paint(TDC &dc, BOOL, TRect &)
 {
@@ -625,8 +628,10 @@ void TIPWindow::EvMButtonDown(UINT modKeys, TPoint &point)
   }
 }
 
+
 //-----------------------------------------------------------------------------
 //  Page 107
+
 
 void TIPWindow::EvKeyDown(UINT key, UINT, UINT)
 {
@@ -686,6 +691,7 @@ NOIC:
 //-----------------------------------------------------------------------------
 //  Page 108
 
+
       break;
 
     case 68: // D pressed
@@ -744,8 +750,11 @@ jp:
         sprintf(DataParamStruct.DataFileName, "%s.dat\0", SaveFileName);
       }
 
+
 //-----------------------------------------------------------------------------
 //  Page 109
+
+
       if (delay > 500)
       {
         data_rec = -1;
@@ -802,8 +811,10 @@ void TIPWindow::SetupGraph(TDC & dc)
   strcpy(txt, "Green=Reference Input");
   dc.TextOut(10 + cx * (4 + htxt), yMax - (10 + cy * 2), txt, strlen(txt));
 
+
 //-----------------------------------------------------------------------------
 //  Page 110
+
 
   dc.SetTextColor(red);
   htxt += strlen(txt);
@@ -859,8 +870,10 @@ void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOut
         if (xxxMax) xx - cx * 5;
         if (xx2 == xMax) xx2 = cx * 5; // Erase Old Graph
 
+
 //-----------------------------------------------------------------------------
 //  Page 111
+
         }
         if (xx2 != cx * 5)
         { // cx*5 is Vertical (Angular) Axis Line
@@ -886,22 +899,23 @@ void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOut
         dc.SetTextColor(yellow);
         dc.TextOut(10 + 6 * cx, yMax - (10 + cy * 1), Buff, strlen(Buff));
         // Set up maximum coordinate values
+
 void TIPWindow::SetMaxCoordinates()
 {
+  TRect rect;
+  GetClientRect(rect);
+  xMax == rect.right;
+  yMax = rect.bottom;
+  yBase yMax SPACEATBOTTOM;
+}
 
-  }
-        TRect rect;
-        GetClientRect(rect);
-        xMax == rect.right;
-        yMax = rect.bottom;
-        yBase yMax SPACEATBOTTOM;
 void TIPWindow::EvSize(UINT sizeType, TSize & size)
 {
   TFrameWindow:
-            EvSize(sizeType, size);
-            SetMaxCoordinates();
-            Invalidate();
-            UpdateWindow(); // Optional
+    EvSize(sizeType, size);
+    SetMaxCoordinates();
+    Invalidate();
+    UpdateWindow(); // Optional
 }
 
 //-----------------------------------------------------------------------------
