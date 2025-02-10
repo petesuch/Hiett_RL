@@ -792,7 +792,7 @@ void TIPWindow::SetupGraph(TDC& dc)
   dc.SetTextAlign(TA_LEFT|TA_TOP);  // Back to default
   dc.SetBkColor(black);
   dc.SetTextColor(blue);
-  strcpy(txt, "Blue-Encoder Output (Angle in degrees)");
+  strcpy(txt, "Blue=Encoder Output (Angle in degrees)");
   dc.TextOut(10 + cx*6, yMax - (10 + cy*2), txt, strlen(txt));
   dc.SetTextColor(green);
   htxt = strlen(txt);
@@ -805,14 +805,14 @@ void TIPWindow::SetupGraph(TDC& dc)
 
 
   dc.SetTextColor(red);
-  htxt += strlen(txt);
-  strcpy(txt, "Red Compensator Output");
-  dc.TextOut(10 + cx * (4 + htxt), yMax - (10 + cy * 2), txt, strlen(txt));
+  htxt+= strlen(txt);
+  strcpy(txt, "Red=Compensator Output");
+  dc.TextOut(10 + cx*(4 + htxt), yMax - (10 + cy*2), txt, strlen(txt));
   dc.SelectObject(pen);
   // Plot Horiz. and Vert. Axis
-  Line(dc, cx * 2, yOffset, xMax - 10, yOffset, white); // Time Axis
+  Line(dc, cx*2, yOffset, xMax - 10, yOffset, white); // Time Axis
   dc.TextOut(10, yOffset, "0.0", 3);
-  Line(dc, cx * 5, yGMin, cx * 5, yGMax, white);
+  Line(dc, cx*5, yGMin, cx*5, yGMax, white);   // Vertical Axis
   dc.RestorePen();
   dc.SetTextColor(yellow);
   strcpy(txt, "COMPENSATOR TYPE: ");
@@ -823,19 +823,18 @@ void TIPWindow::SetupGraph(TDC& dc)
       strcpy(txt2, "PID");
       break;
     case NEURAL_ACE_ASE:
-      // Vertical Axis
       strcpy(txt2, "Neural ACE & ASE");
       break;
   }
   strcat(txt, txt2);
-  dc.TextOut(10 + cx * 6, 10 + cy * 1, txt, strlen(txt));
+  dc.TextOut(10 + cx*6, 10 + cy*1, txt, strlen(txt));  //  ?? cy*1
   htxt = strlen(txt);
   strcpy(txt, "RUN STATUS: ");
   if (SIMULATE)
     strcat(txt, "SIMULATION");
   else
     strcat(txt, "REAL-TIME CONTROL");
-  dc.TextOut(10 + cx * (16 + htxt), 10 + cy * 1, txt, strlen(txt));
+  dc.TextOut(10 + cx *(16 + htxt), 10 + cy*1, txt, strlen(txt));  //  ??
 }
 
 void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOutput[], int jj)
@@ -843,51 +842,58 @@ void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOut
     TClientDC dc(*this);
     char Buff[100];
     int al, a2, rl, r2, cl, c2;
-    float KPD - MagPD *Rad2Ang;
+    float KPD = MagPD*Rad2Ang;
     // Define Variables To Graph
-    al - Angle[jj - 1] * kPD / Rad2Ang + yOffset,
-       rl - RefInput[jj - 1] * kPD + yOffset;
-    c1-CompOutput(jj-1]*MagPV + yOffset;
+    a1 = Angle[jj-1]*kPD/Rad2Ang + yOffset;
+    a2 = Angle[jj]*kPD + yOffset;
+    r1 = RefInput[jj-1] * kPD + yOffset;
+    r2 = RefInput[jj]*kPD + yOffset;
+    c1 = CompOutput[jj-1]*MagPV + yOffset;
+    c2 = CompOutput[jj]*MagPV + yOffset;
 
-        a2 = Angle[ij]*kPD+yOffset;
-        12 = RefInput[ij] *kPD + yOffset;
-        c2-CompOutput[ij]*MagPV + yOffset;
-        // Check if Graph at right edge of window. If so, move to vertical axis
-        xx++;
-        xx2++;
-        if (xxxMax) xx - cx * 5;
-        if (xx2 == xMax) xx2 = cx * 5; // Erase Old Graph
+    // Check if Graph at right edge of window. If so, move to vertical axis
+    xx++;
+    xx2++;
+    if (xx >= xMax) xx = cx*5;
+    if (xx2 >= xMax) xx2 = cx*5;
+    // Erase Old Graph
 
 
 //-----------------------------------------------------------------------------
 //  Page 111
 
-        }
-        if (xx2 != cx * 5)
-        { // cx*5 is Vertical (Angular) Axis Line
-        }
-        else
-        Line(dc, xx2, yGMin, xx2, yGMax, black);       // Eraser Line
-        Line(dc, xx2, yOffset, xx2 + 1, yOffset, white); // Refresh time axis pixel
-        Line(dc, xx2, yGMin, xx2, yGMax, white);         // Refresh vertical axis
-                                                         // Draw New Graph
-        Line(dc, xx, al, xx + 1, a2, blue);
-        Line(dc, xx, rl, xx + 1, 12, green);
-        Line(dc, xx, cl, xx + 1, c2, red);
-        dc.SetTextColor(white);
-        dc.SetBkColor(black);
-        if (SIMULATE)
-        else sprintf(Buff, "Simulation Run Time: %10.2f seconds\0", systime[steps]);
-        sprintf(Buff, "Run Time: %10.2f seconds\0", jj / fs);
-        // Display Numerical Values
-        dc.SetTextAlign(TA_CENTER); // Aligns text about it's center
-        dc.TextOut(xMax / 2, 10 + 2 * cy, Buff, strlen(Buff));
-        dc.SetTextAlign(TA_LEFT TA_TOP); // back to default
-        sprintf(Buff, "Encoder-%6.2f Refinput-%6.2f CompOutput=%6.2f \0", Angle[j] RefInput[ij], CompOutput[ij]);
-        dc.SetTextColor(yellow);
-        dc.TextOut(10 + 6 * cx, yMax - (10 + cy * 1), Buff, strlen(Buff));
-        // Set up maximum coordinate values
+     
+        
+    if (xx2 != cx*5)  // cx*5 is Vertical (Angular) Axis Line
+    {
+      Line(dc, xx2, yGMin, xx2, yGMax, black);  // Eraser Line
+      Line(dc, xx2, yOffset, xx2+1, yOffset, white);  // Refresh time axis pixel
+    }
+    else
+      Line(dc, xx2, yGMin, xx2, yGMax, white);  // Refresh vertical axis
+                                                  
+    // Draw New Graph
+    Line(dc, xx, a1, xx+1, a2, blue);
+    Line(dc, xx, r1, xx+1, r2, green);
+    Line(dc, xx, c1, xx+1, c2, red);
 
+    dc.SetTextColor(white);
+    dc.SetBkColor(black);
+    if (SIMULATE)
+      sprintf(Buff, "Simulation Run Time: %10.2f seconds\0", systime[steps]);
+    else
+      sprintf(Buff, "Run Time: %10.2f seconds\0", jj/fs);
+
+    // Display Numerical Values
+    dc.SetTextAlign(TA_CENTER);  // Aligns text about it's center
+    dc.TextOut(xMax/2, 10 + 2*cy, Buff, strlen(Buff));
+    dc.SetTextAlign(TA_LEFT TA_TOP); // back to default
+    sprintf(Buff, "Encoder=%6.2f Refinput=%6.2f CompOutput=%6.2f \0", Angle[jj], RefInput[jj], CompOutput[jj]);
+    dc.SetTextColor(yellow);
+    dc.TextOut(10 + 6*cx, yMax - (10 + cy*1), Buff, strlen(Buff));
+}
+
+// Set up maximum coordinate values
 void TIPWindow::SetMaxCoordinates()
 {
   TRect rect;
