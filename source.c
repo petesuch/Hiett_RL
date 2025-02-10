@@ -1009,12 +1009,8 @@ void TIPWindow::CmNeuralACEASE()  // Setup
     {
       OtherWeights = 1;
       FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY|OFN_FILEMUSTEXIST, "Weight Files (*.wgt)|*.wgt|All Files (*.*)|*.*|", 0, "WGT", "*");
-
-
 //-----------------------------------------------------------------------------
 //  Page 114
-
-
       strcpy(FileData->FileName, NeuralACEASEOptions.WeightFileName);
       if (TFileOpenDialog(this, *FileData).Execute() == IDOK)
       {
@@ -1023,16 +1019,15 @@ void TIPWindow::CmNeuralACEASE()  // Setup
         if (!is)
           MessageBox("Unable to open file", "File Error", MB_OK|MB_ICONEXCLAMATION);
         else  
-        {  // Get File Extension, filename, and path. Convert Chars to lower. 
-          for (i = 0; i < strlen(fileloc); i++)
-            fileloc[i] = tolower(fileloc[i]);
-          if ((p2 = strchr(fileloc, '.')) != NULL)
-            strcpy(ext, p2 + 1);
+        {  
+          // Get File Extension, filename, and path. Convert Chars to lower. 
+          for (i = 0; i < strlen(fileloc); i++) fileloc[i] = tolower(fileloc[i]);
+          if ((p2 = strchr(fileloc, '.')) != NULL) strcpy(ext, p2+1);
           p1 = strrchr(fileloc, "\\");
-          strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
-          if (strcmp(ext, "wgt") = 0)
+          strncat(filename, p1 + 1, strlen(p1) - strlen(ext)-2);
+          if (strcmp(ext, "wgt") == 0)
           {
-          strcpy(NeuralACEASEOptions.WeightFileName, filename);
+            strcpy(NeuralACEASEOptions.WeightFileName, filename);
             if ((fdata = fopen(fileloc, "rt")) == NULL)
             {
               MessageBox("Cannot open input file.\n", "Open Error", MB_OK);
@@ -1043,8 +1038,8 @@ void TIPWindow::CmNeuralACEASE()  // Setup
               fscanf(fdata,"%f%f%f %f", &wt[i], &vt[i], &elg[i], &xbar[i]);
               i++;
             }
-          if (i != (NumOfNodes + 1))
-            MessageBox("Number of Boxes Does not Match: May Cause Poor Performance", "Data Mismatch Error", MB_OK);
+            if (i != (NumOfNodes + 1))
+              MessageBox("Number of Boxes Does not Match: May Cause Poor Performance", "Data Mismatch Error", MB_OK);
           fclose(fdata);
           }
         }
@@ -1057,14 +1052,10 @@ void TIPWindow::CmNeuralACEASE()  // Setup
 
 void TIPWindow::CmCalibration()
 {
-  TCalibDlg *CalibDlg = new TCalibDlg(this, &Calibration);
+  TCalibDlg* CalibDlg = new TCalibDlg(this, &Calibration);
   char Degrees[10];
-
-
 //-----------------------------------------------------------------------------
 //  Page 115
-
-
   if (!NIDAQENABLE)
   {
     MessageBox("Please select NIDAQ under setup to calibrate", "CALIBRATE", MB_OK);
@@ -1080,52 +1071,52 @@ void TIPWindow::CmCalibration()
   wsprintf(Degrees, " %f", Rad2Ang * Digital_Input(board, cal_jmp, IC));
   strcpy(Calibration.PoleAngle, Degrees);
   CalibDlg -> Execute();
+}
 
 void TIPWindow::CmDisplay()
   {
-    TGraphicsDlg *GraphicsDig = new TGraphicsDig(this, &Graphics);
+    TGraphicsDlg* GraphicsDig = new TGraphicsDig(this, &Graphics);
     if (GraphicsDlg -> Execute() == IDOK)
     {
       MessageBox("Graphics OK", "DISPLAY", MB_OK);
-      MagPV atoi(Graphics.PixelsPerVolt);
-      MagPD atoi(Graphics.PixelsPerDegree);
+      MagPV = atoi(Graphics.PixelsPerVolt);
+      MagPD = atoi(Graphics.PixelsPerDegree);
     }
   }
 
 void TIPWindow::CmFileOpen()
 {
-  int jj;
+  int i,j;
   char ext[5] = "";
   char *p1, *p2, fileloc[200] = "";
   char filename[200] = "";
   FILE *fdata;
   int MaxYAxis = 10;
+
   if (TFileOpenDialog(this, *FileData).Execute() == IDOK)
   {
     ifstream is(FileData->FileName);
     strcpy(fileloc, FileData->FileName);
     if (!is)
-    else
-    {
       MessageBox("Unable to open file", "File Error", MB_OK | MB_ICONEXCLAMATION);
-      // Get File Extension, filename, and path. Convert Chars to lower. for (i=0;i<strlen(fileloc);i++) fileloc[i]-tolower(fileloc[i]); if((p2=strchr(fileloc,'.')) != NULL) strcpy(ext,p2+1); pl-strrchr(fileloc, "W");
+    else
+    {  // Get File Extension, filename, and path. Convert Chars to lower. 
+      for (i=0; i<strlen(fileloc); i++) fileloc[i] = tolower(fileloc[i]); 
+      if((p2=strchr(fileloc, '.')) != NULL) strcpy(ext, p2+1);
+      p1 = strrchr(fileloc, "W");
       strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
-
-
 //-----------------------------------------------------------------------------
 //  Page 116
-
-
-            if (strcmp(ext, "fle") = 0)
-              strcpy(MasterFileName, filename);
-            read_mfile();
-            else if (strcmp(ext, "dat") - 0)
-          }
-          {
-            wsprintf(WindowOptions.WindowTitle, "%s%s", DEF_WINDOW_TITLE, filename);
-            strcpy(DataParamStruct.DataFileName, filename);
-            SetCaption(WindowOptions.WindowTitle);
-            if ((fdata = fopen(fileloc, "rt")) = NULL)
+      if (strcmp(ext, "fle") == 0) 
+      {
+        strcpy(MasterFileName, filename);
+        read_mfile();
+      else if (strcmp(ext, "dat") == 0)
+      {
+        wsprintf(WindowOptions.WindowTitle, "%s%s", DEF_WINDOW_TITLE, filename);
+        strcpy(DataParamStruct.DataFileName, filename);
+        SetCaption(WindowOptions.WindowTitle);
+        if ((fdata = fopen(fileloc, "rt")) = NULL)
               MessageBox("Cannot open input/ file.\n", "Open Error", / MB_OK);
           }
           i = 0;
