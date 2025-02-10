@@ -990,11 +990,12 @@ void TIPWindow::CmNeuralACEASE()  // Setup
   TNeuralACEASEDlg* NeuralACEASEDlg = new TNeuralACEASEDlg(this, NeuralACEASEOptions);
   windowMenu->CheckMenuItem(CM_NEURAL_ACEASE, MF_BYCOMMAND | MF_CHECKED);
   windowMenu->CheckMenuItem(CM_PIDCONTROL, MF BYCOMMAND | MF_UNCHECKED);
+
   ControlType = NEURAL_ACE_ASE;
   if (NeuralACEASEDIg->Execute() == IDOK)
   {
-    NumThetaBoxes = atoi(NeuralACEASEOptions.NumThetaBoxes); // Update space
-    NumDThetaBoxes-atoi(NeuralACEASEOptions NumDThetaBoxes); // Variables 
+    NumThetaBoxes = atoi(NeuralACEASEOptions.NumThetaBoxes);  // Update space
+    NumDThetaBoxes = atoi(NeuralACEASEOptions.NumDThetaBoxes);  // Variables 
     if(NeuralACEASEOptions.Uniform)
       NumOfNodes = NumThetaBoxes*NumDThetaBoxes;
     else 
@@ -1002,10 +1003,8 @@ void TIPWindow::CmNeuralACEASE()  // Setup
     ThetaExtreme = atof(NeuralACEASEOptions.ThetaExtreme);
     DThetaExtreme = atof(NeuralACEASEOptions.DThetaExtreme);
     MessageBox("Neural ASE ACE Controller Selected", "Neural ACEASE", MB_OK);
-    if (NeuralACEASEOptions.ZeroizeWeights)
-      Other Weights = 0;
-    if (NeuralACEASEOptions.UseSimulationWeights)
-      Other Weights = 0;
+    if (NeuralACEASEOptions.ZeroizeWeights) Other Weights = 0;
+    if (NeuralACEASEOptions.UseSimulationWeights) Other Weights = 0;
     if (NeuralACEASEOptions.WeightFromFile)
     {
       OtherWeights = 1;
@@ -1023,10 +1022,8 @@ void TIPWindow::CmNeuralACEASE()  // Setup
         strcpy(fileloc, FileData->FileName);
         if (!is)
           MessageBox("Unable to open file", "File Error", MB_OK|MB_ICONEXCLAMATION);
-        else
-        {
-          // Get File Extension, filename, and path.
-          // Convert Chars to lower.
+        else  
+        {  // Get File Extension, filename, and path. Convert Chars to lower. 
           for (i = 0; i < strlen(fileloc); i++)
             fileloc[i] = tolower(fileloc[i]);
           if ((p2 = strchr(fileloc, '.')) != NULL)
@@ -1036,372 +1033,376 @@ void TIPWindow::CmNeuralACEASE()  // Setup
           if (strcmp(ext, "wgt") = 0)
           {
           strcpy(NeuralACEASEOptions.WeightFileName, filename);
-            if ((fdata = fopen(fileloc, "rt")) = NULL)
+            if ((fdata = fopen(fileloc, "rt")) == NULL)
             {
+              MessageBox("Cannot open input file.\n", "Open Error", MB_OK);
             }
             i = 0;
-            MessageBox("Cannot open input/ file.\n", "Open Error", MB_OK);
             while (!feof(fdata))
-            { // Read in Weights From
-              // Weight File
-                  fscanf(fdata,"%f%f %f
-                      /
-                      %f",&wt[i],&vt[i],&elg[i],&xbar[i]);
-                  i++;
+            { // Read in Weights From Weight File
+              fscanf(fdata,"%f%f%f %f", &wt[i], &vt[i], &elg[i], &xbar[i]);
+              i++;
             }
-          }
-          Invalidate();
-          delete FileData;
           if (i != (NumOfNodes + 1))
-            MessageBox(
-                "Number of Boxes Does not Match: / May Cause Poor Performance", / "Data Mismatch Error", MB_OK);
+            MessageBox("Number of Boxes Does not Match: May Cause Poor Performance", "Data Mismatch Error", MB_OK);
           fclose(fdata);
-          void TIPWindow::CmCalibration()
-          {
-            TCalibDlg *CalibDlg = new TCalibDlg(this, &Calibration);
-            char Degrees[10];
+          }
+        }
+      } 
+      Invalidate();
+      delete FileData;
+    }
+  }
+}
+
+void TIPWindow::CmCalibration()
+{
+  TCalibDlg *CalibDlg = new TCalibDlg(this, &Calibration);
+  char Degrees[10];
 
 
 //-----------------------------------------------------------------------------
 //  Page 115
 
 
-          }
-              if (!NIDAQENABLE)
-              {
-                MessageBox("Please select NIDAQ under setup to calibrate", "CALIBRATE", MB_OK);
-                return;
-              }
-              temp_graph_output = graph_output;
-              graph_output = 0;
-              cal_jmp = 1;
-              out = 2;
-              calibrate = 0.0;
-              pos2 = 0.0;
-              previous_measure = 0.0;
-              wsprintf(Degrees, " %f", Rad2Ang * Digital_Input(board, cal_jmp, IC));
-              strcpy(Calibration.PoleAngle, Degrees);
-              CalibDlg -> Execute();
-              void TIPWindow::CmDisplay()
-              {
-                TGraphicsDlg *GraphicsDig = new TGraphicsDig(this, &Graphics);
-                if (GraphicsDlg -> Execute() == IDOK)
-                {
-                  MessageBox("Graphics OK", "DISPLAY", MB_OK);
-                  MagPV atoi(Graphics.PixelsPerVolt);
-                  MagPD atoi(Graphics.PixelsPerDegree);
-                }
-              }
-              void TIPWindow::CmFileOpen()
-              {
-                int jj;
-                char ext[5] = "";
-                char *p1, *p2, fileloc[200] = "";
-                char filename[200] = "";
-                FILE *fdata;
-                int MaxYAxis = 10;
-                if (TFileOpenDialog(this, *FileData).Execute() == IDOK)
-                {
-                  ifstream is(FileData->FileName);
-                  strcpy(fileloc, FileData->FileName);
-                  if (!is)
-                  else
-                  {
-                    MessageBox("Unable to open file", "File Error", MB_OK | MB_ICONEXCLAMATION);
-                    // Get File Extension, filename, and path. Convert Chars to lower. for (i=0;i<strlen(fileloc);i++) fileloc[i]-tolower(fileloc[i]); if((p2=strchr(fileloc,'.')) != NULL) strcpy(ext,p2+1); pl-strrchr(fileloc, "W");
-                    strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
+  if (!NIDAQENABLE)
+  {
+    MessageBox("Please select NIDAQ under setup to calibrate", "CALIBRATE", MB_OK);
+    return;
+  }
+  temp_graph_output = graph_output;
+  graph_output = 0;
+  cal_jmp = 1;
+  out = 2;
+  calibrate = 0.0;
+  pos2 = 0.0;
+  previous_measure = 0.0;
+  wsprintf(Degrees, " %f", Rad2Ang * Digital_Input(board, cal_jmp, IC));
+  strcpy(Calibration.PoleAngle, Degrees);
+  CalibDlg -> Execute();
+
+void TIPWindow::CmDisplay()
+  {
+    TGraphicsDlg *GraphicsDig = new TGraphicsDig(this, &Graphics);
+    if (GraphicsDlg -> Execute() == IDOK)
+    {
+      MessageBox("Graphics OK", "DISPLAY", MB_OK);
+      MagPV atoi(Graphics.PixelsPerVolt);
+      MagPD atoi(Graphics.PixelsPerDegree);
+    }
+  }
+
+void TIPWindow::CmFileOpen()
+{
+  int jj;
+  char ext[5] = "";
+  char *p1, *p2, fileloc[200] = "";
+  char filename[200] = "";
+  FILE *fdata;
+  int MaxYAxis = 10;
+  if (TFileOpenDialog(this, *FileData).Execute() == IDOK)
+  {
+    ifstream is(FileData->FileName);
+    strcpy(fileloc, FileData->FileName);
+    if (!is)
+    else
+    {
+      MessageBox("Unable to open file", "File Error", MB_OK | MB_ICONEXCLAMATION);
+      // Get File Extension, filename, and path. Convert Chars to lower. for (i=0;i<strlen(fileloc);i++) fileloc[i]-tolower(fileloc[i]); if((p2=strchr(fileloc,'.')) != NULL) strcpy(ext,p2+1); pl-strrchr(fileloc, "W");
+      strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
 
 
 //-----------------------------------------------------------------------------
 //  Page 116
 
 
-                    if (strcmp(ext, "fle") = 0)
-                      strcpy(MasterFileName, filename);
-                    read_mfile();
-                    else if (strcmp(ext, "dat") - 0)
-                  }
-                  {
-                    wsprintf(WindowOptions.WindowTitle, "%s%s", DEF_WINDOW_TITLE, filename);
-                    strcpy(DataParamStruct.DataFileName, filename);
-                    SetCaption(WindowOptions.WindowTitle);
-                    if ((fdata = fopen(fileloc, "rt")) = NULL)
-                      MessageBox("Cannot open input/ file.\n", "Open Error", / MB_OK);
-                  }
-                  i = 0;
+            if (strcmp(ext, "fle") = 0)
+              strcpy(MasterFileName, filename);
+            read_mfile();
+            else if (strcmp(ext, "dat") - 0)
+          }
+          {
+            wsprintf(WindowOptions.WindowTitle, "%s%s", DEF_WINDOW_TITLE, filename);
+            strcpy(DataParamStruct.DataFileName, filename);
+            SetCaption(WindowOptions.WindowTitle);
+            if ((fdata = fopen(fileloc, "rt")) = NULL)
+              MessageBox("Cannot open input/ file.\n", "Open Error", / MB_OK);
+          }
+          i = 0;
                   ratio = 1;
-                  MaxAngMag - MaxAng VelMag = 1;
-                  while (Ifeof(fdata))
-                  {
-                    i++;
-                    fscanf(fdata, "%f", &ang[i]);
-                    if (fabs(ang[i]) > MaxAngMag)
-                      MaxAngMag - fabs(ang[i]);
-                    if (fabs((ang[i + 1] - ang[i]) * fs) > MaxAngVelMag)
-                      MaxAngVelMag - fabs((ang[i + 1] - ang[i]) * fs);
-                  }
-                  NumOfDataPoints - i - 1;
-                  fclose(fdata);
-                }
-              }
-              Invalidate();
+          MaxAngMag - MaxAng VelMag = 1;
+          while (Ifeof(fdata))
+          {
+            i++;
+            fscanf(fdata, "%f", &ang[i]);
+            if (fabs(ang[i]) > MaxAngMag)
+              MaxAngMag - fabs(ang[i]);
+            if (fabs((ang[i + 1] - ang[i]) * fs) > MaxAngVelMag)
+              MaxAngVelMag - fabs((ang[i + 1] - ang[i]) * fs);
+          }
+          NumOfDataPoints - i - 1;
+          fclose(fdata);
         }
-            void TIPWindow::CmFileSave()
-            {
-              char ext[5] = "";
-              char *p1, *p2, fileloc[200] = "";
-              char filename[200] = "";
-              FILE *fdata;
-              int i;
-              float temp;
-              FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY OFN_FILEMUSTEXIST,"Weight Files(*.wgt)*.wgt | Data Files (*.dat)*.dat All Files (*.*)*.*", 0, "WGT", "DAT");
+      }
+      Invalidate();
+        }
+
+void TIPWindow::CmFileSave()
+    {
+      char ext[5] = "";
+      char *p1, *p2, fileloc[200] = "";
+      char filename[200] = "";
+      FILE *fdata;
+      int i;
+      float temp;
+      FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY OFN_FILEMUSTEXIST,"Weight Files(*.wgt)*.wgt | Data Files (*.dat)*.dat All Files (*.*)*.*", 0, "WGT", "DAT");
 
 
 //-----------------------------------------------------------------------------
 //  Page 117
 
 
-              strcpy(FileData->FileName, SaveFileName);
-              if (TFileSaveDialog(this, *FileData).Execute() == IDOK)
-              {
-                ofstream is(FileData -> FileName);
-                strcpy(fileloc, FileData -> FileName);
-                if (!is)
-                  MessageBox("Unable to Save file", "File Error", MB_OK MB ICONEXCLAMATION);
-                else
-                { // Get File Extension, filename, and path.
-                  // Convert Chars to lower.
-                  for (i = 0; i < strlen(fileloc); i++)
-                    fileloc[i] = tolower(fileloc[i]);
-                  if ((p2 - strchr(fileloc, '.')) != NULL)
-                    strcpy(ext, p2 + 1);
-                  p1 = strrchr(fileloc, '\');
-                  strncat(filename, p1 + 1, strlen(p1) - strlen(ext)-2);
-                  if ((fdata = fopen(fileloc, "wt")) = NULL)
-                    MessageBox("Cannot write to file.\n", "Open Error",MB_OK); strcpy(SaveFileName, filename); // Update (edited) save file name. if(strcmp(ext, "wgt")=0) {
-                  for(i = 1; i < NumOfNodes; i++)
-                    // Write Weights to a File
-                    fprintf(fdata, "%f %f %f %f\n", &wt[i], &vt[i], &elg[i], &xbar[i]);
-                  fclose(fdata);
-                  MessageBox(filename, "SAVED WEIGHT FILE", MB_OK);
+      strcpy(FileData->FileName, SaveFileName);
+      if (TFileSaveDialog(this, *FileData).Execute() == IDOK)
+      {
+        ofstream is(FileData -> FileName);
+        strcpy(fileloc, FileData -> FileName);
+        if (!is)
+          MessageBox("Unable to Save file", "File Error", MB_OK MB ICONEXCLAMATION);
+        else
+        { // Get File Extension, filename, and path.
+          // Convert Chars to lower.
+          for (i = 0; i < strlen(fileloc); i++)
+            fileloc[i] = tolower(fileloc[i]);
+          if ((p2 - strchr(fileloc, '.')) != NULL)
+            strcpy(ext, p2 + 1);
+          p1 = strrchr(fileloc, '\');
+          strncat(filename, p1 + 1, strlen(p1) - strlen(ext)-2);
+          if ((fdata = fopen(fileloc, "wt")) = NULL)
+            MessageBox("Cannot write to file.\n", "Open Error",MB_OK); strcpy(SaveFileName, filename); // Update (edited) save file name. if(strcmp(ext, "wgt")=0) {
+          for(i = 1; i < NumOfNodes; i++)
+            // Write Weights to a File
+            fprintf(fdata, "%f %f %f %f\n", &wt[i], &vt[i], &elg[i], &xbar[i]);
+          fclose(fdata);
+          MessageBox(filename, "SAVED WEIGHT FILE", MB_OK);
 
-                  else if(strcmp(ext, "dat") = 0) {
-                    if (!SIMULATE)
-                    else for (i = 0; i < jj; i++) fprintf(fdata, "%10.3f%10.3f%10.3f\n", encoder_position[i], volt[i], V_reff[i]);
-                    if (DataParamStruct.States)
-                    else
-                    {
-                      for (i = 0; i < steps; i++)
-                        fprintf(fdata, "%10.3f\n", ang[i]);
-                      fprintf(fdata, "BangBangMag=%f\n", BangBangG / ain);
-                      fprintf(fdata, "NumThetaBoxes=%i\n", NumTheta / Boxes);
-                      fprintf(fdata, "NumDThetaBoxes=%i\n", NumDTh / etaBoxes);
-                      fprintf(fdata, "MAX_STEPS=%i\n", MAX_STEPS);
-                      fprintf(fdata, "MAX_TRIALS=%i\n", MAX_TRIALS /);
-                      fprintf(fdata, "MAX_RUNS=%i\n", MAX_RUNS);
-                      for (RunNum = 0; RunNum < MAX RUNS;
-                          RunNum /
-                          ++)
-                      {
-                        fprintf(fdata, "Number_of_Failures_per_Run=%i\n", NumRunFails[RunNum]);
-                        for (TrialNum = 0; TrialNum < MAX_TRIALS : /
-                            TrialNum++)
-                        {
-                          fprintf(fdata, "%10i %10i %10/
-                              \n ".
-                              RunNum,
-                              TrialNum, LifeTime[Ru / nNum][TrialNum]);
+          else if(strcmp(ext, "dat") = 0) {
+            if (!SIMULATE)
+            else for (i = 0; i < jj; i++) fprintf(fdata, "%10.3f%10.3f%10.3f\n", encoder_position[i], volt[i], V_reff[i]);
+            if (DataParamStruct.States)
+            else
+            {
+              for (i = 0; i < steps; i++)
+                fprintf(fdata, "%10.3f\n", ang[i]);
+              fprintf(fdata, "BangBangMag=%f\n", BangBangG / ain);
+              fprintf(fdata, "NumThetaBoxes=%i\n", NumTheta / Boxes);
+              fprintf(fdata, "NumDThetaBoxes=%i\n", NumDTh / etaBoxes);
+              fprintf(fdata, "MAX_STEPS=%i\n", MAX_STEPS);
+              fprintf(fdata, "MAX_TRIALS=%i\n", MAX_TRIALS /);
+              fprintf(fdata, "MAX_RUNS=%i\n", MAX_RUNS);
+              for (RunNum = 0; RunNum < MAX RUNS;
+                  RunNum /
+          ++)
+              {
+                fprintf(fdata, "Number_of_Failures_per_Run=%i\n", NumRunFails[RunNum]);
+                for (TrialNum = 0; TrialNum < MAX_TRIALS : /
+                    TrialNum++)
+                {
+                  fprintf(fdata, "%10i %10i %10/
+                      \n ".
+                      RunNum,
+                      TrialNum, LifeTime[Ru / nNum][TrialNum]);
 
 
 //-----------------------------------------------------------------------------
 //  Page 118
 
 
-                        }
-                      }
-                      SAVED ",MB_OK);
-                    }
-                  }
-                  RunNum = 0;
-                  MessageBox(filename, "SAVED DATA FILE",MB_OK);
-                  fclose(fdata);
-                  else MessageBox(filename, "UNKNOWN FILE TYPE, NOTHING
-                      delete FileData;
-                      Invalidate();
-                      }
-                      }
-                      void TIPWindow::CmFileExit()
-                      {
-                      CmExit();
-                      }
-                      void TIPWindow::CmOldDataGraph
-                      {
-                      PlotOldData = -PlotOldData;
-                      strcpy(gs."Inside CmOldDataGraph");
-                      Invalidate();
-                      }
-                      void TIPWindow::CmBeginControl(
-                        {
-                        int start, Mag - 500;
-                        char txt[30];
-                        static float oldx1 - 0;
-                        TBeginControlDlg *BeginControlDig;
-                        MSG msg;
-                        BOOL fRetVal = TRUE;
-                        TClientDC dc(*this);
-                        BeginControlDlg = new TBeginControlDig(this, BEGINCONTROLDIALOG);
-                        if (!SIMULATE)
-                        start - BeginControlDlg > Execute();
-                        if (start == IDCANCEL)
-                        {
-                        MessageBox("Control Cancelled", "CONTROL STOPPED", MB_OK);
-                        goto end;
-                        else if (start = IDHELP)
-                        }
-                        {
-                        string s;
-                        string nl('\n');
-                        st - "HINT: Be sure that everything is setup properly" + nl;
+                }
+              }
+              SAVED ",MB_OK);
+            }
+          }
+          RunNum = 0;
+          MessageBox(filename, "SAVED DATA FILE",MB_OK);
+          fclose(fdata);
+          else MessageBox(filename, "UNKNOWN FILE TYPE, NOTHING
+              delete FileData;
+              Invalidate();
+              }
+              }
+              void TIPWindow::CmFileExit()
+              {
+              CmExit();
+              }
+              void TIPWindow::CmOldDataGraph
+              {
+              PlotOldData = -PlotOldData;
+              strcpy(gs."Inside CmOldDataGraph");
+              Invalidate();
+              }
+              void TIPWindow::CmBeginControl(
+                {
+                int start, Mag - 500;
+                char txt[30];
+                static float oldx1 - 0;
+                TBeginControlDlg *BeginControlDig;
+                MSG msg;
+                BOOL fRetVal = TRUE;
+                TClientDC dc(*this);
+                BeginControlDlg = new TBeginControlDig(this, BEGINCONTROLDIALOG);
+                if (!SIMULATE)
+                start - BeginControlDlg > Execute();
+                if (start == IDCANCEL)
+                {
+                MessageBox("Control Cancelled", "CONTROL STOPPED", MB_OK);
+                goto end;
+                else if (start = IDHELP)
+                }
+                {
+                string s;
+                string nl('\n');
+                st - "HINT: Be sure that everything is setup properly" + nl;
 
 //-----------------------------------------------------------------------------
 //  Page 119
 
 
-                }
-                        s += "under the Setup Menu. It is highly likely" + nl;
-                        s += "that the system will not work as expected" + nl;
-                        s += "if you do not have options set correctly." + nl;
-                        s += "Try choosing Default under setup." + nl;
-                        s += "If you are not sure, choose CANCEL." + nl;
-                        MessageBox(s.c_str(), "Help!", MB_OK);
+        }
+        s += "under the Setup Menu. It is highly likely" + nl;
+        s += "that the system will not work as expected" + nl;
+        s += "if you do not have options set correctly." + nl;
+        s += "Try choosing Default under setup." + nl;
+        s += "If you are not sure, choose CANCEL." + nl;
+        MessageBox(s.c_str(), "Help!", MB_OK);
 
-                        if (NIDAQENABLE)
-                        {
-                        }
+        if (NIDAQENABLE)
+        {
+        }
 
-                        board getBoardToUse();
-                        err_num = DIG_Prt_Config(board, 0, 0, 0);
-                        errCheck(board, "DIG_Prt_Config", err_num);
-                        err_num = DIG_Prt_Config(board, 1, 0, 0);
-                        errCheck(board, "DIG_Prt_Config", err_num);
-                        err_num = AI_Config(board, 1, 1, 1);
-                        errCheck(board, "AI_Config", err_num);
-                        jj = 1;
-                        data_rec = 0;
-                        IC = 0;
-                        rotate_buff = 0;
-                        graph_error = 0;
-                        jk = 0;
-                        jkk = 1;
+        board getBoardToUse();
+        err_num = DIG_Prt_Config(board, 0, 0, 0);
+        errCheck(board, "DIG_Prt_Config", err_num);
+        err_num = DIG_Prt_Config(board, 1, 0, 0);
+        errCheck(board, "DIG_Prt_Config", err_num);
+        err_num = AI_Config(board, 1, 1, 1);
+        errCheck(board, "AI_Config", err_num);
+        jj = 1;
+        data_rec = 0;
+        IC = 0;
+        rotate_buff = 0;
+        graph_error = 0;
+        jk = 0;
+        jkk = 1;
 
-                        /* Set frequency count so that proper system freguency is attained. */
+        /* Set frequency count so that proper system freguency is attained. */
 
-                        fcount = 2000000.0 / fs;
-                        fcount = floor(fcount);
-                        count = (unsigned int)fcount;
+        fcount = 2000000.0 / fs;
+        fcount = floor(fcount);
+        count = (unsigned int)fcount;
 
-                        if (Graphics.GraphicsOn)
-                          SetupGraph(dc);
+        if (Graphics.GraphicsOn)
+          SetupGraph(dc);
 
-                        // Automatic Calibration (assume pole position is initially at zero degrees) Digital Input (board,cal_jmp,IC);
-                        // updates current_measurel calibrate-current_measurel;
-                        V_reff[ij] = Ref(IC); // Initialize Reference Variables (Inside Ref())
-                        /* Start loop */
+        // Automatic Calibration (assume pole position is initially at zero degrees) Digital Input (board,cal_jmp,IC);
+        // updates current_measurel calibrate-current_measurel;
+        V_reff[ij] = Ref(IC); // Initialize Reference Variables (Inside Ref())
+        /* Start loop */
 next_sample:
-                        delay++;
-                        if (delay > 99999)
-                          delay = 0;
+        delay++;
+        if (delay > 99999)
+          delay = 0;
 
-                        /**** Load counter B so that proper frequency is attained. Determine the
-                         * reference command, input the encoder position (digital_input), preform
-                         * negitive feedback to determine the
+        /**** Load counter B so that proper frequency is attained. Determine the
+         * reference command, input the encoder position (digital_input), preform
+         * negitive feedback to determine the
 
 
 //-----------------------------------------------------------------------------
 //  Page 120
 
 
-                        input to the compensator (comp_in) and call Compensator to determine the output
-                        from the compensator (input to plant.)
-                         ****/
+        input to the compensator (comp_in) and call Compensator to determine the output
+        from the compensator (input to plant.)
+         ****/
 
-                        if (NIDAQENABLE)
-                          ICTR_Setup(board, 0, 0, count, 1);
-                        errCheck(board, "ITCR_Setup", err_num);
+        if (NIDAQENABLE)
+          ICTR_Setup(board, 0, 0, count, 1);
+        errCheck(board, "ITCR_Setup", err_num);
 
-                        if (!SIMULATE | ControlType = PID)
-                          V_reff[ij] = Ref(IC);
-                        else
-                          V_reff[ij] = 0.0;
-                        encoder_position[ij] = Digital_Input(board, cal_jmp, IC);
+        if (!SIMULATE | ControlType = PID)
+          V_reff[ij] = Ref(IC);
+        else
+          V_reff[ij] = 0.0;
+        encoder_position[ij] = Digital_Input(board, cal_jmp, IC);
 
-                        if (!SIMULATE)
-                        {
+        if (!SIMULATE)
+        {
 
-                          states[0] = encoder_position[ij];     // Angle of pole
-                          states[1] = (states[0] - oldx1) * fs; // Angular Velocity of pole
-                          oldx1 = states[0];
-                        }
-                        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) // Interrupt For User Request
+          states[0] = encoder_position[ij];     // Angle of pole
+          states[1] = (states[0] - oldx1) * fs; // Angular Velocity of pole
+          oldx1 = states[0];
+        }
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) // Interrupt For User Request
 
-                        {
-                          TranslateMessage(&msg);
-                          DispatchMessage(&msg);
-                        }
-                        switch (ControlType)
-                        {
-                          case PID:
-                        }
-                        volt[ij] = PIDController(IC, jj);
-                        break;
-                          case NEURAL_ACE_ASE:
-                        volt[ij] = NeuralACEASE(IC, jj, states) / 10.58; // 10.58-DC Motor Amp Gain
-                        break;
-                          case FUZZY:
+        {
+          TranslateMessage(&msg);
+          DispatchMessage(&msg);
+        }
+        switch (ControlType)
+        {
+          case PID:
+        }
+        volt[ij] = PIDController(IC, jj);
+        break;
+          case NEURAL_ACE_ASE:
+        volt[ij] = NeuralACEASE(IC, jj, states) / 10.58; // 10.58-DC Motor Amp Gain
+        break;
+          case FUZZY:
 
-                        // Not implemented yet break;
-                        ****If graph_output is 1 display system
-                          variables(Graph),
-                          if graph_error is 1 end the program, if graph_output and IC are 0 display "message" to begin control of the pendulum.**** / if (Graphics.GraphicsOn) // ACE uses graphi
-                            Graph(encoder_position, V_reff, volt, jj);
+        // Not implemented yet break;
+        ****If graph_output is 1 display system
+          variables(Graph),
+          if graph_error is 1 end the program, if graph_output and IC are 0 display "message" to begin control of the pendulum.**** / if (Graphics.GraphicsOn) // ACE uses graphi
+            Graph(encoder_position, V_reff, volt, jj);
 
-                        /**** Write plant input to analog channel 0. Check if "keyboard" has been hit. If
-                          data_rec is negative put 0 volts to
-                          analog channel 0 and go to the GUI.
-                          If data_rec is positive increment loop counter and set "rec"ord to 1.
+        /**** Write plant input to analog channel 0. Check if "keyboard" has been hit. If
+          data_rec is negative put 0 volts to
+          analog channel 0 and go to the GUI.
+          If data_rec is positive increment loop counter and set "rec"ord to 1.
 
 
 //-----------------------------------------------------------------------------
 //  Page 121
 
 
-                        if(data_rec<0) goto end;
-                        jj = jj + 1;
+        if(data_rec<0) goto end;
+        jj = jj + 1;
 
-                        /**** after the 15,000 (x3) data points have
+        /**** after the 15,000 (x3) data points have
 
-                        if(j == 15001) goto end;
+        if(j == 15001) goto end;
 
-                        been collected keep running loop placing data in last data points. ****/
+        been collected keep running loop placing data in last data points. ****/
 
-                        /**** Read from analog channel 1. If the counter
-                          has low logic keep reading analog channel 1 until logic is high. When high, go to the begining of the main loop.
+        /**** Read from analog channel 1. If the counter
+          has low logic keep reading analog channel 1 until logic is high. When high, go to the begining of the main loop.
 
-                          if(jk-ndpts-1)
-                          {
-                          if(in_sync == 1)
-                          {
-                          sync = 1;
-                          }
-                          else
-                          {
-                          sync = 0;
-                          }
-                          jk =- 1;
-                          }
-                          4.7
-                          jkk = 1;
-                          jk = jk+1;
+          if(jk-ndpts-1)
+          {
+          if(in_sync == 1)
+          {
+          sync = 1;
+          }
+          else
+          {
+          sync = 0;
+          }
+          jk =- 1;
+          }
+          4.7
+          jkk = 1;
+          jk = jk+1;
 new_count: // Set system timing (delay) in Sync with NIDAQ board clock.
 
 if (NIDAQENABLE) AI_VRead (board,1,1,&countt);
@@ -1434,93 +1435,93 @@ MessageBox("Sine Wave Ref OK", SinWavRefParam. Amp,MB_OK); Ref_type=0;
 //  Page 122
 
 
-                            void TIPWindow::CmRefSeriesOfSteps()
-                            {
-                            Ref_type=1;
+            void TIPWindow::CmRefSeriesOfSteps()
+            {
+            Ref_type=1;
                             }
-                            float far TIPWindow::NeuralACEASE(int IC, int jj, double states[])
-                            {
-                        // Neural Control/Simulation: Returns Voltage to Motor if in Control Mode
+            float far TIPWindow::NeuralACEASE(int IC, int jj, double states[])
+            {
+        // Neural Control/Simulation: Returns Voltage to Motor if in Control Mode
 
-                        MSG msg;
-                        TClientDC dc(this);
-                        int i, Mag-5, Choice;
-                        float tt = 0;
-                        int dlg.
+        MSG msg;
+        TClientDC dc(this);
+        int i, Mag-5, Choice;
+        float tt = 0;
+        int dlg.
                         char trialtxt[80], txt[40];
 
-                        if (!IC) {
-                        }
-                        randomize();
-                        if (NeuralACEASEOptions Nonuniform) ClusterInputSpace(dc);
-                        if(NeuralACEASEOptions.CMAC) TrainCMACO);
-                        InitializeNeuralACEASE(IC, Other Weights);
-                        //main loop Neural ACE ASE:
+        if (!IC) {
+        }
+        randomize();
+        if (NeuralACEASEOptions Nonuniform) ClusterInputSpace(dc);
+        if(NeuralACEASEOptions.CMAC) TrainCMACO);
+        InitializeNeuralACEASE(IC, Other Weights);
+        //main loop Neural ACE ASE:
 
 NextTrial:
-                        if (SIMULATE) {
-                        }
-                        {c=1;
-                          //assume zero input for ASE at the 1st time step
-                          xx=cx*5+1;
-                          xx2=cx*5+11; // reset graph line
-                          t1 = 0;
-                          ace();
-                          ase(); //initial action Invalidate();
-                          IC = 1;
+        if (SIMULATE) {
+        }
+        {c=1;
+          //assume zero input for ASE at the 1st time step
+          xx=cx*5+1;
+          xx2=cx*5+11; // reset graph line
+          t1 = 0;
+          ace();
+          ase(); //initial action Invalidate();
+          IC = 1;
 NextStep:
-                          // Check for User Interrupt During Simulation
-                          if (SIMULATE && PeekMessage(&msg,NULL,0,0,PM_REMOVE))
-                          {
-                          }
-                          TranslateMessage(&msg); DispatchMessage(&msg);
-                          if (data_rec == 1) { // User Interrupt, Stop Run
-                          }
-                          MessageBox("USER INTERRUPT","ACE & ASE",MB_OK);
-                          goto Interrupt; //End Training
-                          wsprintf(txt, "Runs=%i Trials=%i Steps-%i", RunNum, TrialNum+1, steps);
-                          dc.SetTextColor(green);
+          // Check for User Interrupt During Simulation
+          if (SIMULATE && PeekMessage(&msg,NULL,0,0,PM_REMOVE))
+          {
+          }
+          TranslateMessage(&msg); DispatchMessage(&msg);
+          if (data_rec == 1) { // User Interrupt, Stop Run
+          }
+          MessageBox("USER INTERRUPT","ACE & ASE",MB_OK);
+          goto Interrupt; //End Training
+          wsprintf(txt, "Runs=%i Trials=%i Steps-%i", RunNum, TrialNum+1, steps);
+          dc.SetTextColor(green);
 
 
 //-----------------------------------------------------------------------------
 //  Page 123
 
 
-                          dc.SetBkColor(black);
-                          if (SIMULATE) steps++;
-                          else steps = jj;
-                          // force is voltage applied to windings (max/min +/-.2)
-                          force[steps] = BangBangGain*action;
-                          if (SIMULATE) PoleModelSolve();
-                          tt = tt + tstep;
-                          systime[steps] = tt;
-                          for(i = 0; i < NS; i++) y0[i]=states[i];
-                          ang[steps] = states[0] * Rad2Ang;
-                          if (fabs(ang[steps]) > MaxAngMag)
-                            MaxAngMag=fabs(ang[steps]);
-                          if ((fabs(ang[steps] - ang[steps - 1]) * fs) > MaxAngVelMag)
-                            MaxAngVelMag - fabs(ang[steps] - ang[steps -1 ]) * fs;
-                          if (abs(states[0])>FailAng) {
-                            failure = 1;
-                            reinf = 1;
-                            NumRunFails[RunNum] += 1;
-                          }
-                          decoder(); // Find which Box states are in
-                          predlast=pred;
-                          ace();
-                          ase(); //initial action
-                          if (SIMULATE && Graphics.GraphicsOn)
-                            Graph(ang, V_reff, force, steps); // DISPLAY GRAPH
-                          if (!failure) {
-                            for(i = 1; i <= NumOfNodes; i++) {
-                              elg[i] = Delta * elg[i] + (1 - Delta) * action * ISNode[i];
-                              xbar[i] = Lamda * xbar[i] + (1 - Lamda) * ISNode[i];
-                            }
-                          }
-                          dc.SetTextColor(white);
-                          dc.TextOut(xMax - cx * (strlen(txt) + 5), yMax - 10 - cy, txt, strlen(txt));
-                          if (!SIMULATE && !failure) return (float far)force[steps]/MOTORVOLT_GAIN;
-                          if (!failure && steps < (MAX_STEPS - 2) && SIMULATE) goto NextStep;
+          dc.SetBkColor(black);
+          if (SIMULATE) steps++;
+          else steps = jj;
+          // force is voltage applied to windings (max/min +/-.2)
+          force[steps] = BangBangGain*action;
+          if (SIMULATE) PoleModelSolve();
+          tt = tt + tstep;
+          systime[steps] = tt;
+          for(i = 0; i < NS; i++) y0[i]=states[i];
+          ang[steps] = states[0] * Rad2Ang;
+          if (fabs(ang[steps]) > MaxAngMag)
+            MaxAngMag=fabs(ang[steps]);
+          if ((fabs(ang[steps] - ang[steps - 1]) * fs) > MaxAngVelMag)
+            MaxAngVelMag - fabs(ang[steps] - ang[steps -1 ]) * fs;
+          if (abs(states[0])>FailAng) {
+            failure = 1;
+            reinf = 1;
+            NumRunFails[RunNum] += 1;
+          }
+          decoder(); // Find which Box states are in
+          predlast=pred;
+          ace();
+          ase(); //initial action
+          if (SIMULATE && Graphics.GraphicsOn)
+            Graph(ang, V_reff, force, steps); // DISPLAY GRAPH
+          if (!failure) {
+            for(i = 1; i <= NumOfNodes; i++) {
+              elg[i] = Delta * elg[i] + (1 - Delta) * action * ISNode[i];
+              xbar[i] = Lamda * xbar[i] + (1 - Lamda) * ISNode[i];
+            }
+          }
+          dc.SetTextColor(white);
+          dc.TextOut(xMax - cx * (strlen(txt) + 5), yMax - 10 - cy, txt, strlen(txt));
+          if (!SIMULATE && !failure) return (float far)force[steps]/MOTORVOLT_GAIN;
+          if (!failure && steps < (MAX_STEPS - 2) && SIMULATE) goto NextStep;
 
 Interrupt: // User Interrupt or Failure Occurs then Jump to Here
 
@@ -1643,13 +1644,17 @@ IN=0;
 sprintf(txt, "xMax=%i yMax-%i ",xMax,yMax); dc.TextOut(10,10,txt, strlen(txt));
 Line(dc,xMax/2,10,xMax/2,yMax-10,yellow); // vertical
 Line(dc, 10,yMax/2,xMax-10,yMax/2,yellow); // horizontal
-MessageBox("Choose Data File to Cluster", "CLUSTERING",MB_OK); CmFileOpen();
+MessageBox("Choose Data File to Cluster", "CLUSTERING", MB_OK);
+CmFileOpen();
 if(NumOfDataPoints<1) {
+
 }
 MessageBox("No Data File Chosen", "Error",MB_OK);
 return;
 // find center of mass of input space avgx=0; avgy=0;
-Nx-MaxAngMag: Ny-MaxAng VelMag; for(j=1;j<=NumOfDataPoints;j++) {
+Nx-MaxAngMag: Ny-MaxAng VelMag;
+
+for(j=1;j<=NumOfDataPoints;j++) {
 }
 // angle and angular velocity normalized data between -1.0 and 1.0 yyc[j]=ang[j]/Nx; xxc[j]=(ang[j]-angl[j-1])*fs/Ny;
 avgx+=xxc[j]; avgy+=yyc[j]; // plot data to be clustered dc.Ellipse(xxc[j]*xMax/2+xo,yyc[j]*yMax/2+yo, xxc[j]*xMax/2+5+xo,yyc[j]*yMax/2+5+yo);
@@ -1657,7 +1662,8 @@ iscx-avgx/NumOfDataPoints;
 iscy-avgy/NumOfDataPoints; ..
 // find closest data point to center of mass of input space data // start dmin with value of 1st data point (initial seed center) dmin-pow(xxc[1]-iscx,2)+pow(yyc[1]-iscy,2); ccm=1; for(j=1;j<=NumOfDataPoints;j++) {
 }
-dis-pow(xxc[j]-iscx,2)+pow(yyc[j]-iscy,2); if(dis<=dmin) { ccm-j; dmin=dis; }
+dis-pow(xxc[j]-iscx,2)+pow(yyc[j]-iscy,2);
+if(dis<=dmin) { ccm-j; dmin=dis; }
 // Set initial center closest to center of mass of input space cxx-ncx[1]*xMax/2+xo; cyy-ncy[1]*yMax/2+yo;
 Line(dc,cxx-20,cyy,cxx+20,cyy,red);
 Line(dc,cxx,cyy-20,cxx,cyy+20,red);
@@ -1931,8 +1937,10 @@ void ase()
   double noise;
   int ij;
 
+
 //-----------------------------------------------------------------------------
 //  Page 132
+
 
 double wtsum = 0.0, dom;
 
@@ -1974,8 +1982,10 @@ if((TempISNode (int*)malloc(NumOfNodes))-NULL) exit(-1); //Dynamically Allocate 
 for(i=1; i <= NumOfNodes; i++) ISNode[i] = 0.0;  // Clear Boxes for New State
 if (failure) return;
 
+
 //-----------------------------------------------------------------------------
 //  Page 133
+
 
 if(NeuralACEASEOptions.RBF)
 for(i = 1; i <= NumOfNodes; i++) {
@@ -2023,6 +2033,7 @@ for(i = 1; i <= NumOfNodes; i++) ISNode[i] = ((float)TempISNode[i-1])/1000;
 
 //-----------------------------------------------------------------------------
 //  Page 134
+
 
 }
 
@@ -2076,8 +2087,10 @@ void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
   r = 1.44;      // Ohms, resistance of motor windings
   k1 = 0.0833;   // Nm/amp, Proportionality const. between
 
+
 //-----------------------------------------------------------------------------
 //  Page 135
+
 
   k2 = 0.0821;    // Torque delivered and winding current  
   jm = 0.000044;  // Vsec/rad, Proportionality const between induced emf & angular velocity.
