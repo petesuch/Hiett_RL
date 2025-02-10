@@ -646,7 +646,6 @@ void TIPWindow::EvKeyDown(UINT key, UINT, UINT)
   buff = c_gain[0];
 NOIC:
   dc.TextOut(10, 10, "EvKeyDown", 9);
-
   switch (key)
   {
     case 82: // R key pressed
@@ -665,12 +664,10 @@ NOIC:
       }
 
 /*
- *
  *  If a "U" is pressed, increase the digital gain by the given amount
  *  ("delta_g"). If a "u" is pressed, increase the digital gain by the
  *  given amount divided by 10. Both "D" & "d" do the same thing except
  *  they decrease the digital gain.
- *
  */
 
     case 85: // U pressed
@@ -695,7 +692,7 @@ NOIC:
       break;
 
     case 89:  // Y pressed, Before Alexander used 'd'
-      buff = buff - (del / 10.0);
+      buff = buff - (del/10.0);
 
       jp:
       switch (rotate_buff)
@@ -724,13 +721,13 @@ NOIC:
       break;
 
     case VK_SPACE:
-      if (NIDAQENABLE) AO_VWrite(board, 0, 0, 0);
-      data rec = -1;
+      if (NIDAQENABLE) AO_VWrite(board, 0, 0.0);
+      data rec=-1;
       break;
 
     default:
       if (NIDAQENABLE)
-        AO_VWrite(board, 0, 0, 0);
+        AO_VWrite(board, 0, 0.0);
       /*
        * If record flag is set put system variables (position,
        * compensator output, reference and other info) into a file.
@@ -755,23 +752,20 @@ NOIC:
         delay = 0;
       }
       break;
-  } // END CASE
+  }  // END CASE
 }
 void TIPWindow::Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color)
 {
+  HPEN hPen = CreatePen(PS_SOLID, 1, color);
+  HPEN hOldPen = HPEN(SelectObject(hDC, hPen));
+
   // Keep Everything Inside Display Context
-  if (x1 < 0 || x1 > xMax)
-    x1 = 0;
-  if (y1 < yGMin)
-    y1 = yGMin;
-  else if (y1 > yGMax)
-    y1 = yGMax;
-  if (x2 < 0 || x2 > xMax)
-    x2 = 0;
-  if (y2 < yGMin)
-    y2 = yGMin;
-  else if (y2 > yGMax)
-    y2 = yGMax;
+  if (x1 < 0 || x1 > xMax) x1 = 0;
+  if (y1 < yGMin) y1 = yGMin;
+    else if (y1 > yGMax) y1 = yGMax;
+  if (x2 < 0 || x2 > xMax) x2 = 0;
+  if (y2 < yGMin) y2 = yGMin;
+    else if (y2 > yGMax) y2 = yGMax;
 
   MoveTo(hDC, x1, y1);
   LineTo(hDC, x2, y2);
@@ -779,31 +773,31 @@ void TIPWindow::Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color)
   DeleteObject(hPen);
 }
 
-void TIPWindow::SetupGraph(TDC & dc)
+void TIPWindow::SetupGraph(TDC& dc)
 {
   SIZE size;
   TPen pen(white);
-  TPen *pen2;
+  TPen* pen2;
   RECT rect;
-  char txt[40] = "", txt2[40]-- "",
-       int htxt = 0;
+  char txt[40] = "", txt2[40] = "";
+  int htxt = 0;
   // Define Safe haven for text (graph will not overwrite this region)
-  yGMin = 3 * cy;
-  yGMax - yMax - 3 * cy; // allows 4 lines of text to be displayed on // on top and bottom
+  yGMin = 3*cy; yGMax = yMax-3*cy;  // Allows 4 lines of text to be displayed on top and bottom
+
   dc.SetBkColor(black);
   dc.SetTextColor(white);
-  dc.SetTextAlign(TA_CENTER); // Aligns text about it's center
+  dc.SetTextAlign(TA_CENTER);  // Aligns text about its center
   sprintf(txt, "FILE: %s", SaveFileName);
-  dc.TextOut(xMax / 2, 10, txt, strlen(txt));
-  dc.SetTextAlign(TA_LEFT | TA_TOP); // back to default
+  dc.TextOut(xMax/2, 10, txt, strlen(txt));
+  dc.SetTextAlign(TA_LEFT|TA_TOP);  // Back to default
   dc.SetBkColor(black);
   dc.SetTextColor(blue);
   strcpy(txt, "Blue-Encoder Output (Angle in degrees)");
-  dc.TextOut(10 + cx * 6, yMax - (10 + cy * 2), txt, strlen(txt));
+  dc.TextOut(10 + cx*6, yMax - (10 + cy*2), txt, strlen(txt));
   dc.SetTextColor(green);
   htxt = strlen(txt);
   strcpy(txt, "Green=Reference Input");
-  dc.TextOut(10 + cx * (4 + htxt), yMax - (10 + cy * 2), txt, strlen(txt));
+  dc.TextOut(10 + cx*(4 + htxt), yMax - (10 + cy*2), txt, strlen(txt));
 
 
 //-----------------------------------------------------------------------------
