@@ -582,7 +582,7 @@ void TIP Window::InitOptions()
   colorArray[10] = white;
 }  // End of TipWindow::InitOptions()
 
-void TIPWindow::Paint(TDC &dc, BOOL, TRect &)
+void TIPWindow::Paint(TDC& dc, BOOL, TRect&)
 {
   int t;
   if (PlotOldData == 1 || Graphics GraphicsOn)
@@ -590,9 +590,9 @@ void TIPWindow::Paint(TDC &dc, BOOL, TRect &)
     Setup Graph(dc); // Initialize Graphics Window // Plot Data
     for (t = 0; (t < xMax) && (t < tMax); t++)
     {
-      Line(dc, t + xOffset, ep[t] + yOffset, t + 1 + xOffset, ep[t] + yOffset, blue);
-      Line(dc, t + xOffset, vr[t] + yOffset, t + 1 + xOffset, ep[t + 1] + yOffset, green);
-      Line(dc, t + xOffset, co[t] + yOffset, t + 1 + xOffset, co[t + 1] + yOffset, red);
+      Line(dc, t + xOffset, ep[t] + yOffset, t+1 + xOffset, ep[t] + yOffset, blue);
+      Line(dc, t + xOffset, vr[t] + yOffset, t+1 + xOffset, ep[t+1] + yOffset, green);
+      Line(dc, t + xOffset, co[t] + yOffset, t+1 + xOffset, co[t+1] + yOffset, red);
     }
   }
 }
@@ -604,31 +604,22 @@ BOOL TIPWindow::EvEraseBkgnd(HDC hDC)
   FillRect(hDC, &rect, HBRUSH(GetStockObject(BLACK_BRUSH)));
 }
 
-void TIPWindow : EvChar(UINT, UINT, UINT)
+void TIPWindow::EvChar(UINT, UINT, UINT)
 {
   TClientDC dc(*this);
   char s[100] = "YOU PRESSED A KEY";
   dc.TextOut(10, 10, s, strlen(s));
 }
 
-void TIPWindow::EvMouseMove(UINT modKeys, TPoint &point)
+void TIPWindow::EvMouseMove(UINT modKeys, TPoint& point)
 {
-  if (NIDAQENABLE)
-    AO_VWrite(board, 0, 0.0);
-  if (delay > 500)
-  {
-    data_rec = -1;
-    delay = 0;
-  }
+  if (NIDAQENABLE) AO_VWrite(board, 0, 0.0);
+  if (delay > 500) { data_rec = -1; delay = 0; }
 }
 
 void TIPWindow::EvMButtonDown(UINT modKeys, TPoint &point)
 {
-  if (delay > 500)
-  {
-    data_rec = -1;
-    delay = 0;
-  }
+  if (delay > 500) { data_rec = -1; delay = 0; }
 }
 
 
@@ -641,8 +632,8 @@ void TIPWindow::EvKeyDown(UINT key, UINT, UINT)
   TClientDC dc(*this);
   FILE *fptr;
   int ii;
-  static float del, buff,
-               char c;
+  static float del, buff;
+  char c;
   if (IC == 1)
   {
     goto NOIC;
@@ -660,8 +651,7 @@ NOIC:
   {
     case 82: // R key pressed
       rotate_buff = rotate_buff + 1;
-      if (rotate_buff > 1)
-        rotate_buff = 0;
+      if (rotate_buff > 1) rotate_buff = 0;
       switch (rotate_buff)
       {
         case 0:
@@ -675,10 +665,12 @@ NOIC:
       }
 
 /*
+ *
  *  If a "U" is pressed, increase the digital gain by the given amount
  *  ("delta_g"). If a "u" is pressed, increase the digital gain by the
  *  given amount divided by 10. Both "D" & "d" do the same thing except
  *  they decrease the digital gain.
+ *
  */
 
     case 85: // U pressed
@@ -686,7 +678,7 @@ NOIC:
       goto jp;
       break;
 
-    case 90: // Z pressed -- Before Alexander used 'u'
+    case 90: // Z pressed, Before Alexander used 'u'
       buff = buff + (del / 10.0);
       goto jp;
 
@@ -697,14 +689,15 @@ NOIC:
 
       break;
 
-    case 68: // D pressed
+    case 68:  // D pressed
       buff = buff - del;
       goto jp;
       break;
 
-    case 89: // Y pressed -- Before Alexander used 'd'
+    case 89:  // Y pressed, Before Alexander used 'd'
       buff = buff - (del / 10.0);
-jp:
+
+      jp:
       switch (rotate_buff)
       {
         case 0:
@@ -718,22 +711,20 @@ jp:
       }
       break;
 
-    case 83: // S pressed
-      /*
-       * If a "S" is pressed set the "data_rec" flag high start data
-       * recording. If any other key is pressed (except those mentioned
-       * above) set the flag with low logic (stop the control of the pendulum).
-       */
+    case 83:  // S pressed
+    /* If a "S" is pressed set the "data_rec" flag high start data
+     * recording. If any other key is pressed (except those mentioned
+     * above) set the flag with low logic (stop the control of the pendulum).
+     */
       data_rec = 1;
       break;
 
-    case 67: // C pressed
+    case 67:  // C pressed
       calibrate = current_measure1;
       break;
 
-    case VK SPACE:
-      if (NIDAQENABLE)
-        AO_VWrite(board, 0, 0, 0);
+    case VK_SPACE:
+      if (NIDAQENABLE) AO_VWrite(board, 0, 0, 0);
       data rec = -1;
       break;
 
