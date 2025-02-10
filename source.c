@@ -810,7 +810,7 @@ void TIPWindow::SetupGraph(TDC& dc)
   dc.TextOut(10 + cx*(4 + htxt), yMax - (10 + cy*2), txt, strlen(txt));
   dc.SelectObject(pen);
   // Plot Horiz. and Vert. Axis
-  Line(dc, cx*2, yOffset, xMax - 10, yOffset, white); // Time Axis
+  Line(dc, cx*2, yOffset, xMax-10, yOffset, white); // Time Axis
   dc.TextOut(10, yOffset, "0.0", 3);
   Line(dc, cx*5, yGMin, cx*5, yGMax, white);   // Vertical Axis
   dc.RestorePen();
@@ -834,7 +834,7 @@ void TIPWindow::SetupGraph(TDC& dc)
     strcat(txt, "SIMULATION");
   else
     strcat(txt, "REAL-TIME CONTROL");
-  dc.TextOut(10 + cx *(16 + htxt), 10 + cy*1, txt, strlen(txt));  //  ??
+  dc.TextOut(10 + cx*(16 + htxt), 10 + cy*1, txt, strlen(txt));  //  ??
 }
 
 void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOutput[], int jj)
@@ -842,7 +842,7 @@ void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOut
     TClientDC dc(*this);
     char Buff[100];
     int al, a2, rl, r2, cl, c2;
-    float KPD = MagPD*Rad2Ang;
+    float kPD = MagPD*Rad2Ang;
     // Define Variables To Graph
     a1 = Angle[jj-1]*kPD/Rad2Ang + yOffset;
     a2 = Angle[jj]*kPD + yOffset;
@@ -861,7 +861,6 @@ void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOut
 
 //-----------------------------------------------------------------------------
 //  Page 111
-
      
         
     if (xx2 != cx*5)  // cx*5 is Vertical (Angular) Axis Line
@@ -885,37 +884,38 @@ void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOut
       sprintf(Buff, "Run Time: %10.2f seconds\0", jj/fs);
 
     // Display Numerical Values
-    dc.SetTextAlign(TA_CENTER);  // Aligns text about it's center
+    dc.SetTextAlign(TA_CENTER);  // Aligns text about its center
     dc.TextOut(xMax/2, 10 + 2*cy, Buff, strlen(Buff));
-    dc.SetTextAlign(TA_LEFT TA_TOP); // back to default
+    dc.SetTextAlign(TA_LEFT|TA_TOP);  // back to default
     sprintf(Buff, "Encoder=%6.2f Refinput=%6.2f CompOutput=%6.2f \0", Angle[jj], RefInput[jj], CompOutput[jj]);
     dc.SetTextColor(yellow);
     dc.TextOut(10 + 6*cx, yMax - (10 + cy*1), Buff, strlen(Buff));
 }
 
-// Set up maximum coordinate values
+//  Set up maximum coordinate values
 void TIPWindow::SetMaxCoordinates()
 {
   TRect rect;
   GetClientRect(rect);
-  xMax == rect.right;
+  xMax = rect.right;
   yMax = rect.bottom;
-  yBase yMax SPACEATBOTTOM;
+  yBase =  yMax - SPACEATBOTTOM;
 }
 
-void TIPWindow::EvSize(UINT sizeType, TSize & size)
+void TIPWindow::EvSize(UINT sizeType, TSize& size)
 {
-  TFrameWindow:
-    EvSize(sizeType, size);
-    SetMaxCoordinates();
-    Invalidate();
-    UpdateWindow(); // Optional
+  TFrameWindow::EvSize(sizeType, size);
+  SetMaxCoordinates();
+  Invalidate();
+  UpdateWindow();  // Optional
 }
+
 
 //-----------------------------------------------------------------------------
 //  Page 112
 
-void TIPWindow::CmNIDAQEnable() // ALLOW REAL-TIME CONTROL
+
+void TIPWindow::CmNIDAQEnable()  // Allow Real-Time Control
 {
   windowMenu->CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_CHECKED);
   NIDAQENABLE = 1;
@@ -923,7 +923,7 @@ void TIPWindow::CmNIDAQEnable() // ALLOW REAL-TIME CONTROL
   windowMenu -> CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_UNCHECKED);
 }
 
-void TIPWindow::CmSimulate() // ALLOW SIMULATION
+void TIPWindow::CmSimulate()  // Allow Simulation
 {
   windowMenu -> CheckMenuItem(CM_SETUPSIMULATE, MF BYCOMMAND | MF_CHECKED);
   NIDAQENABLE = 0;
@@ -935,7 +935,7 @@ void TIPWindow::CmSetupData()
 {
   char DataParamInfo[sizeof(TDataParamStruct) + 5 + 1];
   char *ss;
-  if (TDataDlg(this, "DATA", DataParamStruct).Execute() = IDOK) {
+  if (TDataDlg(this, "DATA", DataParamStruct).Execute() == IDOK) {
     strcpy(DataParamInfo, DataParamStruct.DataFileName);
     strcat(DataParamInfo, "\n");
     strcat(DataParamInfo, DataParamStruct.NumOutPoints);
@@ -948,60 +948,68 @@ void TIPWindow::CmSetupData()
 
   else
     ss="You Selected Cancel";
-    MessageBox(ss, GetApplication()->GetName(),MB_OK);
-        void TIPWindow::CmFrequency()
-        {
-          char s[40];
-          TClientDC dc(this);
-          if (TFreqDlg(this, "FREQUENCY", Frequency).Execute() == IDOK)
-            {
-              wsprintf(s, "%s", "John--You Selected Frequency DUDE!!");
-              dc.TextOut(10, 20, s, strlen(s));
-              fs atoi(Frequency.Freq);
-            }
-          }
+    MessageBox(ss, GetApplication()->GetName(), MB_OK);
+}
+
+void TIPWindow::CmFrequency()
+{
+  char s[40];
+  TClientDC dc(this);
+  if (TFreqDlg(this, "FREQUENCY", Frequency).Execute() == IDOK)
+    {
+      wsprintf(s, "%s", "John, You Selected Frequency, Dude");
+      dc.TextOut(10, 20, s, strlen(s));
+      fs = atoi(Frequency.Freq);
+    }
+  }
 
 
 //-----------------------------------------------------------------------------
 //  Page 113
 
 
-        void TIPWindow::CmPID()
-        {
-        }
-        TPIDDig* PIDDig = new TPIDDIg(this, &PIDOptions); ControlType=PID;
-        windowMenu->CheckMenuItem(CM PIDCONTROL, MF_BYCOMMAND | MF_CHECKED); windowMenu->CheckMenuItem(CM NEURAL_ACEASE, MF BYCOMMAND | MF_UNCHECKED);
-        if (PIDDlg->Execute()=IDOK) ControlType=PID;
-        void TIPWindow::CmNeuralACEASE() // Setup
-        {
-          char ext[5] = "";
-          char *p1, *p2, fileloc[200] = "";
-          char filename[200] = "";
-          FILE *fdata;
-          int i;
-          TNeuralACEASEDig *NeuralACEASEDlg =
-            new TNeuralACEASEDlg(this, NeuralACEASEOptions);
-          windowMenu->CheckMenuItem(CM_NEURAL_ACEASE, MF BYCOMMAND | MF_CHECKED);
-          windowMenu->CheckMenuItem(CM_PIDCONTROL,
-              MF BYCOMMAND | MF_UNCHECKED);
-          ControlType = NEURAL_ACE_ASE;
-          if (NeuralACEASEDIg->Execute() = IDOK)
-          {
-            NumThetaBoxes = atoi(NeuralACEASEOptions.NumThetaBoxes); // update space NumDThetaBoxes-atoi(NeuralACEASEOptions NumDThetaBoxes);// variables if(NeuralACEASEOptions.Uniform)
-            else NumOfNodes NumThetaBoxes NumDThetaBoxes;
-            NumOfNodes = NUM_OF_ISNODES;
-            ThetaExtreme atof(NeuralACEASEOptions.ThetaExtreme);
-            DThetaExtreme atof(NeuralACEASEOptions.DThetaExtreme);
-            MessageBox("Neural ASE ACE Controller Selected", "Neural ACEASE", MB_OK);
+void TIPWindow::CmPID()
+{
+  TPIDDlg* PIDDlg = new TPIDDlg(this, &PIDOptions);
+  ControlType = PID;
+
+  windowMenu->CheckMenuItem(CM_PIDCONTROL, MF_BYCOMMAND | MF_CHECKED);
+  windowMenu->CheckMenuItem(CM_NEURAL_ACEASE, MF_BYCOMMAND | MF_UNCHECKED);
+
+  if (PIDDlg->Execute() == IDOK) ControlType = PID;
+}
+
+void TIPWindow::CmNeuralACEASE() // Setup
+{
+  char ext[5] = "";
+  char *p1, *p2, fileloc[200] = "";
+  char filename[200] = "";
+  FILE *fdata;
+  int i;
+  TNeuralACEASEDig *NeuralACEASEDlg =
+    new TNeuralACEASEDlg(this, NeuralACEASEOptions);
+  windowMenu->CheckMenuItem(CM_NEURAL_ACEASE, MF BYCOMMAND | MF_CHECKED);
+  windowMenu->CheckMenuItem(CM_PIDCONTROL,
+      MF BYCOMMAND | MF_UNCHECKED);
+  ControlType = NEURAL_ACE_ASE;
+  if (NeuralACEASEDIg->Execute() = IDOK)
+  {
+    NumThetaBoxes = atoi(NeuralACEASEOptions.NumThetaBoxes); // update space NumDThetaBoxes-atoi(NeuralACEASEOptions NumDThetaBoxes);// variables if(NeuralACEASEOptions.Uniform)
+    else NumOfNodes NumThetaBoxes NumDThetaBoxes;
+    NumOfNodes = NUM_OF_ISNODES;
+    ThetaExtreme atof(NeuralACEASEOptions.ThetaExtreme);
+    DThetaExtreme atof(NeuralACEASEOptions.DThetaExtreme);
+    MessageBox("Neural ASE ACE Controller Selected", "Neural ACEASE", MB_OK);
             if (NeuralACEASEOptions.ZeroizeWeights)
-              Other Weights = 0;
-            if (NeuralACEASEOptions.UseSimulationWeights)
-              Other Weights = 0;
-            if (NeuralACEASEOptions.WeightFromFile)
-            {
-              OtherWeights = 1;
-              FileData = new TOpenSaveDialog ::TData(OFN_HIDEREADONLY OFN_FILEMUSTEXIST,
-                  "Weight Files (*.wgt)*.wgt|All Files (*.*)*.*1", 0, "WGT", "*");
+      Other Weights = 0;
+    if (NeuralACEASEOptions.UseSimulationWeights)
+      Other Weights = 0;
+    if (NeuralACEASEOptions.WeightFromFile)
+    {
+      OtherWeights = 1;
+      FileData = new TOpenSaveDialog ::TData(OFN_HIDEREADONLY OFN_FILEMUSTEXIST,
+          "Weight Files (*.wgt)*.wgt|All Files (*.*)*.*1", 0, "WGT", "*");
+
 
 //-----------------------------------------------------------------------------
 //  Page 114
