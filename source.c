@@ -925,7 +925,7 @@ void TIPWindow::CmNIDAQEnable()  // Allow Real-Time Control
 
 void TIPWindow::CmSimulate()  // Allow Simulation
 {
-  windowMenu -> CheckMenuItem(CM_SETUPSIMULATE, MF BYCOMMAND | MF_CHECKED);
+  windowMenu -> CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_CHECKED);
   NIDAQENABLE = 0;
   SIMULATE = 1;
   windowMenu -> CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_UNCHECKED);
@@ -979,99 +979,100 @@ void TIPWindow::CmPID()
   if (PIDDlg->Execute() == IDOK) ControlType = PID;
 }
 
-void TIPWindow::CmNeuralACEASE() // Setup
+void TIPWindow::CmNeuralACEASE()  // Setup
 {
   char ext[5] = "";
   char *p1, *p2, fileloc[200] = "";
   char filename[200] = "";
   FILE *fdata;
   int i;
-  TNeuralACEASEDig *NeuralACEASEDlg =
-    new TNeuralACEASEDlg(this, NeuralACEASEOptions);
-  windowMenu->CheckMenuItem(CM_NEURAL_ACEASE, MF BYCOMMAND | MF_CHECKED);
-  windowMenu->CheckMenuItem(CM_PIDCONTROL,
-      MF BYCOMMAND | MF_UNCHECKED);
+
+  TNeuralACEASEDlg* NeuralACEASEDlg = new TNeuralACEASEDlg(this, NeuralACEASEOptions);
+  windowMenu->CheckMenuItem(CM_NEURAL_ACEASE, MF_BYCOMMAND | MF_CHECKED);
+  windowMenu->CheckMenuItem(CM_PIDCONTROL, MF BYCOMMAND | MF_UNCHECKED);
   ControlType = NEURAL_ACE_ASE;
-  if (NeuralACEASEDIg->Execute() = IDOK)
+  if (NeuralACEASEDIg->Execute() == IDOK)
   {
-    NumThetaBoxes = atoi(NeuralACEASEOptions.NumThetaBoxes); // update space NumDThetaBoxes-atoi(NeuralACEASEOptions NumDThetaBoxes);// variables if(NeuralACEASEOptions.Uniform)
-    else NumOfNodes NumThetaBoxes NumDThetaBoxes;
-    NumOfNodes = NUM_OF_ISNODES;
-    ThetaExtreme atof(NeuralACEASEOptions.ThetaExtreme);
-    DThetaExtreme atof(NeuralACEASEOptions.DThetaExtreme);
+    NumThetaBoxes = atoi(NeuralACEASEOptions.NumThetaBoxes); // Update space
+    NumDThetaBoxes-atoi(NeuralACEASEOptions NumDThetaBoxes); // Variables 
+    if(NeuralACEASEOptions.Uniform)
+      NumOfNodes = NumThetaBoxes*NumDThetaBoxes;
+    else 
+      NumOfNodes = NUM_OF_ISNODES;
+    ThetaExtreme = atof(NeuralACEASEOptions.ThetaExtreme);
+    DThetaExtreme = atof(NeuralACEASEOptions.DThetaExtreme);
     MessageBox("Neural ASE ACE Controller Selected", "Neural ACEASE", MB_OK);
-            if (NeuralACEASEOptions.ZeroizeWeights)
+    if (NeuralACEASEOptions.ZeroizeWeights)
       Other Weights = 0;
     if (NeuralACEASEOptions.UseSimulationWeights)
       Other Weights = 0;
     if (NeuralACEASEOptions.WeightFromFile)
     {
       OtherWeights = 1;
-      FileData = new TOpenSaveDialog ::TData(OFN_HIDEREADONLY OFN_FILEMUSTEXIST,
-          "Weight Files (*.wgt)*.wgt|All Files (*.*)*.*1", 0, "WGT", "*");
+      FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY|OFN_FILEMUSTEXIST, "Weight Files (*.wgt)|*.wgt|All Files (*.*)|*.*|", 0, "WGT", "*");
 
 
 //-----------------------------------------------------------------------------
 //  Page 114
-            }
-          }
-          strcpy(FileData->FileName, NeuralACEASEOptions.WeightFileName);
-          if (TFileOpenDialog(this, *FileData).Execute() == IDOK)
+
+
+      strcpy(FileData->FileName, NeuralACEASEOptions.WeightFileName);
+      if (TFileOpenDialog(this, *FileData).Execute() == IDOK)
+      {
+        ifstream is(FileData->FileName);
+        strcpy(fileloc, FileData->FileName);
+        if (!is)
+          MessageBox("Unable to open file", "File Error", MB_OK|MB_ICONEXCLAMATION);
+        else
+        {
+          // Get File Extension, filename, and path.
+          // Convert Chars to lower.
+          for (i = 0; i < strlen(fileloc); i++)
+            fileloc[i] = tolower(fileloc[i]);
+          if ((p2 = strchr(fileloc, '.')) != NULL)
+            strcpy(ext, p2 + 1);
+          p1 = strrchr(fileloc, "\\");
+          strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
+          if (strcmp(ext, "wgt") = 0)
           {
-            ifstream is(FileData->FileName);
-            strcpy(fileloc, FileData->FileName);
-            if (!is)
-            else
+          strcpy(NeuralACEASEOptions.WeightFileName, filename);
+            if ((fdata = fopen(fileloc, "rt")) = NULL)
             {
-              MessageBox("Unable to open file", "File Error", MB_OK MB ICONEXCLAMATION);
-              // Get File Extension, filename, and path.
-              // Convert Chars to lower.
-              for (i = 0; i < strlen(fileloc); i++)
-                fileloc[i] = tolower(fileloc[i]);
-              if ((p2 - strchr(fileloc, '.')) != NULL)
-                strcpy(ext, p2 + 1);
-              pl = strrchr(fileloc, 1);
-              strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
-              if (strcmp(ext, "wgt") = 0)
-              {
-                strcpy(NeuralACEASEOptions.WeightFileName, filename);
-                if ((fdata = fopen(fileloc, "rt")) = NULL)
-                {
-                }
-                i = 0;
-                MessageBox("Cannot open input/ file.\n", "Open Error", MB_OK);
-                while (!feof(fdata))
-                { // Read in Weights From
-                  // Weight File
+            }
+            i = 0;
+            MessageBox("Cannot open input/ file.\n", "Open Error", MB_OK);
+            while (!feof(fdata))
+            { // Read in Weights From
+              // Weight File
                   fscanf(fdata,"%f%f %f
                       /
                       %f",&wt[i],&vt[i],&elg[i],&xbar[i]);
                   i++;
-                }
-              }
-              Invalidate();
-              delete FileData;
-              if (i != (NumOfNodes + 1))
-                MessageBox(
-                    "Number of Boxes Does not Match: / May Cause Poor Performance", / "Data Mismatch Error", MB_OK);
-              fclose(fdata);
-              void TIPWindow::CmCalibration()
-              {
-                TCalibDlg *CalibDlg = new TCalibDlg(this, &Calibration);
-                char Degrees[10];
+            }
+          }
+          Invalidate();
+          delete FileData;
+          if (i != (NumOfNodes + 1))
+            MessageBox(
+                "Number of Boxes Does not Match: / May Cause Poor Performance", / "Data Mismatch Error", MB_OK);
+          fclose(fdata);
+          void TIPWindow::CmCalibration()
+          {
+            TCalibDlg *CalibDlg = new TCalibDlg(this, &Calibration);
+            char Degrees[10];
 
 
 //-----------------------------------------------------------------------------
 //  Page 115
 
 
-              }
+          }
               if (!NIDAQENABLE)
               {
                 MessageBox("Please select NIDAQ under setup to calibrate", "CALIBRATE", MB_OK);
                 return;
               }
-              temp_graph_output - graph_output;
+              temp_graph_output = graph_output;
               graph_output = 0;
               cal_jmp = 1;
               out = 2;
@@ -1099,14 +1100,14 @@ void TIPWindow::CmNeuralACEASE() // Setup
                 char filename[200] = "";
                 FILE *fdata;
                 int MaxYAxis = 10;
-                if (TFileOpenDialog(this, *FileData).Execute() = IDOK)
+                if (TFileOpenDialog(this, *FileData).Execute() == IDOK)
                 {
                   ifstream is(FileData->FileName);
                   strcpy(fileloc, FileData->FileName);
                   if (!is)
                   else
                   {
-                    MessageBox("Unable to open file", "File Error", MB_OK | MB ICONEXCLAMATION);
+                    MessageBox("Unable to open file", "File Error", MB_OK | MB_ICONEXCLAMATION);
                     // Get File Extension, filename, and path. Convert Chars to lower. for (i=0;i<strlen(fileloc);i++) fileloc[i]-tolower(fileloc[i]); if((p2=strchr(fileloc,'.')) != NULL) strcpy(ext,p2+1); pl-strrchr(fileloc, "W");
                     strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
 
@@ -1144,7 +1145,7 @@ void TIPWindow::CmNeuralACEASE() // Setup
                 }
               }
               Invalidate();
-            }
+        }
             void TIPWindow::CmFileSave()
             {
               char ext[5] = "";
@@ -2120,8 +2121,7 @@ void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
 
 //-----------------------------------------------------------------------------
 //  Page 136
-
-};
+      };
 class TRUNDlg: public TDialog {
 };
 public:
@@ -2254,9 +2254,7 @@ new TRadioButton(this,IDC_SAVEWEIGHTSFILE); new TRadioButton(this, IDC_DONTSAVEW
 
 //-----------------------------------------------------------------------------
 //  Page 139
-
-
-}
+    }
 TWindow::SetupWindow();
 char txt[10] = "";
 BangBangSlider->SetRange(1,600); OverlapSlider->SetRange(1,100);
