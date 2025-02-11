@@ -1111,113 +1111,104 @@ void TIPWindow::CmFileOpen()
       {
         strcpy(MasterFileName, filename);
         read_mfile();
+      }
       else if (strcmp(ext, "dat") == 0)
       {
         wsprintf(WindowOptions.WindowTitle, "%s%s", DEF_WINDOW_TITLE, filename);
         strcpy(DataParamStruct.DataFileName, filename);
         SetCaption(WindowOptions.WindowTitle);
-        if ((fdata = fopen(fileloc, "rt")) = NULL)
-              MessageBox("Cannot open input/ file.\n", "Open Error", / MB_OK);
-          }
-          i = 0;
-                  ratio = 1;
-          MaxAngMag - MaxAng VelMag = 1;
-          while (Ifeof(fdata))
-          {
-            i++;
-            fscanf(fdata, "%f", &ang[i]);
-            if (fabs(ang[i]) > MaxAngMag)
-              MaxAngMag - fabs(ang[i]);
-            if (fabs((ang[i + 1] - ang[i]) * fs) > MaxAngVelMag)
-              MaxAngVelMag - fabs((ang[i + 1] - ang[i]) * fs);
-          }
-          NumOfDataPoints - i - 1;
-          fclose(fdata);
+        if ((fdata = fopen(fileloc, "rt")) == NULL)
+        {
+          MessageBox("Cannot open input file.\n", "Open Error", MB_OK);
         }
+        i = 0;
+        ratio = 1;
+        MaxAngMag = MaxAngVelMag = 1;
+        while (!feof(fdata))
+        {
+          i++;
+          fscanf(fdata, "%f", &ang[i]);
+          if (fabs(ang[i]) > MaxAngMag) MaxAngMag = fabs(ang[i]);
+          if (fabs((ang[i+1] - ang[i]) * fs) > MaxAngVelMag)
+            MaxAngVelMag = fabs((ang[i+1] - ang[i])*fs);
+        }
+        NumOfDataPoints = i-1;
+        fclose(fdata);
       }
-      Invalidate();
-        }
+    }
+    Invalidate();
+  }
+}
 
 void TIPWindow::CmFileSave()
-    {
-      char ext[5] = "";
-      char *p1, *p2, fileloc[200] = "";
-      char filename[200] = "";
-      FILE *fdata;
-      int i;
-      float temp;
-      FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY OFN_FILEMUSTEXIST,"Weight Files(*.wgt)*.wgt | Data Files (*.dat)*.dat All Files (*.*)*.*", 0, "WGT", "DAT");
-
-
+{
+  char ext[5] = "";
+  char *p1, *p2, fileloc[200] = "";
+  char filename[200] = "";
+  FILE *fdata;
+  int i;
+  float temp;
+  FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY|OFN_FILEMUSTEXIST,"Weight Files(*.wgt)|*.wgt|Data Files (*.dat)|*.dat|All Files (*.*)|*.*|", 0, "WGT", "DAT");
 //-----------------------------------------------------------------------------
 //  Page 117
+  strcpy(FileData->FileName, SaveFileName);
+  if (TFileSaveDialog(this, *FileData).Execute() == IDOK)
+  {
+    ofstream is(FileData -> FileName);
+    strcpy(fileloc, FileData -> FileName);
+    if (!is)
+      MessageBox("Unable to Save file", "File Error", MB_OK|MB_ICONEXCLAMATION);
+    else
+    { // Get File Extension, filename, and path.
+      // Convert Chars to lower.
+      for (i = 0; i < strlen(fileloc); i++)
+        fileloc[i] = tolower(fileloc[i]);
+      if ((p2 - strchr(fileloc, '.')) != NULL)
+        strcpy(ext, p2 + 1);
+      p1 = strrchr(fileloc, '\\');
+      strncat(filename, p1+1, strlen(p1) - strlen(ext)-2);
+      if ((fdata = fopen(fileloc, "wt")) = NULL)
+        MessageBox("Cannot write to file.\n", "Open Error",MB_OK); strcpy(SaveFileName, filename); // Update (edited) save file name. if(strcmp(ext, "wgt")=0) {
+      for(i = 1; i < NumOfNodes; i++)
+        // Write Weights to a File
+        fprintf(fdata, "%f %f %f %f\n", &wt[i], &vt[i], &elg[i], &xbar[i]);
+      fclose(fdata);
+      MessageBox(filename, "SAVED WEIGHT FILE", MB_OK);
 
-
-      strcpy(FileData->FileName, SaveFileName);
-      if (TFileSaveDialog(this, *FileData).Execute() == IDOK)
+      else if(strcmp(ext, "dat") = 0)
       {
-        ofstream is(FileData -> FileName);
-        strcpy(fileloc, FileData -> FileName);
-        if (!is)
-          MessageBox("Unable to Save file", "File Error", MB_OK MB ICONEXCLAMATION);
+        if (!SIMULATE)
+        else for (i = 0; i < jj; i++) fprintf(fdata, "%10.3f%10.3f%10.3f\n", encoder_position[i], volt[i], V_reff[i]);
+        if (DataParamStruct.States)
         else
-        { // Get File Extension, filename, and path.
-          // Convert Chars to lower.
-          for (i = 0; i < strlen(fileloc); i++)
-            fileloc[i] = tolower(fileloc[i]);
-          if ((p2 - strchr(fileloc, '.')) != NULL)
-            strcpy(ext, p2 + 1);
-          p1 = strrchr(fileloc, '\');
-          strncat(filename, p1 + 1, strlen(p1) - strlen(ext)-2);
-          if ((fdata = fopen(fileloc, "wt")) = NULL)
-            MessageBox("Cannot write to file.\n", "Open Error",MB_OK); strcpy(SaveFileName, filename); // Update (edited) save file name. if(strcmp(ext, "wgt")=0) {
-          for(i = 1; i < NumOfNodes; i++)
-            // Write Weights to a File
-            fprintf(fdata, "%f %f %f %f\n", &wt[i], &vt[i], &elg[i], &xbar[i]);
-          fclose(fdata);
-          MessageBox(filename, "SAVED WEIGHT FILE", MB_OK);
-
-          else if(strcmp(ext, "dat") = 0) {
-            if (!SIMULATE)
-            else for (i = 0; i < jj; i++) fprintf(fdata, "%10.3f%10.3f%10.3f\n", encoder_position[i], volt[i], V_reff[i]);
-            if (DataParamStruct.States)
-            else
+        {
+          for (i = 0; i < steps; i++)
+            fprintf(fdata, "%10.3f\n", ang[i]);
+          fprintf(fdata, "BangBangMag=%f\n", BangBangGain);
+          fprintf(fdata, "NumThetaBoxes=%i\n", NumThetaBoxes);
+          fprintf(fdata, "NumDThetaBoxes=%i\n", NumDThetaBoxes);
+          fprintf(fdata, "MAX_STEPS=%i\n", MAX_STEPS);
+          fprintf(fdata, "MAX_TRIALS=%i\n", MAX_TRIALS);
+          fprintf(fdata, "MAX_RUNS=%i\n", MAX_RUNS);
+          for (RunNum = 0; RunNum < MAX_RUNS; RunNum++)
+          {
+            fprintf(fdata, "Number_of_Failures_per_Run=%i\n", NumRunFails[RunNum]);
+            for (TrialNum = 0; TrialNum < MAX_TRIALS; TrialNum++)
             {
-              for (i = 0; i < steps; i++)
-                fprintf(fdata, "%10.3f\n", ang[i]);
-              fprintf(fdata, "BangBangMag=%f\n", BangBangG / ain);
-              fprintf(fdata, "NumThetaBoxes=%i\n", NumTheta / Boxes);
-              fprintf(fdata, "NumDThetaBoxes=%i\n", NumDTh / etaBoxes);
-              fprintf(fdata, "MAX_STEPS=%i\n", MAX_STEPS);
-              fprintf(fdata, "MAX_TRIALS=%i\n", MAX_TRIALS /);
-              fprintf(fdata, "MAX_RUNS=%i\n", MAX_RUNS);
-              for (RunNum = 0; RunNum < MAX RUNS;
-                  RunNum /
-          ++)
-              {
-                fprintf(fdata, "Number_of_Failures_per_Run=%i\n", NumRunFails[RunNum]);
-                for (TrialNum = 0; TrialNum < MAX_TRIALS : /
-                    TrialNum++)
-                {
-                  fprintf(fdata, "%10i %10i %10/
-                      \n ".
-                      RunNum,
-                      TrialNum, LifeTime[Ru / nNum][TrialNum]);
-
+              fprintf(fdata, "%10i %10i %10 \n ", RunNum, TrialNum, LifeTime[RunNum][TrialNum]);
 
 //-----------------------------------------------------------------------------
 //  Page 118
 
 
-                }
-              }
-              SAVED ",MB_OK);
             }
+           }
+           RunNum = 0;
           }
-          RunNum = 0;
+        }
           MessageBox(filename, "SAVED DATA FILE",MB_OK);
           fclose(fdata);
-          else MessageBox(filename, "UNKNOWN FILE TYPE, NOTHING
+          else MessageBox(filename, "UNKNOWN FILE TYPE, NOTHING SAVED ", MB_OK);
               delete FileData;
               Invalidate();
               }
