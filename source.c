@@ -8,8 +8,8 @@
  *
  *  by John Hiett, Arizona State University 1997
  *  
- *  (original hardware: IBM PC clone running MS Windows 95, compiled with
- *    Borland C Compiler)
+ *  (original hardware: IBM PC clone running MS Windows 3.10, compiled with
+ *    Borland C++ Compiler 4.52 )
  * 
  */
 
@@ -1052,7 +1052,7 @@ void TIPWindow::CmNeuralACEASE()  // Setup
 
 void TIPWindow::CmCalibration()
 {
-  TCalibDlg* CalibDlg = new TCalibDlg(this, &Calibration);
+  TCalibDlg *CalibDlg = new TCalibDlg(this, &Calibration);
   char Degrees[10];
 //-----------------------------------------------------------------------------
 //  Page 115
@@ -1070,19 +1070,19 @@ void TIPWindow::CmCalibration()
   previous_measure = 0.0;
   wsprintf(Degrees, " %f", Rad2Ang * Digital_Input(board, cal_jmp, IC));
   strcpy(Calibration.PoleAngle, Degrees);
-  CalibDlg -> Execute();
+  CalibDlg->Execute();
 }
 
 void TIPWindow::CmDisplay()
+{
+  TGraphicsDlg *GraphicsDig = new TGraphicsDig(this, &Graphics);
+  if (GraphicsDlg->Execute() == IDOK)
   {
-    TGraphicsDlg* GraphicsDig = new TGraphicsDig(this, &Graphics);
-    if (GraphicsDlg -> Execute() == IDOK)
-    {
-      MessageBox("Graphics OK", "DISPLAY", MB_OK);
-      MagPV = atoi(Graphics.PixelsPerVolt);
-      MagPD = atoi(Graphics.PixelsPerDegree);
-    }
+    MessageBox("Graphics OK", "DISPLAY", MB_OK);
+    MagPV = atoi(Graphics.PixelsPerVolt);
+    MagPD = atoi(Graphics.PixelsPerDegree);
   }
+}
 
 void TIPWindow::CmFileOpen()
 {
@@ -1219,9 +1219,9 @@ void TIPWindow::CmFileSave()
               }
               void TIPWindow::CmOldDataGraph
               {
-              PlotOldData = -PlotOldData;
-              strcpy(gs."Inside CmOldDataGraph");
-              Invalidate();
+                PlotOldData = -PlotOldData;
+                strcpy(gs, "Inside CmOldDataGraph");
+                Invalidate();
               }
               void TIPWindow::CmBeginControl(
                 {
@@ -1233,18 +1233,19 @@ void TIPWindow::CmFileSave()
                 BOOL fRetVal = TRUE;
                 TClientDC dc(*this);
                 BeginControlDlg = new TBeginControlDig(this, BEGINCONTROLDIALOG);
-                if (!SIMULATE)
-                start - BeginControlDlg > Execute();
+
+                if (!SIMULATE) start = BeginControlDlg->Execute();
                 if (start == IDCANCEL)
                 {
-                MessageBox("Control Cancelled", "CONTROL STOPPED", MB_OK);
-                goto end;
-                else if (start = IDHELP)
+                  MessageBox("Control Cancelled", "CONTROL STOPPED", MB_OK);
+                  goto end;
                 }
+                else if (start == IDHELP)
+              
                 {
                 string s;
                 string nl('\n');
-                st - "HINT: Be sure that everything is setup properly" + nl;
+                s += "HINT: Be sure that everything is setup properly" + nl;
 
 //-----------------------------------------------------------------------------
 //  Page 119
@@ -1325,7 +1326,7 @@ next_sample:
           states[1] = (states[0] - oldx1) * fs; // Angular Velocity of pole
           oldx1 = states[0];
         }
-        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) // Interrupt For User Request
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))  // Interrupt For User Request
 
         {
           TranslateMessage(&msg);
