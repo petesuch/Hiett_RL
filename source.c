@@ -1163,27 +1163,39 @@ void TIPWindow::CmFileSave()
       // Convert Chars to lower.
       for (i = 0; i < strlen(fileloc); i++)  fileloc[i] = tolower(fileloc[i]);
 
-      if ((p2=strchr(fileloc, '.')) != NULL) strcpy(ext, p2+1);
-
-      p1 = strrchr(fileloc, '\\');
-      strncat(filename, p1+1, strlen(p1) - strlen(ext)-2);
-
-      if ((fdata = fopen(fileloc, "wt")) == NULL)
-        MessageBox("Cannot write to file.\n", "Open Error",MB_OK); 
-      strcpy(SaveFileName, filename); // Update (edited) save file name. 
-
-      if(strcmp(ext, "wgt") == 0) {
-        for(i = 1; i < NumOfNodes; i++)
-        // Write Weights to a File
-        fprintf(fdata, "%f %f %f %f\n", &wt[i], &vt[i], &elg[i], &xbar[i]);
-      fclose(fdata);
-      MessageBox(filename, "SAVED WEIGHT FILE", MB_OK);
-
-      else if(strcmp(ext, "dat") = 0)
+      if ((p2=strchr(fileloc, '.')) != NULL) 
       {
-        if (!SIMULATE)
-        else for (i = 0; i < jj; i++) fprintf(fdata, "%10.3f%10.3f%10.3f\n", encoder_position[i], volt[i], V_reff[i]);
-        if (DataParamStruct.States)
+        strcpy(ext, p2+1);
+        p1 = strrchr(fileloc, '\\');
+        strncat(filename, p1+1, strlen(p1) - strlen(ext)-2);
+      }
+      if ((fdata = fopen(fileloc, "wt")) == NULL)
+      {
+        MessageBox("Cannot write to file.\n", "Open Error",MB_OK); 
+      }
+        strcpy(SaveFileName, filename); // Update (edited) save file name. 
+
+      if(strcmp(ext, "wgt") == 0) 
+      {
+        for(i = 1; i < NumOfNodes; i++)
+        {  // Write Weights to a File
+          fprintf(fdata, "%f %f %f %f\n", &wt[i], &vt[i], &elg[i], &xbar[i]);
+        }
+        fclose(fdata);
+        MessageBox(filename, "SAVED WEIGHT FILE", MB_OK);
+      }
+      else if(strcmp(ext, "dat") == 0)
+      {
+        if (!SIMULATE) 
+        { 
+          for (i = 0; i < jj; i++) 
+          {
+          fprintf(fdata, "%10.3f%10.3f%10.3f\n", encoder_position[i], volt[i], V_reff[i]);
+          }
+        }
+
+      if (DataParamStruct.States)
+      {
         else
         {
           for (i = 0; i < steps; i++)
