@@ -1068,6 +1068,7 @@ void TIPWindow::CmCalibration()
   calibrate = 0.0;
   pos2 = 0.0;
   previous_measure = 0.0;
+
   wsprintf(Degrees, " %f", Rad2Ang * Digital_Input(board, cal_jmp, IC));
   strcpy(Calibration.PoleAngle, Degrees);
   CalibDlg -> Execute();
