@@ -1162,14 +1162,18 @@ void TIPWindow::CmFileSave()
     { // Get File Extension, filename, and path.
       // Convert Chars to lower.
       for (i = 0; i < strlen(fileloc); i++)  fileloc[i] = tolower(fileloc[i]);
+
       if ((p2=strchr(fileloc, '.')) != NULL) strcpy(ext, p2+1);
+
       p1 = strrchr(fileloc, '\\');
       strncat(filename, p1+1, strlen(p1) - strlen(ext)-2);
+
       if ((fdata = fopen(fileloc, "wt")) == NULL)
         MessageBox("Cannot write to file.\n", "Open Error",MB_OK); 
       strcpy(SaveFileName, filename); // Update (edited) save file name. 
-      if(strcmp(ext, "wgt")=0) {
-      for(i = 1; i < NumOfNodes; i++)
+
+      if(strcmp(ext, "wgt") == 0) {
+        for(i = 1; i < NumOfNodes; i++)
         // Write Weights to a File
         fprintf(fdata, "%f %f %f %f\n", &wt[i], &vt[i], &elg[i], &xbar[i]);
       fclose(fdata);
@@ -1196,72 +1200,70 @@ void TIPWindow::CmFileSave()
             for (TrialNum = 0; TrialNum < MAX_TRIALS; TrialNum++)
             {
               fprintf(fdata, "%10i %10i %10 \n ", RunNum, TrialNum, LifeTime[RunNum][TrialNum]);
-
 //-----------------------------------------------------------------------------
 //  Page 118
-
-
             }
            }
            RunNum = 0;
           }
         }
-          MessageBox(filename, "SAVED DATA FILE",MB_OK);
-          fclose(fdata);
-          else MessageBox(filename, "UNKNOWN FILE TYPE, NOTHING SAVED ", MB_OK);
-              delete FileData;
-              Invalidate();
-              }
-              }
-              void TIPWindow::CmFileExit()
-              {
-              CmExit();
-              }
-              void TIPWindow::CmOldDataGraph
-              {
-                PlotOldData = -PlotOldData;
-                strcpy(gs, "Inside CmOldDataGraph");
-                Invalidate();
-              }
-              void TIPWindow::CmBeginControl(
-                {
-                int start, Mag - 500;
-                char txt[30];
-                static float oldx1 - 0;
-                TBeginControlDlg *BeginControlDig;
-                MSG msg;
-                BOOL fRetVal = TRUE;
-                TClientDC dc(*this);
-                BeginControlDlg = new TBeginControlDig(this, BEGINCONTROLDIALOG);
+        MessageBox(filename, "SAVED DATA FILE",MB_OK);
+        fclose(fdata);
+        else MessageBox(filename, "UNKNOWN FILE TYPE, NOTHING SAVED ", MB_OK);
+        delete FileData;
+         Invalidate();
+  }
+}
 
-                if (!SIMULATE) start = BeginControlDlg->Execute();
-                if (start == IDCANCEL)
-                {
-                  MessageBox("Control Cancelled", "CONTROL STOPPED", MB_OK);
-                  goto end;
-                }
-                else if (start == IDHELP)
-              
-                {
-                string s;
-                string nl('\n');
-                s += "HINT: Be sure that everything is setup properly" + nl;
+void TIPWindow::CmFileExit()
+{
+  CmExit();
+}
 
+void TIPWindow::CmOldDataGraph
+{
+  PlotOldData = -PlotOldData;
+  strcpy(gs, "Inside CmOldDataGraph");
+  Invalidate();
+}
+
+void TIPWindow::CmBeginControl(
+{
+  int start, Mag - 500;
+  char txt[30];
+  static float oldx1 - 0;
+  TBeginControlDlg *BeginControlDig;
+  MSG msg;
+  BOOL fRetVal = TRUE;
+  TClientDC dc(*this);
+  BeginControlDlg = new TBeginControlDig(this, BEGINCONTROLDIALOG);
+
+  if (!SIMULATE) start = BeginControlDlg->Execute();
+  if (start == IDCANCEL)
+  {
+    MessageBox("Control Cancelled", "CONTROL STOPPED", MB_OK);
+    goto end;
+  }
+  else if (start == IDHELP)
+
+  {
+  string s;
+  string nl('\n');
+  s += "HINT: Be sure that everything is setup properly" + nl;
 //-----------------------------------------------------------------------------
 //  Page 119
+  }
+  s += "under the Setup Menu. It is highly likely" + nl;
+  s += "that the system will not work as expected" + nl;
+  s += "if you do not have options set correctly." + nl;
+  s += "Try choosing Default under setup." + nl;
+  s += "If you are not sure, choose CANCEL." + nl;
 
-
-        }
-        s += "under the Setup Menu. It is highly likely" + nl;
-        s += "that the system will not work as expected" + nl;
-        s += "if you do not have options set correctly." + nl;
-        s += "Try choosing Default under setup." + nl;
-        s += "If you are not sure, choose CANCEL." + nl;
-        MessageBox(s.c_str(), "Help!", MB_OK);
+  MessageBox(s.c_str(), "Help!", MB_OK);
 
         if (NIDAQENABLE)
         {
-        }
+        
 
         board getBoardToUse();
         err_num = DIG_Prt_Config(board, 0, 0, 0);
@@ -1698,8 +1700,8 @@ IN++;
 for(i=1; i<=c; i++) {
 G=0;
 xsum=ysum=0.0;
-for(j=1;j<=NumOfDataPoints;j++) {
-G+=U[i][j];
+for(j=1; j<=NumOfDataPoints; j++) {
+  G+=U[i][j];
 if(U[i][j]) { xsum+-xxc[j]; ysum+-yyc[j]; }
 dc.TextOut(10,100,"ERROR",5);
 if(G==0) {
@@ -1712,7 +1714,7 @@ end:
 if(IN<50) goto NextItcration;
 sprintf(txt, "IN=%i Init. Cost-%15.2f Final Cost JT=%15.2f", IN, JTFirst,JT);
 dc.TextOut(10,30,txt, strlen(txt));
-for(i=1;i<=c;i++) // Draw final centers as white
+for(i=1; i<=c; i++) // Draw final centers as white
 {
 // De-normalize
 cxx-ncx[i]*xMax/2+xo; cyy-ncy[i]*yMax/2+yo;
@@ -1736,8 +1738,9 @@ if(NumOfDataPoints<1) {
 MessageBox("No Data File Chosen", "Error",MB_OK);
 return;
 }
-for(i=1;i<NumOfDataPoints;i++) {
-states[0]=int((float)random(1000)/1000.0*ThetaExtreme*2-ThetaExtreme); states[1]=int((float)random(1000)/1000.0*DThetaExtreme*2-DThetaExtreme);
+for(i=1; i<NumOfDataPoints; i++) {
+states[0]=int((float)random(1000)/1000.0*ThetaExtreme*2-ThetaExtreme);
+states[1]=int((float)random(1000)/1000.0*DThetaExtreme*2-DThetaExtreme);
 train_cmac(cmac_id,states, (int)ang,beta,40);// ang is training desired resp
 // in radians
 MessageBox("Finished Training CMAC","CMAC",MB_OK);
@@ -1749,7 +1752,8 @@ TRUNDIg* RUNDIg= new TRUNDIg(this, &RUNOptions);
 Choice-RUNDIg->Execute();
 if(ChoiceIDOK) {
 data_rec=1;
-if(RUNOptions.SaveWeightsToMemory) Other Weights=1; if(RUNOptions. SaveWeightsToFile) {
+if(RUNOptions.SaveWeightsToMemory) Other Weights=1;
+if(RUNOptions. SaveWeightsToFile) {
 sprintf(SaveFileName,"%s\0",NeuralACEASEOptions. WeightFileName);
 NumOfDataPoints=steps;
 CmFileSave();
@@ -1782,6 +1786,7 @@ void TIPControlApp::InitMainWindow()
   IPWindow->GetCalibOptions(); IPWindow->GetGraphics();
   MainWindow = IPWindow;
 }
+
 void TIPControlApp::InitInstance()
 {
 if (hPrevInstance) {
@@ -1798,8 +1803,10 @@ TApplication::InitInstance();
 int
 OwlMain(int /*arge*/, char* /*argv*/ [])
 {
-TIPControlApp app("IPControlApp"); return app.Run();
-}
+
+TIPControlApp app("IPControlApp");
+return app.Run();
+
 // FILENAME=acease.cpp
 // Neural Adaptive Critic Element (ACE) and Associative Search Element (ASE) Bang-Bang Control
 // Algorithm:
