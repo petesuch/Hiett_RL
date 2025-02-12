@@ -1009,8 +1009,7 @@ void TIPWindow::CmNeuralACEASE()  // Setup
     {
       OtherWeights = 1;
       FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY|OFN_FILEMUSTEXIST, "Weight Files (*.wgt)|*.wgt|All Files (*.*)|*.*|", 0, "WGT", "*");
-//-----------------------------------------------------------------------------
-//  Page 114
+//-- Page 114 -----------------------------------------------------------------
       strcpy(FileData->FileName, NeuralACEASEOptions.WeightFileName);
       if (TFileOpenDialog(this, *FileData).Execute() == IDOK)
       {
@@ -1054,8 +1053,7 @@ void TIPWindow::CmCalibration()
 {
   TCalibDlg *CalibDlg = new TCalibDlg(this, &Calibration);
   char Degrees[10];
-//-----------------------------------------------------------------------------
-//  Page 115
+//-- Page 115 ------------------------------------------------------------------
   if (!NIDAQENABLE)
   {
     MessageBox("Please select NIDAQ under setup to calibrate", "CALIBRATE", MB_OK);
@@ -1106,8 +1104,7 @@ void TIPWindow::CmFileOpen()
       if((p2=strchr(fileloc, '.')) != NULL) strcpy(ext, p2+1);
       p1 = strrchr(fileloc, "\\");
       strncat(filename, p1+1, strlen(p1) - strlen(ext)-2);
-//-----------------------------------------------------------------------------
-//  Page 116
+//-- Page 116 -----------------------------------------------------------------
       if (strcmp(ext, "fle") == 0) 
       {
         strcpy(MasterFileName, filename);
@@ -1140,8 +1137,7 @@ void TIPWindow::CmFileOpen()
   }
 }
 
-void TIPWindow::CmFileSave()
-{
+void TIPWindow::CmFileSave() {
   char ext[5] = "";
   char *p1, *p2, fileloc[200] = "";
   char filename[200] = "";
@@ -1149,88 +1145,62 @@ void TIPWindow::CmFileSave()
   int i;
   float temp;
   FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY|OFN_FILEMUSTEXIST,"Weight Files(*.wgt)|*.wgt|Data Files (*.dat)|*.dat|All Files (*.*)|*.*|", 0, "WGT", "DAT");
-//-----------------------------------------------------------------------------
-//  Page 117
+//-- Page 117 ------------------------------------------------------------------
   strcpy(FileData->FileName, SaveFileName);
-  if (TFileSaveDialog(this, *FileData).Execute() == IDOK)
-  {
+  if (TFileSaveDialog(this, *FileData).Execute() == IDOK) {
     ofstream is(FileData -> FileName);
     strcpy(fileloc, FileData -> FileName);
-    if (!is)
-    {
-      MessageBox("Unable to Save file", "File Error", MB_OK|MB_ICONEXCLAMATION);
-    }
-    else
-    { // Get File Extension, filename, and path.
+    if (!is) MessageBox("Unable to Save file", "File Error", MB_OK|MB_ICONEXCLAMATION);
+    
+    else { // Get File Extension, filename, and path.
       // Convert Chars to lower.
-      for (i = 0; i < strlen(fileloc); i++)
-      {
-        fileloc[i] = tolower(fileloc[i]);
-      }
-      if ((p2=strchr(fileloc, '.')) != NULL) 
-      {
+      for (i = 0; i < strlen(fileloc); i++) fileloc[i] = tolower(fileloc[i]);
+      
+      if ((p2=strchr(fileloc, '.')) != NULL) {
         strcpy(ext, p2+1);
         p1 = strrchr(fileloc, '\\');
         strncat(filename, p1+1, strlen(p1) - strlen(ext)-2);
       }
-      if ((fdata = fopen(fileloc, "wt")) == NULL)
-      {
+      if ((fdata = fopen(fileloc, "wt")) == NULL) 
         MessageBox("Cannot write to file.\n", "Open Error",MB_OK); 
-      }
       strcpy(SaveFileName, filename); // Update (edited) save file name. 
-      if(strcmp(ext, "wgt") == 0) 
-      {
-        for(i = 1; i < NumOfNodes; i++)
-        {  // Write Weights to a File
+      if(strcmp(ext, "wgt") == 0) {
+        for(i = 1; i < NumOfNodes; i++) {  // Write Weights to a File
           fprintf(fdata, "%f %f %f %f\n", &wt[i], &vt[i], &elg[i], &xbar[i]);
         }
         fclose(fdata);
         MessageBox(filename, "SAVED WEIGHT FILE", MB_OK);
       }
-      else if(strcmp(ext, "dat") == 0)
-      {
-        if (!SIMULATE) 
-        { 
+      else if(strcmp(ext, "dat") == 0) {
+        if (!SIMULATE) { 
           for (i = 0; i < jj; i++) 
-          {
-          fprintf(fdata, "%10.3f%10.3f%10.3f\n", encoder_position[i], volt[i], V_reff[i]);
-          }
+            fprintf(fdata, "%10.3f%10.3f%10.3f\n", encoder_position[i], volt[i], V_reff[i]);
         }
-        else 
-        {
-          if(DataParamStruct.States)
-          {
-            for (i = 0; i < steps; i++)
-            {  
-              fprintf(fdata, "%10.3f\n", ang[i]);
-            }
-          else
-          { 
+        else if(DataParamStruct.States) for (i = 0; i < steps; i++) fprintf(fdata, "%10.3f\n", ang[i]);
+          else { 
             fprintf(fdata, "BangBangMag=%f\n", BangBangGain);
             fprintf(fdata, "NumThetaBoxes=%i\n", NumThetaBoxes);
             fprintf(fdata, "NumDThetaBoxes=%i\n", NumDThetaBoxes);
             fprintf(fdata, "MAX_STEPS=%i\n", MAX_STEPS);
             fprintf(fdata, "MAX_TRIALS=%i\n", MAX_TRIALS);
             fprintf(fdata, "MAX_RUNS=%i\n", MAX_RUNS);
-            for (RunNum = 0; RunNum < MAX_RUNS; RunNum++)
-            {
+            for (RunNum = 0; RunNum < MAX_RUNS; RunNum++) {
               fprintf(fdata, "Number_of_Failures_per_Run=%i\n", NumRunFails[RunNum]);
-              for (TrialNum = 0; TrialNum < MAX_TRIALS; TrialNum++)
-              {
+              for (TrialNum = 0; TrialNum < MAX_TRIALS; TrialNum++) {
                 fprintf(fdata, "%10i %10i %10 \n ", RunNum, TrialNum, LifeTime[RunNum][TrialNum]);
-//-----------------------------------------------------------------------------
-//  Page 118 
+//-- Page 118 -----------------------------------------------------------------
               }
-           }
-           RunNum = 0;
+            }
+            RunNum = 0;
           }
         }
         MessageBox(filename, "SAVED DATA FILE",MB_OK);
         fclose(fdata);
         else MessageBox(filename, "UNKNOWN FILE TYPE, NOTHING SAVED ", MB_OK);
       }
-        delete FileData;
-        Invalidate();
+      delete FileData;
+      Invalidate();
+    }
   }
 }
 
@@ -1270,8 +1240,7 @@ void TIPWindow::CmBeginControl(
     string s;
     string nl('\n');
     s+= "HINT: Be sure that everything is setup properly" + nl;
-//-----------------------------------------------------------------------------
-//  Page 119
+//-- Page 119 -----------------------------------------------------------------
   }
   s += "under the Setup Menu. It is highly likely" + nl;
   s += "that the system will not work as expected" + nl;
@@ -1280,70 +1249,65 @@ void TIPWindow::CmBeginControl(
   s += "If you are not sure, choose CANCEL." + nl;
 
   MessageBox(s.c_str(), "Help!", MB_OK);
+  if (NIDAQENABLE) {
+    board getBoardToUse();
+    err_num = DIG_Prt_Config(board, 0, 0, 0);
+    errCheck(board, "DIG_Prt_Config", err_num);
+    err_num = DIG_Prt_Config(board, 1, 0, 0);
+    errCheck(board, "DIG_Prt_Config", err_num);
+    err_num = AI_Config(board, 1, 1, 1);
+    errCheck(board, "AI_Config", err_num);
+    jj = 1;
+    data_rec = 0;
+    IC = 0;
+    rotate_buff = 0;
+    graph_error = 0;
+    jk = 0;
+    jkk = 1;
 
-        if (NIDAQENABLE)
-        {
-        
+    /* Set frequency count so that proper system freguency is attained. */
 
-        board getBoardToUse();
-        err_num = DIG_Prt_Config(board, 0, 0, 0);
-        errCheck(board, "DIG_Prt_Config", err_num);
-        err_num = DIG_Prt_Config(board, 1, 0, 0);
-        errCheck(board, "DIG_Prt_Config", err_num);
-        err_num = AI_Config(board, 1, 1, 1);
-        errCheck(board, "AI_Config", err_num);
-        jj = 1;
-        data_rec = 0;
-        IC = 0;
-        rotate_buff = 0;
-        graph_error = 0;
-        jk = 0;
-        jkk = 1;
+    fcount = 2000000.0 / fs;
+    fcount = floor(fcount);
+    count = (unsigned int)fcount;
 
-        /* Set frequency count so that proper system freguency is attained. */
+    if (Graphics.GraphicsOn)
+      SetupGraph(dc);
 
-        fcount = 2000000.0 / fs;
-        fcount = floor(fcount);
-        count = (unsigned int)fcount;
-
-        if (Graphics.GraphicsOn)
-          SetupGraph(dc);
-
-        // Automatic Calibration (assume pole position is initially at zero degrees) Digital Input (board,cal_jmp,IC);
-        // updates current_measurel calibrate-current_measurel;
-        V_reff[ij] = Ref(IC); // Initialize Reference Variables (Inside Ref())
-        /* Start loop */
+    // Automatic Calibration (assume pole position is initially at zero degrees) Digital Input (board,cal_jmp,IC);
+    // updates current_measurel calibrate-current_measurel;
+    V_reff[ij] = Ref(IC); // Initialize Reference Variables (Inside Ref())
+    /* Start loop */
 next_sample:
-        delay++;
-        if (delay > 99999)
-          delay = 0;
+    delay++;
+    if (delay > 99999)
+      delay = 0;
 
-        /**** Load counter B so that proper frequency is attained. Determine the
-         * reference command, input the encoder position (digital_input), preform
-         * negitive feedback to determine the
+    /**** Load counter B so that proper frequency is attained. Determine the
+     * reference command, input the encoder position (digital_input), preform
+     * negitive feedback to determine the
 
 
 //-----------------------------------------------------------------------------
 //  Page 120
 
 
-        input to the compensator (comp_in) and call Compensator to determine the output
-        from the compensator (input to plant.)
-         ****/
+    input to the compensator (comp_in) and call Compensator to determine the output
+    from the compensator (input to plant.)
+     ****/
 
-        if (NIDAQENABLE)
-          ICTR_Setup(board, 0, 0, count, 1);
-        errCheck(board, "ITCR_Setup", err_num);
+    if (NIDAQENABLE)
+      ICTR_Setup(board, 0, 0, count, 1);
+    errCheck(board, "ITCR_Setup", err_num);
 
-        if (!SIMULATE | ControlType = PID)
-          V_reff[ij] = Ref(IC);
-        else
-          V_reff[ij] = 0.0;
-        encoder_position[ij] = Digital_Input(board, cal_jmp, IC);
+    if (!SIMULATE | ControlType = PID)
+      V_reff[ij] = Ref(IC);
+    else
+      V_reff[ij] = 0.0;
+    encoder_position[ij] = Digital_Input(board, cal_jmp, IC);
 
-        if (!SIMULATE)
-        {
-
+    if (!SIMULATE)
+    {
           states[0] = encoder_position[ij];     // Angle of pole
           states[1] = (states[0] - oldx1) * fs; // Angular Velocity of pole
           oldx1 = states[0];
