@@ -1157,7 +1157,9 @@ void TIPWindow::CmFileSave()
     ofstream is(FileData -> FileName);
     strcpy(fileloc, FileData -> FileName);
     if (!is)
+    {
       MessageBox("Unable to Save file", "File Error", MB_OK|MB_ICONEXCLAMATION);
+    }
     else
     { // Get File Extension, filename, and path.
       // Convert Chars to lower.
