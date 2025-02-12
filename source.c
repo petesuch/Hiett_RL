@@ -1163,8 +1163,10 @@ void TIPWindow::CmFileSave()
     else
     { // Get File Extension, filename, and path.
       // Convert Chars to lower.
-      for (i = 0; i < strlen(fileloc); i++)  fileloc[i] = tolower(fileloc[i]);
-
+      for (i = 0; i < strlen(fileloc); i++)
+      {
+        fileloc[i] = tolower(fileloc[i]);
+      }
       if ((p2=strchr(fileloc, '.')) != NULL) 
       {
         strcpy(ext, p2+1);
@@ -1175,8 +1177,7 @@ void TIPWindow::CmFileSave()
       {
         MessageBox("Cannot write to file.\n", "Open Error",MB_OK); 
       }
-        strcpy(SaveFileName, filename); // Update (edited) save file name. 
-
+      strcpy(SaveFileName, filename); // Update (edited) save file name. 
       if(strcmp(ext, "wgt") == 0) 
       {
         for(i = 1; i < NumOfNodes; i++)
@@ -1195,28 +1196,31 @@ void TIPWindow::CmFileSave()
           fprintf(fdata, "%10.3f%10.3f%10.3f\n", encoder_position[i], volt[i], V_reff[i]);
           }
         }
-
-      if (DataParamStruct.States)
-      {
-        else
+        else 
         {
-          for (i = 0; i < steps; i++)
-            fprintf(fdata, "%10.3f\n", ang[i]);
-          fprintf(fdata, "BangBangMag=%f\n", BangBangGain);
-          fprintf(fdata, "NumThetaBoxes=%i\n", NumThetaBoxes);
-          fprintf(fdata, "NumDThetaBoxes=%i\n", NumDThetaBoxes);
-          fprintf(fdata, "MAX_STEPS=%i\n", MAX_STEPS);
-          fprintf(fdata, "MAX_TRIALS=%i\n", MAX_TRIALS);
-          fprintf(fdata, "MAX_RUNS=%i\n", MAX_RUNS);
-          for (RunNum = 0; RunNum < MAX_RUNS; RunNum++)
+          if(DataParamStruct.States)
           {
-            fprintf(fdata, "Number_of_Failures_per_Run=%i\n", NumRunFails[RunNum]);
-            for (TrialNum = 0; TrialNum < MAX_TRIALS; TrialNum++)
-            {
-              fprintf(fdata, "%10i %10i %10 \n ", RunNum, TrialNum, LifeTime[RunNum][TrialNum]);
-//-----------------------------------------------------------------------------
-//  Page 118
+            for (i = 0; i < steps; i++)
+            {  
+              fprintf(fdata, "%10.3f\n", ang[i]);
             }
+          else
+          { 
+            fprintf(fdata, "BangBangMag=%f\n", BangBangGain);
+            fprintf(fdata, "NumThetaBoxes=%i\n", NumThetaBoxes);
+            fprintf(fdata, "NumDThetaBoxes=%i\n", NumDThetaBoxes);
+            fprintf(fdata, "MAX_STEPS=%i\n", MAX_STEPS);
+            fprintf(fdata, "MAX_TRIALS=%i\n", MAX_TRIALS);
+            fprintf(fdata, "MAX_RUNS=%i\n", MAX_RUNS);
+            for (RunNum = 0; RunNum < MAX_RUNS; RunNum++)
+            {
+              fprintf(fdata, "Number_of_Failures_per_Run=%i\n", NumRunFails[RunNum]);
+              for (TrialNum = 0; TrialNum < MAX_TRIALS; TrialNum++)
+              {
+                fprintf(fdata, "%10i %10i %10 \n ", RunNum, TrialNum, LifeTime[RunNum][TrialNum]);
+//-----------------------------------------------------------------------------
+//  Page 118 
+              }
            }
            RunNum = 0;
           }
@@ -1224,8 +1228,9 @@ void TIPWindow::CmFileSave()
         MessageBox(filename, "SAVED DATA FILE",MB_OK);
         fclose(fdata);
         else MessageBox(filename, "UNKNOWN FILE TYPE, NOTHING SAVED ", MB_OK);
+      }
         delete FileData;
-         Invalidate();
+        Invalidate();
   }
 }
 
@@ -1243,13 +1248,15 @@ void TIPWindow::CmOldDataGraph
 
 void TIPWindow::CmBeginControl(
 {
-  int start, Mag - 500;
+  int start, Mag = 500;
   char txt[30];
-  static float oldx1 - 0;
+  static float oldx1 = 0;
+
   TBeginControlDlg *BeginControlDig;
   MSG msg;
   BOOL fRetVal = TRUE;
   TClientDC dc(*this);
+
   BeginControlDlg = new TBeginControlDig(this, BEGINCONTROLDIALOG);
 
   if (!SIMULATE) start = BeginControlDlg->Execute();
@@ -1259,11 +1266,10 @@ void TIPWindow::CmBeginControl(
     goto end;
   }
   else if (start == IDHELP)
-
   {
-  string s;
-  string nl('\n');
-  s += "HINT: Be sure that everything is setup properly" + nl;
+    string s;
+    string nl('\n');
+    s+= "HINT: Be sure that everything is setup properly" + nl;
 //-----------------------------------------------------------------------------
 //  Page 119
   }
