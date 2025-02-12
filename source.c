@@ -1076,7 +1076,7 @@ void TIPWindow::CmCalibration()
 
 void TIPWindow::CmDisplay()
 {
-  TGraphicsDlg *GraphicsDig = new TGraphicsDig(this, &Graphics);
+  TGraphicsDlg* GraphicsDig = new TGraphicsDig(this, &Graphics);
   if (GraphicsDlg->Execute() == IDOK)
   {
     MessageBox("Graphics OK", "DISPLAY", MB_OK);
@@ -1104,8 +1104,8 @@ void TIPWindow::CmFileOpen()
     {  // Get File Extension, filename, and path. Convert Chars to lower. 
       for (i=0; i<strlen(fileloc); i++) fileloc[i] = tolower(fileloc[i]); 
       if((p2=strchr(fileloc, '.')) != NULL) strcpy(ext, p2+1);
-      p1 = strrchr(fileloc, "W");
-      strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
+      p1 = strrchr(fileloc, "\\");
+      strncat(filename, p1+1, strlen(p1) - strlen(ext)-2);
 //-----------------------------------------------------------------------------
 //  Page 116
       if (strcmp(ext, "fle") == 0) 
@@ -1119,9 +1119,8 @@ void TIPWindow::CmFileOpen()
         strcpy(DataParamStruct.DataFileName, filename);
         SetCaption(WindowOptions.WindowTitle);
         if ((fdata = fopen(fileloc, "rt")) == NULL)
-        {
           MessageBox("Cannot open input file.\n", "Open Error", MB_OK);
-        }
+        
         i = 0;
         ratio = 1;
         MaxAngMag = MaxAngVelMag = 1;
@@ -1162,14 +1161,14 @@ void TIPWindow::CmFileSave()
     else
     { // Get File Extension, filename, and path.
       // Convert Chars to lower.
-      for (i = 0; i < strlen(fileloc); i++)
-        fileloc[i] = tolower(fileloc[i]);
-      if ((p2 - strchr(fileloc, '.')) != NULL)
-        strcpy(ext, p2 + 1);
+      for (i = 0; i < strlen(fileloc); i++)  fileloc[i] = tolower(fileloc[i]);
+      if ((p2=strchr(fileloc, '.')) != NULL) strcpy(ext, p2+1);
       p1 = strrchr(fileloc, '\\');
       strncat(filename, p1+1, strlen(p1) - strlen(ext)-2);
-      if ((fdata = fopen(fileloc, "wt")) = NULL)
-        MessageBox("Cannot write to file.\n", "Open Error",MB_OK); strcpy(SaveFileName, filename); // Update (edited) save file name. if(strcmp(ext, "wgt")=0) {
+      if ((fdata = fopen(fileloc, "wt")) == NULL)
+        MessageBox("Cannot write to file.\n", "Open Error",MB_OK); 
+      strcpy(SaveFileName, filename); // Update (edited) save file name. 
+      if(strcmp(ext, "wgt")=0) {
       for(i = 1; i < NumOfNodes; i++)
         // Write Weights to a File
         fprintf(fdata, "%f %f %f %f\n", &wt[i], &vt[i], &elg[i], &xbar[i]);
