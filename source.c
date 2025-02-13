@@ -71,9 +71,7 @@ const WORD IDC_BANGBANGSLIDE = 200;
 //-----------------------------------------------------------------------------
 // Page 97
 
-
 const WORD IDC_BANGBANGVALUE = 201;
-
 #define DEFMASTERFILENAME "master.fle"
 #define DEFDATAFILENAME "output.dat"
 #define DEFWEIGHTFILENAME "weights.wgt"
@@ -123,10 +121,8 @@ const WORD IDC_BANGBANGVALUE = 201;
 #define PID 0;
 #define NEURAL_ACE_ASE 1;
 
-
 //-----------------------------------------------------------------------------
 //  Page 98
-
 
 #define FUZZY 2; // Not implemented
                  
@@ -232,10 +228,8 @@ TColor white(255, 255, 255), green(0, 255, 0), black(0, 0, 0);
 TColor red(255, 0, 0), blue(0, 0, 255), yellow(255, 255, 0);
 TColor colorArray[10];
 
-
 //-----------------------------------------------------------------------------
 //  Page 100
-
 
 int delay = 0;
 int xx;
@@ -411,10 +405,8 @@ class TIPWindow : public TFrameWindow
   void CmPID();
   void CmNeuralACEASE();
 
-
 //-----------------------------------------------------------------------------
 //  Page 103
-
 
   void CmCalibration();
   void CmDisplay();
@@ -462,10 +454,8 @@ TIPWindow::TIPWindow(TWindow* parent) : TFrameWindow(parent, ""), TWindow(parent
   FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
     "Data Files (*.dat)|*.dat|Weight Files (*.wgt)|*.wgt|Master Files (*.fle)|*.fle|All Files (*.*)|*.*|",0,"DAT","WGT");
 
-
 //-----------------------------------------------------------------------------
 //  Page 104
-
 
   AssignMenu(200);
   InitOptions();
@@ -497,6 +487,7 @@ TIPWindow::~TIPWindow()
   delete windowMenu;
 }
 
+
 void TIP Window::InitOptions()
 {
   strcpy(MasterFileName, DEFMASTERFILENAME);
@@ -510,10 +501,8 @@ void TIP Window::InitOptions()
   DataParamStruct.States = FALSE;
   strcpy(Frequency.Freq, DEF_FREQUENCY);
 
-
 //-----------------------------------------------------------------------------
 //  Page 105
-
 
   PIDOptions.SingleLoop = FALSE;
   PIDOptions.DualLoop = TRUE;
@@ -567,10 +556,8 @@ void TIP Window::InitOptions()
   colorArray[1] = yellow;
   colorArray[2] = blue;
 
-
 //-----------------------------------------------------------------------------
 //  Page 106
-
 
   colorArray[3] = green;
   colorArray[4] = red;
@@ -679,10 +666,8 @@ NOIC:
       buff = buff + (del / 10.0);
       goto jp;
 
-
 //-----------------------------------------------------------------------------
 //  Page 108
-
 
       break;
 
@@ -708,10 +693,10 @@ NOIC:
       }
       break;
 
-    case 83:  // S pressed
-    /* If a "S" is pressed set the "data_rec" flag high start data
-     * recording. If any other key is pressed (except those mentioned
-     * above) set the flag with low logic (stop the control of the pendulum).
+    case 83:  
+    /*  S pressed: If a "S" is pressed set the "data_rec" flag high start data
+     *  recording. If any other key is pressed (except those mentioned
+     *  above) set the flag with low logic (stop the control of the pendulum).
      */
       data_rec = 1;
       break;
@@ -741,10 +726,8 @@ NOIC:
         sprintf(DataParamStruct.DataFileName, "%s.dat\0", SaveFileName);
       }
 
-
 //-----------------------------------------------------------------------------
 //  Page 109
-
 
       if (delay > 500)
       {
@@ -754,6 +737,8 @@ NOIC:
       break;
   }  // END CASE
 }
+
+
 void TIPWindow::Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color)
 {
   HPEN hPen = CreatePen(PS_SOLID, 1, color);
@@ -772,6 +757,7 @@ void TIPWindow::Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color)
   SelectObject(hDC, hOldPen);
   DeleteObject(hPen);
 }
+
 
 void TIPWindow::SetupGraph(TDC& dc)
 {
@@ -799,10 +785,8 @@ void TIPWindow::SetupGraph(TDC& dc)
   strcpy(txt, "Green=Reference Input");
   dc.TextOut(10 + cx*(4 + htxt), yMax - (10 + cy*2), txt, strlen(txt));
 
-
 //-----------------------------------------------------------------------------
 //  Page 110
-
 
   dc.SetTextColor(red);
   htxt+= strlen(txt);
@@ -837,6 +821,7 @@ void TIPWindow::SetupGraph(TDC& dc)
   dc.TextOut(10 + cx*(16 + htxt), 10 + cy*1, txt, strlen(txt));  //  ??
 }
 
+
 void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOutput[], int jj)
 {
     TClientDC dc(*this);
@@ -858,11 +843,9 @@ void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOut
     if (xx2 >= xMax) xx2 = cx*5;
     // Erase Old Graph
 
-
 //-----------------------------------------------------------------------------
 //  Page 111
-     
-        
+
     if (xx2 != cx*5)  // cx*5 is Vertical (Angular) Axis Line
     {
       Line(dc, xx2, yGMin, xx2, yGMax, black);  // Eraser Line
@@ -892,6 +875,7 @@ void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOut
     dc.TextOut(10 + 6*cx, yMax - (10 + cy*1), Buff, strlen(Buff));
 }
 
+
 //  Set up maximum coordinate values
 void TIPWindow::SetMaxCoordinates()
 {
@@ -910,10 +894,8 @@ void TIPWindow::EvSize(UINT sizeType, TSize& size)
   UpdateWindow();  // Optional
 }
 
-
 //-----------------------------------------------------------------------------
 //  Page 112
-
 
 void TIPWindow::CmNIDAQEnable()  // Allow Real-Time Control
 {
@@ -923,6 +905,7 @@ void TIPWindow::CmNIDAQEnable()  // Allow Real-Time Control
   windowMenu -> CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_UNCHECKED);
 }
 
+
 void TIPWindow::CmSimulate()  // Allow Simulation
 {
   windowMenu -> CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_CHECKED);
@@ -930,6 +913,7 @@ void TIPWindow::CmSimulate()  // Allow Simulation
   SIMULATE = 1;
   windowMenu -> CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_UNCHECKED);
 }
+
 
 void TIPWindow::CmSetupData()
 {
@@ -951,6 +935,7 @@ void TIPWindow::CmSetupData()
     MessageBox(ss, GetApplication()->GetName(), MB_OK);
 }
 
+
 void TIPWindow::CmFrequency()
 {
   char s[40];
@@ -963,10 +948,8 @@ void TIPWindow::CmFrequency()
     }
   }
 
-
 //-----------------------------------------------------------------------------
 //  Page 113
-
 
 void TIPWindow::CmPID()
 {
@@ -978,6 +961,7 @@ void TIPWindow::CmPID()
 
   if (PIDDlg->Execute() == IDOK) ControlType = PID;
 }
+
 
 void TIPWindow::CmNeuralACEASE()  // Setup
 {
@@ -1020,8 +1004,10 @@ void TIPWindow::CmNeuralACEASE()  // Setup
         else  
         {  
           // Get File Extension, filename, and path. Convert Chars to lower. 
-          for (i = 0; i < strlen(fileloc); i++) fileloc[i] = tolower(fileloc[i]);
-          if ((p2 = strchr(fileloc, '.')) != NULL) strcpy(ext, p2+1);
+          for (i = 0; i < strlen(fileloc); i++)
+            fileloc[i] = tolower(fileloc[i]);
+          if ((p2 = strchr(fileloc, '.')) != NULL)
+            strcpy(ext, p2+1);
           p1 = strrchr(fileloc, "\\");
           strncat(filename, p1 + 1, strlen(p1) - strlen(ext)-2);
           if (strcmp(ext, "wgt") == 0)
@@ -1049,6 +1035,7 @@ void TIPWindow::CmNeuralACEASE()  // Setup
   }
 }
 
+
 void TIPWindow::CmCalibration()
 {
   TCalibDlg *CalibDlg = new TCalibDlg(this, &Calibration);
@@ -1072,6 +1059,7 @@ void TIPWindow::CmCalibration()
   CalibDlg->Execute();
 }
 
+
 void TIPWindow::CmDisplay()
 {
   TGraphicsDlg* GraphicsDig = new TGraphicsDig(this, &Graphics);
@@ -1083,9 +1071,10 @@ void TIPWindow::CmDisplay()
   }
 }
 
+
 void TIPWindow::CmFileOpen()
 {
-  int i,j;
+  int i, j;
   char ext[5] = "";
   char *p1, *p2, fileloc[200] = "";
   char filename[200] = "";
@@ -1099,13 +1088,15 @@ void TIPWindow::CmFileOpen()
     if (!is)
       MessageBox("Unable to open file", "File Error", MB_OK | MB_ICONEXCLAMATION);
     else
-    {  // Get File Extension, filename, and path. Convert Chars to lower. 
-      for (i=0; i<strlen(fileloc); i++) fileloc[i] = tolower(fileloc[i]); 
-      if((p2=strchr(fileloc, '.')) != NULL) strcpy(ext, p2+1);
+    { // Get File Extension, filename, and path. Convert Chars to lower.
+      for (i = 0; i < strlen(fileloc); i++)
+        fileloc[i] = tolower(fileloc[i]);
+      if ((p2 = strchr(fileloc, '.')) != NULL)
+        strcpy(ext, p2 + 1);
       p1 = strrchr(fileloc, "\\");
-      strncat(filename, p1+1, strlen(p1) - strlen(ext)-2);
+      strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
 //-- Page 116 -----------------------------------------------------------------
-      if (strcmp(ext, "fle") == 0) 
+      if (strcmp(ext, "fle") == 0)
       {
         strcpy(MasterFileName, filename);
         read_mfile();
@@ -1117,7 +1108,7 @@ void TIPWindow::CmFileOpen()
         SetCaption(WindowOptions.WindowTitle);
         if ((fdata = fopen(fileloc, "rt")) == NULL)
           MessageBox("Cannot open input file.\n", "Open Error", MB_OK);
-        
+
         i = 0;
         ratio = 1;
         MaxAngMag = MaxAngVelMag = 1;
@@ -1125,11 +1116,12 @@ void TIPWindow::CmFileOpen()
         {
           i++;
           fscanf(fdata, "%f", &ang[i]);
-          if (fabs(ang[i]) > MaxAngMag) MaxAngMag = fabs(ang[i]);
-          if (fabs((ang[i+1] - ang[i]) * fs) > MaxAngVelMag)
-            MaxAngVelMag = fabs((ang[i+1] - ang[i])*fs);
+          if (fabs(ang[i]) > MaxAngMag)
+            MaxAngMag = fabs(ang[i]);
+          if (fabs((ang[i + 1] - ang[i]) * fs) > MaxAngVelMag)
+            MaxAngVelMag = fabs((ang[i + 1] - ang[i]) * fs);
         }
-        NumOfDataPoints = i-1;
+        NumOfDataPoints = i - 1;
         fclose(fdata);
       }
     }
@@ -1137,7 +1129,7 @@ void TIPWindow::CmFileOpen()
   }
 }
 
-void TIPWindow::CmFileSave() 
+void TIPWindow::CmFileSave()
 {
   char ext[5] = "";
   char *p1, *p2, fileloc[200] = "";
@@ -1145,69 +1137,72 @@ void TIPWindow::CmFileSave()
   FILE *fdata;
   int i;
   float temp;
-  FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY|OFN_FILEMUSTEXIST,"Weight Files(*.wgt)|*.wgt|Data Files (*.dat)|*.dat|All Files (*.*)|*.*|", 0, "WGT", "DAT");
-//-- Page 117 ------------------------------------------------------------------
+  FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, "Weight Files(*.wgt)|*.wgt|Data Files (*.dat)|*.dat|All Files (*.*)|*.*|", 0, "WGT", "DAT");
+//-- Page 117 -----------------------------------------------------------------
   strcpy(FileData->FileName, SaveFileName);
-  if (TFileSaveDialog(this, *FileData).Execute() == IDOK) 
+  if (TFileSaveDialog(this, *FileData).Execute() == IDOK)
   {
-    ofstream is(FileData -> FileName);
-    strcpy(fileloc, FileData -> FileName);
-    if (!is) MessageBox("Unable to Save file", "File Error", MB_OK|MB_ICONEXCLAMATION);
-    
-    else 
+    ofstream is(FileData->FileName);
+    strcpy(fileloc, FileData->FileName);
+    if (!is)
+      MessageBox("Unable to Save file", "File Error", MB_OK | MB_ICONEXCLAMATION);
+
+    else
     { // Get File Extension, filename, and path.
       // Convert Chars to lower.
-      for (i = 0; i < strlen(fileloc); i++) fileloc[i] = tolower(fileloc[i]);
-      
-      if ((p2=strchr(fileloc, '.')) != NULL)
+      for (i = 0; i < strlen(fileloc); i++)
+        fileloc[i] = tolower(fileloc[i]);
+
+      if ((p2 = strchr(fileloc, '.')) != NULL)
       {
-        strcpy(ext, p2+1);
+        strcpy(ext, p2 + 1);
         p1 = strrchr(fileloc, '\\');
-        strncat(filename, p1+1, strlen(p1) - strlen(ext)-2);
+        strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
       }
-      if ((fdata = fopen(fileloc, "wt")) == NULL) 
-        MessageBox("Cannot write to file.\n", "Open Error",MB_OK); 
-      strcpy(SaveFileName, filename); // Update (edited) save file name. 
-      if(strcmp(ext, "wgt") == 0)
+      if ((fdata = fopen(fileloc, "wt")) == NULL)
+        MessageBox("Cannot write to file.\n", "Open Error", MB_OK);
+      strcpy(SaveFileName, filename); // Update (edited) save file name.
+      if (strcmp(ext, "wgt") == 0)
       {
-        for(i = 1; i < NumOfNodes; i++)
-        {  // Write Weights to a File
+        for (i = 1; i < NumOfNodes; i++)
+        { // Write Weights to a File
           fprintf(fdata, "%f %f %f %f\n", &wt[i], &vt[i], &elg[i], &xbar[i]);
         }
         fclose(fdata);
         MessageBox(filename, "SAVED WEIGHT FILE", MB_OK);
       }
-      else if(strcmp(ext, "dat") == 0)
+      else if (strcmp(ext, "dat") == 0)
       {
         if (!SIMULATE)
-        { 
-          for (i = 0; i < jj; i++) 
+        {
+          for (i = 0; i < jj; i++)
             fprintf(fdata, "%10.3f%10.3f%10.3f\n", encoder_position[i], volt[i], V_reff[i]);
         }
-        else if(DataParamStruct.States) for (i = 0; i < steps; i++) fprintf(fdata, "%10.3f\n", ang[i]);
-          else 
-          { 
-            fprintf(fdata, "BangBangMag=%f\n", BangBangGain);
-            fprintf(fdata, "NumThetaBoxes=%i\n", NumThetaBoxes);
-            fprintf(fdata, "NumDThetaBoxes=%i\n", NumDThetaBoxes);
-            fprintf(fdata, "MAX_STEPS=%i\n", MAX_STEPS);
-            fprintf(fdata, "MAX_TRIALS=%i\n", MAX_TRIALS);
-            fprintf(fdata, "MAX_RUNS=%i\n", MAX_RUNS);
-            for (RunNum = 0; RunNum < MAX_RUNS; RunNum++) 
-            {
-              fprintf(fdata, "Number_of_Failures_per_Run=%i\n", NumRunFails[RunNum]);
-              for (TrialNum = 0; TrialNum < MAX_TRIALS; TrialNum++)
-              {
-                fprintf(fdata, "%10i %10i %10 \n ", RunNum, TrialNum, LifeTime[RunNum][TrialNum]);
-//-- Page 118 -----------------------------------------------------------------
-              }
-            }
-            RunNum = 0;
+        else if (DataParamStruct.States)
+          for (i = 0; i < steps; i++)
+            fprintf(fdata, "%10.3f\n", ang[i]);
+        else
+        {
+          fprintf(fdata, "BangBangMag=%f\n", BangBangGain);
+          fprintf(fdata, "NumThetaBoxes=%i\n", NumThetaBoxes);
+          fprintf(fdata, "NumDThetaBoxes=%i\n", NumDThetaBoxes);
+          fprintf(fdata, "MAX_STEPS=%i\n", MAX_STEPS);
+          fprintf(fdata, "MAX_TRIALS=%i\n", MAX_TRIALS);
+          fprintf(fdata, "MAX_RUNS=%i\n", MAX_RUNS);
+          for (RunNum = 0; RunNum < MAX_RUNS; RunNum++)
+          {
+            fprintf(fdata, "Number_of_Failures_per_Run=%i\n", NumRunFails[RunNum]);
+            for (TrialNum = 0; TrialNum < MAX_TRIALS; TrialNum++)
+              fprintf(fdata, "%10i %10i %10i \n ", RunNum, TrialNum, LifeTime[RunNum][TrialNum]);
+              //-- Page 118 -----------------------------------------------------------------
           }
+          RunNum = 0;
+        }
+        MessageBox(filename, "SAVED DATA FILE", MB_OK);
+        fclose(fdata);
       }
-      MessageBox(filename, "SAVED DATA FILE",MB_OK);
-      fclose(fdata);
-      else MessageBox(filename, "UNKNOWN FILE TYPE, NOTHING SAVED ", MB_OK);
+        else MessageBox(filename, "UNKNOWN FILE TYPE, NOTHING SAVED ", MB_OK);
+      
     }
     delete FileData;
     Invalidate();
@@ -1220,12 +1215,14 @@ void TIPWindow::CmFileExit()
   CmExit();
 }
 
+
 void TIPWindow::CmOldDataGraph
 {
   PlotOldData = -PlotOldData;
   strcpy(gs, "Inside CmOldDataGraph");
   Invalidate();
 }
+
 
 void TIPWindow::CmBeginControl(
 {
@@ -1321,8 +1318,8 @@ next_sample:
 
     if (!SIMULATE)
     {
-          states[0] = encoder_position[ij];     // Angle of pole
-          states[1] = (states[0] - oldx1) * fs; // Angular Velocity of pole
+          states[0] = encoder_position[ij];      // Angle of pole
+          states[1] = (states[0] - oldx1) * fs;  // Angular Velocity of pole
           oldx1 = states[0];
         }
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))  // Interrupt For User Request
@@ -1343,16 +1340,17 @@ next_sample:
           case FUZZY:
 
         // Not implemented yet break;
-        ****If graph_output is 1 display system
-          variables(Graph),
-          if graph_error is 1 end the program, if graph_output and IC are 0 display "message" to begin control of the pendulum.**** / if (Graphics.GraphicsOn) // ACE uses graphi
-            Graph(encoder_position, V_reff, volt, jj);
+        /*  If graph_output is 1 display system
+          *  variables(Graph),
+          *  if graph_error is 1 end the program, if graph_output and IC are 0 display "message" to begin control of the pendulum.**** / if (Graphics.GraphicsOn) // ACE uses graphi
+           * Graph(encoder_position, V_reff, volt, jj);
+        */
 
-        /**** Write plant input to analog channel 0. Check if "keyboard" has been hit. If
-          data_rec is negative put 0 volts to
-          analog channel 0 and go to the GUI.
-          If data_rec is positive increment loop counter and set "rec"ord to 1.
-
+        /* Write plant input to analog channel 0. Check if "keyboard" has been hit. If
+         *  data_rec is negative put 0 volts to
+         *  analog channel 0 and go to the GUI.
+         * If data_rec is positive increment loop counter and set "rec"ord to 1.
+        */
 
 //-----------------------------------------------------------------------------
 //  Page 121
@@ -1369,6 +1367,7 @@ next_sample:
 
         /**** Read from analog channel 1. If the counter
           has low logic keep reading analog channel 1 until logic is high. When high, go to the begining of the main loop.
+        **/
 
           if(jk-ndpts-1)
           {
@@ -1412,33 +1411,32 @@ if (TSinWavRefDlg(this, "SINE WAVE REF", SinWavRefParam), Execute() IDOK)
 MessageBox("Sine Wave Ref OK", SinWavRefParam. Amp,MB_OK); Ref_type=0;
 }
 
-
 //-----------------------------------------------------------------------------
 //  Page 122
 
+void TIPWindow::CmRefSeriesOfSteps()
+{
+  Ref_type = 1;
+}
+float far TIPWindow::NeuralACEASE(int IC, int jj, double states[])
+{
+  // Neural Control/Simulation: Returns Voltage to Motor if in Control Mode
 
-            void TIPWindow::CmRefSeriesOfSteps()
-            {
-            Ref_type=1;
-                            }
-            float far TIPWindow::NeuralACEASE(int IC, int jj, double states[])
-            {
-        // Neural Control/Simulation: Returns Voltage to Motor if in Control Mode
+  MSG msg;
+  TClientDC dc(this);
+  int i, Mag - 5, Choice;
+  float tt = 0;
+  int dlg.char trialtxt[80], txt[40];
 
-        MSG msg;
-        TClientDC dc(this);
-        int i, Mag-5, Choice;
-        float tt = 0;
-        int dlg.
-                        char trialtxt[80], txt[40];
-
-        if (!IC) {
-        }
-        randomize();
-        if (NeuralACEASEOptions Nonuniform) ClusterInputSpace(dc);
-        if(NeuralACEASEOptions.CMAC) TrainCMACO);
-        InitializeNeuralACEASE(IC, Other Weights);
-        //main loop Neural ACE ASE:
+  if (!IC)
+  {
+  }
+  randomize();
+  if (NeuralACEASEOptions Nonuniform)
+    ClusterInputSpace(dc);
+  if (NeuralACEASEOptions.CMAC) TrainCMACO);
+  InitializeNeuralACEASE(IC, Other Weights);
+  // main loop Neural ACE ASE:
 
 NextTrial:
         if (SIMULATE) {
@@ -1685,13 +1683,13 @@ U[ig][j]=1;
 }
 // Compute Cost
 JT=0;
-for(i=1;i<=c;i++) {
+for(i=1; i<=c; i++) {
 }
 J[i]=0;
-for(k=1;k<=NumOfDataPoints;k++)
+for(k=1; k<=NumOfDataPoints; k++)
 JT+=J[i];
 if(!IN) JTFirst-JT;
-if(U[i][k]) J[i]+-pow(xxc[k]-ncx[i],2)+pow(yyc[k]-ncy[i],2);
+if(U[i][k]) J[i]+-pow(xxc[k] - ncx[i],2) + pow(yyc[k] - ncy[i],2);
 if(JTFirst-0.0 && JT>0.0) JTFirst-JT;
 IN++;
 for(i=1; i<=c; i++) {
@@ -1700,24 +1698,24 @@ xsum=ysum=0.0;
 for(j=1; j<=NumOfDataPoints; j++) {
   G+=U[i][j];
 if(U[i][j]) { xsum+-xxc[j]; ysum+-yyc[j]; }
-dc.TextOut(10,100,"ERROR",5);
+dc.TextOut(10, 100, "ERROR", 5);
 if(G==0) {
 goto end;
 }
-ncx[i]=xsum/(double)G;
-ncy[i]=ysum/(double)G;
+ncx[i] = xsum/(double)G;
+ncy[i] = ysum/(double)G;
 }
 end:
-if(IN<50) goto NextItcration;
+if(IN < 50) goto NextItcration;
 sprintf(txt, "IN=%i Init. Cost-%15.2f Final Cost JT=%15.2f", IN, JTFirst,JT);
 dc.TextOut(10,30,txt, strlen(txt));
 for(i=1; i<=c; i++) // Draw final centers as white
 {
 // De-normalize
 cxx-ncx[i]*xMax/2+xo; cyy-ncy[i]*yMax/2+yo;
-Line(dc,cxx-50,cyy,cxx+50,cyy,white);
+Line(dc, cxx-50, cyy, cxx+50, cyy, white);
 }
-Line(dc,cxx,cyy-50,cxx,cyy+50,white);
+Line(dc, cxx, cyy-50, cxx, cyy+50, white);
 
 
 //-----------------------------------------------------------------------------
@@ -1875,13 +1873,13 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
 //  Page 131
 
 
-for(i=1;i<=NumOfNodes;i++) {
+for(i=1; i<=NumOfNodes; i++) {
 }
 Sigma Theta[i]=sqrt(-(pow(ThetaBoxSpacing, 2))/(2.0*log(Overlap)));
 Sigma Theta[i]=sqrt(-(pow(DThetaBoxSpacing, 2))/(2.0*log(Overlap)));
 FailAng-12*Ang2Rad; //Failure Angle (by degrees)
 if(NeuralACEASEOptions. Uniform)
-for(i=0;i<NumThetaBoxes;i++) // Input space normalized to -1 and 1 for(j=0;j<NumDThetaBoxes;j++) { // nc = node or box center
+for(i=0; i<NumThetaBoxes; i++)  // Input space normalized to -1 and 1 for(j=0;j<NumDThetaBoxes;j++) { // nc = node or box center
 ncx[j+1+i*NumDThetaBoxes]=
 -DThetaExtreme+j*DThetaBoxSpacing*2+DThetaBoxSpacing;
 -ThetaExtreme+i*ThetaBoxSpacing*2+ThetaBoxSpacing,
@@ -1889,7 +1887,7 @@ ncy[j+1+i*NumDThetaBoxes]=
 }
 }
 
-for(i=1;i<=NumOfNodes;i++) ISNode[i]=0.0;
+for(i=1; i<=NumOfNodes; i++) ISNode[i]=0.0;
 
 reinf = 0;
 prevt = 0;
@@ -1969,21 +1967,20 @@ if((TempISNode (int*)malloc(NumOfNodes))-NULL) exit(-1); //Dynamically Allocate 
 for(i=1; i <= NumOfNodes; i++) ISNode[i] = 0.0;  // Clear Boxes for New State
 if (failure) return;
 
-
 //-----------------------------------------------------------------------------
 //  Page 133
 
-
 if(NeuralACEASEOptions.RBF)
-for(i = 1; i <= NumOfNodes; i++) {
-}
+  for (i = 1; i <= NumOfNodes; i++)
+  {
+  }
 // 2D Gausian, pow(x,y) = x to power of y
 tn = -pow((x[0] - ncy[i]), 2);
-td =  (2*pow(SigmaTheta[i], 2));
+td = (2 * pow(SigmaTheta[i], 2));
 dn = -pow((x[1] - ncx[i]), 2);
 dd = (2 * pow(SigmaDTheta[i], 2));
-et = exp(tn/td);  // Radial Basis Function for Theta (angle)
-ed = exp(dn/dd);  // Radial Basis Function for DTheta (angular vel.)
+et = exp(tn / td); // Radial Basis Function for Theta (angle)
+ed = exp(dn / dd); // Radial Basis Function for DTheta (angular vel.)
 
 ISNode[i] = et * ed;
 else if (NeuralACEASEOptions.Uniform) {
@@ -2009,24 +2006,24 @@ else
 }
 }
 else if(NeuralACEASEOptions.CMAC) {
-for(i = 0; i <= NumOfNodes; i++) TempISNode[i] = 0; // convert to int
-for(i = 0; i < NS; i++) xcmac[i] = (int)1000*x[i];
-//cmac_response(cmac_id,xcmac,TempISNode); // x is in degrees
-j
-for(i = 1; i <= NumOfNodes; i++) ISNode[i] = ((float)TempISNode[i-1])/1000;
+  for (i = 0; i <= NumOfNodes; i++)
+    TempISNode[i] = 0; // convert to int
+  for (i = 0; i < NS; i++)
+    xcmac[i] = (int)1000 * x[i];
+  // cmac_response(cmac_id,xcmac,TempISNode); // x is in degrees
+  j for (i = 1; i <= NumOfNodes; i++) ISNode[i] = ((float)TempISNode[i - 1]) / 1000;
 
-//free(TempISNode);
+  // free(TempISNode);
 
-
-//-----------------------------------------------------------------------------
-//  Page 134
-
+  //-----------------------------------------------------------------------------
+  //  Page 134
 
 }
 
 
 // SOLVE MODEL FOR SIMULATION AND/OR TRAINING: Returns x[NS]=Model States void PoleModelSolve
 void PoleModelSolve()
+
 /*
   function sts-polemod(uf, y0, t, tstep, method)
   cart-pole simulation function Solve ODE by using various methods:
@@ -2041,12 +2038,15 @@ void PoleModelSolve()
     for(i=0; i<NS; i++) ys2[i] = y[i] + (tstep/2)*s1[i];
     PoleStateSpaceModel(s2, t+tstep/2, ys2, force[steps]);
 
-    if (method==2) { //Runge-Kutta 4th order
-        for(i=0; i<NS; i++) ys3[i] = y[i] + (tstep/2)*s2[i];
-        PoleStateSpaceModel(s3, t + tstep/2, ys3, force[steps]);
-        for(i=0; i<NS; i++) ys4[i] = y[i] + tstep*s3[i];  
-        PoleStateSpaceModel(s4, t + tstep, ys4, force[steps]);
-    } 
+    if (method == 2)
+    { // Runge-Kutta 4th order
+      for (i = 0; i < NS; i++)
+        ys3[i] = y[i] + (tstep / 2) * s2[i];
+      PoleStateSpaceModel(s3, t + tstep / 2, ys3, force[steps]);
+      for (i = 0; i < NS; i++)
+        ys4[i] = y[i] + tstep * s3[i];
+      PoleStateSpaceModel(s4, t + tstep, ys4, force[steps]);
+    }
 
     //solution:
     if (method == 0) // Euler's Method
@@ -2088,10 +2088,10 @@ void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
 // // // kgm^2, Armature Inertia
 // xl = angle, dxldt = angular velocity-x2, dx2dt-angular
 // Il constants
-  a1=g*(md*l + mr*1/2);
-  a2=(k1*k2)/г;
-  a3=kl/r;
-  a4=md*1*1+(mr*1*1)/3+jm;
+  a1 = g*(md*l + mr*1/2);
+  a2 = (k1*k2)/г;
+  a3 = kl/r;
+  a4 = md*1*1+(mr*1*1)/3+jm;
   //equations:
         dtdx[0]=x[1];
         dtdx[1] (a1*sin(x[0]-a2*x[1]+a3*u)/a4;
@@ -2121,17 +2121,15 @@ void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
 
 //-----------------------------------------------------------------------------
 //  Page 136
-      };
-class TRUNDlg: public TDialog {
 };
+class TRUNDlg : public TDialog
+{
+};
+
 public:
-TRUNDIg(TWindow* parent, RUNStruct* RUNOptions);
-class TNeuralACEASEDlg: public TDialog {
-}:
-public:
-protected:
-TNeuralACEASEDlg(TWindow* parent,
-    NeuralACEASEStruct& NeuralACEASEOptions);
+TRUNDIg(TWindow * parent, RUNStruct * RUNOptions);
+class TNeuralACEASEDlg : public TDialog{} : public : protected : TNeuralACEASEDlg(TWindow * parent,
+                                                                                  NeuralACEASEStruct & NeuralACEASEOptions);
 void SetupWindow();
 void EvBangBangSlide(UINT code);
 void EvOverlapSlide(UINT code);
@@ -2139,8 +2137,8 @@ TStatic BBMagSTxt;
 TStatic OverlapSTxt;
 NeuralACEASEStruct ACEASEOptions;
 TScrollBar BangBangSlider,
-           TScrollBar OverlapSlider,
-           DECLARE_RESPONSE_TABLE(TNeuralACEASED!g);
+    TScrollBar OverlapSlider,
+    DECLARE_RESPONSE_TABLE(TNeuralACEASED !g);
 DEFINE_RESPONSE_TABLE1(TNeuralACEASEDlg, TDialog)
   EvBangBangSlide),
   EV_CHILD_NOTIFY_ALL_CODES(IDC_BANGBANGMAG, EV_CHILD_NOTIFY_ALL_CODES(IDC_OVERLAPSLIDER, EvOverlap Slide),
@@ -2216,8 +2214,11 @@ TBeginControlDlg(TWindow* parent, TResId resId) : TDialog(parent,resId) {}
 {
 }
 : TDialog(parent, DIASIMBREAK)
-new TRadioButton(this, IDC_KEEPSIMGOING); new TRadioButton(this,IDC_SAVEWEIGHTSMEM);
-new TRadioButton(this,IDC_SAVEWEIGHTSFILE); new TRadioButton(this, IDC_DONTSAVEWEIGHTS); SetTransferBuffer(RUNOptions);
+new TRadioButton(this, IDC_KEEPSIMGOING); 
+new TRadioButton(this,IDC_SAVEWEIGHTSMEM);
+new TRadioButton(this, IDC_SAVEWEIGHTSFILE); 
+new TRadioButton(this, IDC_DONTSAVEWEIGHTS);
+ SetTransferBuffer(RUNOptions);
 // For Setup
 // TNeuralACEASEDlg::TNeuralACEASEDlg(TWindow* parent,
 // NeuralACEASEStruct& NeuralACEASEOptions): TDialog(parent,
@@ -2257,7 +2258,7 @@ new TRadioButton(this,IDC_SAVEWEIGHTSFILE); new TRadioButton(this, IDC_DONTSAVEW
     }
 TWindow::SetupWindow();
 char txt[10] = "";
-BangBangSlider->SetRange(1,600); OverlapSlider->SetRange(1,100);
+BangBangSlider -> SetRange(1, 600); OverlapSlider -> SetRange(1, 100);
 // Initial Thumb Position
 // BangBangSlider->SetPosition((int)(BangBangGain* 10)); OverlapSlider->SetPosition(100*Overlap); sprintf(txt,"%6.2f", BangBangGain),
  // BBMagSTxt->SetText(txt);
@@ -2307,9 +2308,10 @@ void TCalibDlg::EvTimer(UINT /*timerId*/)
 {
   char Degrees[10];
 }
-char txt[30]="";
+char txt[30] = "";
 TClientDC dc(*this);
-sprintf(Degrees,"%f",Rad2 Ang Digital_Input(board.cal_imp,0)); SAngleTxt->SetText(Degrees);
+sprintf(Degrees,"%f",Rad2 Ang Digital_Input(board.cal_imp, 0));
+ SAngleTxt->SetText(Degrees);
 void TCalibDlg::CmCalibok()
 {
   char txt[30];
