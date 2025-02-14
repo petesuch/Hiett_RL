@@ -1293,6 +1293,15 @@ void TIPWindow::CmOldDataGraph
 }
 
 
+
+
+
+
+
+
+
+
+
 void TIPWindow::CmBeginControl()
 {
   int start = 0, Mag = 500;
@@ -1447,6 +1456,8 @@ void TIPWindow::CmBeginControl()
 }
 
 
+
+
 void TIPWindow::CmRefSine Wave()
 {
   if (TSinWavRefDlg(this, "SINE WAVE REF", SinWavRefParam), Execute() IDOK)
@@ -1455,9 +1466,30 @@ void TIPWindow::CmRefSine Wave()
     Ref_type = 0;
   }
 }
+
+
+
+
+
+
+
+
+
   //-----------------------------------------------------------------------------
   //  Page 122
 
+
+
+
+
+
+
+
+
+
+
+
+  
   void TIPWindow::CmRefSeriesOfSteps()
   {
     Ref_type = 1;
