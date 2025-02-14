@@ -962,8 +962,7 @@ void TIPWindow::CmPID()
   if (PIDDlg->Execute() == IDOK) ControlType = PID;
 }
 
-
-void TIPWindow::CmNeuralACEASE()  // Setup
+void TIPWindow::CmNeuralACEASE() // Setup
 {
   char ext[5] = "";
   char *p1, *p2, fileloc[200] = "";
@@ -971,45 +970,47 @@ void TIPWindow::CmNeuralACEASE()  // Setup
   FILE *fdata;
   int i;
 
-  TNeuralACEASEDlg* NeuralACEASEDlg = new TNeuralACEASEDlg(this, NeuralACEASEOptions);
+  TNeuralACEASEDlg *NeuralACEASEDlg = new TNeuralACEASEDlg(this, NeuralACEASEOptions);
   windowMenu->CheckMenuItem(CM_NEURAL_ACEASE, MF_BYCOMMAND | MF_CHECKED);
   windowMenu->CheckMenuItem(CM_PIDCONTROL, MF BYCOMMAND | MF_UNCHECKED);
 
   ControlType = NEURAL_ACE_ASE;
   if (NeuralACEASEDIg->Execute() == IDOK)
   {
-    NumThetaBoxes = atoi(NeuralACEASEOptions.NumThetaBoxes);  // Update space
-    NumDThetaBoxes = atoi(NeuralACEASEOptions.NumDThetaBoxes);  // Variables 
-    if(NeuralACEASEOptions.Uniform)
-      NumOfNodes = NumThetaBoxes*NumDThetaBoxes;
-    else 
+    NumThetaBoxes = atoi(NeuralACEASEOptions.NumThetaBoxes);   // Update space
+    NumDThetaBoxes = atoi(NeuralACEASEOptions.NumDThetaBoxes); // Variables
+    if (NeuralACEASEOptions.Uniform)
+      NumOfNodes = NumThetaBoxes * NumDThetaBoxes;
+    else
       NumOfNodes = NUM_OF_ISNODES;
     ThetaExtreme = atof(NeuralACEASEOptions.ThetaExtreme);
     DThetaExtreme = atof(NeuralACEASEOptions.DThetaExtreme);
     MessageBox("Neural ASE ACE Controller Selected", "Neural ACEASE", MB_OK);
-    if (NeuralACEASEOptions.ZeroizeWeights) Other Weights = 0;
-    if (NeuralACEASEOptions.UseSimulationWeights) Other Weights = 0;
+    if (NeuralACEASEOptions.ZeroizeWeights)
+      Other Weights = 0;
+    if (NeuralACEASEOptions.UseSimulationWeights)
+      Other Weights = 0;
     if (NeuralACEASEOptions.WeightFromFile)
     {
       OtherWeights = 1;
-      FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY|OFN_FILEMUSTEXIST, "Weight Files (*.wgt)|*.wgt|All Files (*.*)|*.*|", 0, "WGT", "*");
-//-- Page 114 -----------------------------------------------------------------
+      FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, "Weight Files (*.wgt)|*.wgt|All Files (*.*)|*.*|", 0, "WGT", "*");
+      //-- Page 114 -----------------------------------------------------------------
       strcpy(FileData->FileName, NeuralACEASEOptions.WeightFileName);
       if (TFileOpenDialog(this, *FileData).Execute() == IDOK)
       {
         ifstream is(FileData->FileName);
         strcpy(fileloc, FileData->FileName);
         if (!is)
-          MessageBox("Unable to open file", "File Error", MB_OK|MB_ICONEXCLAMATION);
-        else  
-        {  
-          // Get File Extension, filename, and path. Convert Chars to lower. 
+          MessageBox("Unable to open file", "File Error", MB_OK | MB_ICONEXCLAMATION);
+        else
+        {
+          // Get File Extension, filename, and path. Convert Chars to lower.
           for (i = 0; i < strlen(fileloc); i++)
             fileloc[i] = tolower(fileloc[i]);
           if ((p2 = strchr(fileloc, '.')) != NULL)
-            strcpy(ext, p2+1);
+            strcpy(ext, p2 + 1);
           p1 = strrchr(fileloc, "\\");
-          strncat(filename, p1 + 1, strlen(p1) - strlen(ext)-2);
+          strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
           if (strcmp(ext, "wgt") == 0)
           {
             strcpy(NeuralACEASEOptions.WeightFileName, filename);
@@ -1020,21 +1021,20 @@ void TIPWindow::CmNeuralACEASE()  // Setup
             i = 0;
             while (!feof(fdata))
             { // Read in Weights From Weight File
-              fscanf(fdata,"%f%f%f %f", &wt[i], &vt[i], &elg[i], &xbar[i]);
+              fscanf(fdata, "%f%f%f %f", &wt[i], &vt[i], &elg[i], &xbar[i]);
               i++;
             }
             if (i != (NumOfNodes + 1))
               MessageBox("Number of Boxes Does not Match: May Cause Poor Performance", "Data Mismatch Error", MB_OK);
-          fclose(fdata);
+            fclose(fdata);
           }
         }
-      } 
+      }
       Invalidate();
       delete FileData;
     }
   }
 }
-
 
 void TIPWindow::CmCalibration()
 {
@@ -1137,78 +1137,99 @@ void TIPWindow::CmFileSave()
   FILE *fdata;
   int i;
   float temp;
+
   FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, "Weight Files(*.wgt)|*.wgt|Data Files (*.dat)|*.dat|All Files (*.*)|*.*|", 0, "WGT", "DAT");
 //-- Page 117 -----------------------------------------------------------------
   strcpy(FileData->FileName, SaveFileName);
+
   if (TFileSaveDialog(this, *FileData).Execute() == IDOK)
   {
     ofstream is(FileData->FileName);
     strcpy(fileloc, FileData->FileName);
-    if (!is)
-      MessageBox("Unable to Save file", "File Error", MB_OK | MB_ICONEXCLAMATION);
 
+    if (!is)
+    {
+      MessageBox("Unable to Save file", "File Error", MB_OK | MB_ICONEXCLAMATION);
+    }
     else
-    { // Get File Extension, filename, and path.
-      // Convert Chars to lower.
+    {
+      // Convert filename to lowercase
       for (i = 0; i < strlen(fileloc); i++)
         fileloc[i] = tolower(fileloc[i]);
 
+      //  Get File extension
       if ((p2 = strchr(fileloc, '.')) != NULL)
       {
         strcpy(ext, p2 + 1);
         p1 = strrchr(fileloc, '\\');
         strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
       }
+
       if ((fdata = fopen(fileloc, "wt")) == NULL)
+      {
         MessageBox("Cannot write to file.\n", "Open Error", MB_OK);
-      strcpy(SaveFileName, filename); // Update (edited) save file name.
-      if (strcmp(ext, "wgt") == 0)
-      {
-        for (i = 1; i < NumOfNodes; i++)
-        { // Write Weights to a File
-          fprintf(fdata, "%f %f %f %f\n", &wt[i], &vt[i], &elg[i], &xbar[i]);
-        }
-        fclose(fdata);
-        MessageBox(filename, "SAVED WEIGHT FILE", MB_OK);
       }
-      else if (strcmp(ext, "dat") == 0)
+      else
       {
-        if (!SIMULATE)
+        strcpy(SaveFileName, filename); // Update (edited) save file name.
+
+        if (strcmp(ext, "wgt") == 0)
         {
-          for (i = 0; i < jj; i++)
-            fprintf(fdata, "%10.3f%10.3f%10.3f\n", encoder_position[i], volt[i], V_reff[i]);
+          for (i = 1; i < NumOfNodes; i++)
+          {
+            // Write Weights to a File
+            fprintf(fdata, "%f %f %f %f\n", &wt[i], &vt[i], &elg[i], &xbar[i]);
+          }
+          fclose(fdata);
+          MessageBox(filename, "SAVED WEIGHT FILE", MB_OK);
         }
-        else if (DataParamStruct.States)
-          for (i = 0; i < steps; i++)
-            fprintf(fdata, "%10.3f\n", ang[i]);
+
+        else if (strcmp(ext, "dat") == 0)
+        {
+          if (!SIMULATE)
+          {
+            for (i = 0; i < jj; i++)
+              fprintf(fdata, "%10.3f%10.3f%10.3f\n", encoder_position[i], volt[i], V_reff[i]);
+          }
+          else if (DataParamStruct.States)
+          {
+            for (i = 0; i < steps; i++)
+              fprintf(fdata, "%10.3f\n", ang[i]);
+          }
+          else
+          {
+            fprintf(fdata, "BangBangMag=%f\n", BangBangGain);
+            fprintf(fdata, "NumThetaBoxes=%i\n", NumThetaBoxes);
+            fprintf(fdata, "NumDThetaBoxes=%i\n", NumDThetaBoxes);
+            fprintf(fdata, "MAX_STEPS=%i\n", MAX_STEPS);
+            fprintf(fdata, "MAX_TRIALS=%i\n", MAX_TRIALS);
+            fprintf(fdata, "MAX_RUNS=%i\n", MAX_RUNS);
+
+            for (RunNum = 0; RunNum < MAX_RUNS; RunNum++)
+            {
+              fprintf(fdata, "Number_of_Failures_per_Run=%i\n", NumRunFails[RunNum]);
+              for (TrialNum = 0; TrialNum < MAX_TRIALS; TrialNum++)
+              {
+                fprintf(fdata, "%10i %10i %10i \n ", RunNum, TrialNum, LifeTime[RunNum][TrialNum]);
+              }
+  //-- Page 118 -----------------------------------------------------------------
+            }
+            RunNum = 0;
+          }
+          MessageBox(filename, "SAVED DATA FILE", MB_OK);
+          fclose(fdata);
+        }
         else
         {
-          fprintf(fdata, "BangBangMag=%f\n", BangBangGain);
-          fprintf(fdata, "NumThetaBoxes=%i\n", NumThetaBoxes);
-          fprintf(fdata, "NumDThetaBoxes=%i\n", NumDThetaBoxes);
-          fprintf(fdata, "MAX_STEPS=%i\n", MAX_STEPS);
-          fprintf(fdata, "MAX_TRIALS=%i\n", MAX_TRIALS);
-          fprintf(fdata, "MAX_RUNS=%i\n", MAX_RUNS);
-          for (RunNum = 0; RunNum < MAX_RUNS; RunNum++)
-          {
-            fprintf(fdata, "Number_of_Failures_per_Run=%i\n", NumRunFails[RunNum]);
-            for (TrialNum = 0; TrialNum < MAX_TRIALS; TrialNum++)
-              fprintf(fdata, "%10i %10i %10i \n ", RunNum, TrialNum, LifeTime[RunNum][TrialNum]);
-              //-- Page 118 -----------------------------------------------------------------
-          }
-          RunNum = 0;
+          MessageBox(filename, "UNKNOWN FILE TYPE, NOTHING SAVED ", MB_OK);
+          fclose(fdata);
         }
-        MessageBox(filename, "SAVED DATA FILE", MB_OK);
-        fclose(fdata);
       }
-        else MessageBox(filename, "UNKNOWN FILE TYPE, NOTHING SAVED ", MB_OK);
-      
     }
     delete FileData;
     Invalidate();
   }
 }
-
 
 void TIPWindow::CmFileExit()
 {
