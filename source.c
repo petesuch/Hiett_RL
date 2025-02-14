@@ -1293,42 +1293,43 @@ void TIPWindow::CmOldDataGraph
 }
 
 
-void TIPWindow::CmBeginControl(
+void TIPWindow::CmBeginControl()
 {
-  int start, Mag = 500;
+  int start = 0, Mag = 500;
   char txt[30];
   static float oldx1 = 0;
-
-  TBeginControlDlg *BeginControlDig;
   MSG msg;
   BOOL fRetVal = TRUE;
   TClientDC dc(*this);
 
-  BeginControlDlg = new TBeginControlDig(this, BEGINCONTROLDIALOG);
+  // Create Dialog
+  TBeginControlDlg *BeginControlDlg = new TBeginControlDlg(this, BEGINCONTROLDIALOG);
 
-  if (!SIMULATE) start = BeginControlDlg->Execute();
+  if (!SIMULATE)
+    start = BeginControlDlg->Execute();
+
+  delete BeginControlDlg; // Prevent memory leak
+
   if (start == IDCANCEL)
   {
     MessageBox("Control Cancelled", "CONTROL STOPPED", MB_OK);
-    goto end;
+    return;
   }
   else if (start == IDHELP)
   {
-    string s;
-    string nl('\n');
-    s+= "HINT: Be sure that everything is setup properly" + nl;
-//-- Page 119 -----------------------------------------------------------------
-    s += "under the Setup Menu. It is highly likely" + nl;
-    s += "that the system will not work as expected" + nl;
-    s += "if you do not have options set correctly." + nl;
-    s += "Try choosing Default under setup." + nl;
-    s += "If you are not sure, choose CANCEL." + nl;
+    std::string s;
+    s += "HINT: Be sure that everything is setup properly\n";
+    s += "under the Setup Menu. It is highly likely\n";
+    s += "that the system will not work as expected\n";
+    s += "if you do not have options set correctly.\n";
+    s += "Try choosing Default under setup.\n";
+    s += "If you are not sure, choose CANCEL.\n";
     MessageBox(s.c_str(), "Help!", MB_OK);
   }
 
   if (NIDAQENABLE)
   {
-    board getBoardToUse();
+    board = getBoardToUse();
     err_num = DIG_Prt_Config(board, 0, 0, 0);
     errCheck(board, "DIG_Prt_Config", err_num);
     err_num = DIG_Prt_Config(board, 1, 0, 0);
@@ -1336,174 +1337,148 @@ void TIPWindow::CmBeginControl(
     err_num = AI_Config(board, 1, 1, 1);
     errCheck(board, "AI_Config", err_num);
   }
-    jj = 1;
-    data_rec = 0;
-    IC = 0;
-    rotate_buff = 0;
-    graph_error = 0;
-    jk = 0;
-    jkk = 1;
 
-    /* Set frequency count so that proper system freguency is attained. */
+  jj = 1;
+  data_rec = 0;
+  IC = 0;
+  rotate_buff = 0;
+  graph_error = 0;
+  jk = 0;
+  jkk = 1;
 
-    fcount = 2000000.0 / fs;
-    fcount = floor(fcount);
-    count = (unsigned int)fcount;
+  fcount = 2000000.0 / fs;
+  fcount = floor(fcount);
+  count = (unsigned int)fcount;
 
-    if (Graphics.GraphicsOn)
-      SetupGraph(dc);
+  if (Graphics.GraphicsOn)
+    SetupGraph(dc);
 
-    // Automatic Calibration (assume pole position is initially at zero degrees) 
-    Digital Input (board,cal_jmp,IC);  // Updates current_measurel 
-    calibrate=current_measure1;
-    V_reff[ij] = Ref(IC); // Initialize Reference Variables (Inside Ref())
-    /* Start loop */
-next_sample:
+  // Automatic Calibration
+  Digital_Input(board, cal_jmp, IC);
+  calibrate = current_measure1;
+  V_reff[ij] = Ref(IC);
+
+  while (true)
+  {
     delay++;
     if (delay > 99999)
       delay = 0;
 
-/* 
-*  Load counter B so that proper frequency is attained. Determine the
-*  reference command, input the encoder position (digital_input), preform
-*  negitive feedback to determine the input to the compensator (comp_in) and call
-*  Compensator to determine the output
-*  from the compensator (input to plant.)
-*/
-
-
-//-----------------------------------------------------------------------------
-//  Page 120
-
     if (NIDAQENABLE)
       ICTR_Setup(board, 0, 0, count, 1);
+
     errCheck(board, "ITCR_Setup", err_num);
 
-    if (!SIMULATE | ControlType = PID)
-      V_reff[ij] = Ref(IC);
+    if (!SIMULATE || ControlType == PID)
+      V_reff[jj] = Ref(IC);
     else
-      V_reff[ij] = 0.0;
-    encoder_position[ij] = Digital_Input(board, cal_jmp, IC);
+      V_reff[jj] = 0.0;
+
+    encoder_position[jj] = Digital_Input(board, cal_jmp, IC);
 
     if (!SIMULATE)
     {
-          states[0] = encoder_position[ij];      // Angle of pole
-          states[1] = (states[0] - oldx1) * fs;  // Angular Velocity of pole
-          oldx1 = states[0];
-        }
-        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))  // Interrupt For User Request
+      states[0] = encoder_position[jj];
+      states[1] = (states[0] - oldx1) * fs;
+      oldx1 = states[0];
+    }
 
-        {
-          TranslateMessage(&msg);
-          DispatchMessage(&msg);
-        }
-        switch (ControlType)
-        {
-          case PID:
-        }
-        volt[ij] = PIDController(IC, jj);
-        break;
-          case NEURAL_ACE_ASE:
-        volt[ij] = NeuralACEASE(IC, jj, states) / 10.58;  // 10.58-DC Motor Amp Gain
-        break;
-          case FUZZY:
+    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+    {
+      TranslateMessage(&msg);
+      DispatchMessage(&msg);
+    }
 
-        // Not implemented yet break;
-        /*  If graph_output is 1 display system
-          *  variables(Graph),
-          *  if graph_error is 1 end the program, if graph_output and IC are 0 display "message" to begin control of the pendulum.**** / if (Graphics.GraphicsOn) // ACE uses graphi
-           * Graph(encoder_position, V_reff, volt, jj);
-        */
+    switch (ControlType)
+    {
+    case PID:
+      volt[jj] = PIDController(IC, jj);
+      break;
+    case NEURAL_ACE_ASE:
+      volt[jj] = NeuralACEASE(IC, jj, states) / 10.58;
+      break;
+    }
 
-        /* Write plant input to analog channel 0. Check if "keyboard" has been hit. If
-         *  data_rec is negative put 0 volts to
-         *  analog channel 0 and go to the GUI.
-         * If data_rec is positive increment loop counter and set "rec"ord to 1.
-        */
+    if (Graphics.GraphicsOn)
+      Graph(encoder_position, V_reff, volt, jj);
 
-//-----------------------------------------------------------------------------
-//  Page 121
+    if (NIDAQENABLE)
+      AO_VWrite(board, 0, volt[jj]);
 
+    if (data_rec < 0)
+      break; // Replaces "goto end;"
 
-        if(data_rec<0) goto end;
-        jj = jj + 1;
+    jj++;
 
-        /**** after the 15,000 (x3) data points have
+    if (j == 15001)
+      break; // Replaces "goto end;"
 
-        if(j == 15001) goto end;
+    if (jk == ndpts - 1)
+    {
+      sync = (in_sync == 1);
+      jk = -1;
+      jkk = 1;
+    }
 
-        been collected keep running loop placing data in last data points. ****/
+    jk++;
 
-        /**** Read from analog channel 1. If the counter
-          has low logic keep reading analog channel 1 until logic is high. When high, go to the begining of the main loop.
-        **/
+    if (NIDAQENABLE)
+      AI_VRead(board, 1, 1, &countt);
 
-          if(jk-ndpts-1)
-          {
-          if(in_sync == 1)
-          {
-          sync = 1;
-          }
-          else
-          {
-          sync = 0;
-          }
-          jk =- 1;
-          }
-          4.7
-          jkk = 1;
-          jk = jk+1;
-new_count: // Set system timing (delay) in Sync with NIDAQ board clock.
+    if (!NIDAQENABLE)
+      countt = 1;
 
-if (NIDAQENABLE) AI_VRead (board,1,1,&countt);
+    if (jk == 5 * jkk)
+    {
+      if (NIDAQENABLE)
+        ICTR_Read(board, 0, &t_count);
+      per_t_rem = 100 * (1.0 - ((double)count - (double)t_count) / (double)count);
+      jkk++;
 
-if (INIDAQENABLE) countt=1;
+      if (countt < 1.0)
+        continue;
+      else
+        continue;
+    }
+  }
 
-if(jk=5*jkk)
-{
-
-if (NIDAQENABLE) ICTR_Read(board,0,&t_count);
-per_t_rem-100*(1.0 - ((double)count - (double)t_count)/(double)count);
-jkk = jkk + 1;
-
-if (countt< 1.0) goto new_count;
-else goto next_sample;
-end: // Set Motor Voltage to Zero... Turn it off.
+  if (NIDAQENABLE)
+    AO_VWrite(board, 0, 0.0);
 }
 
-if (NIDAQENABLE) AO_VWrite(board, 0, 0.0),
+
 void TIPWindow::CmRefSine Wave()
 {
-
-if (TSinWavRefDlg(this, "SINE WAVE REF", SinWavRefParam), Execute() IDOK)
-{
-MessageBox("Sine Wave Ref OK", SinWavRefParam. Amp,MB_OK); Ref_type=0;
-}
-
-//-----------------------------------------------------------------------------
-//  Page 122
-
-void TIPWindow::CmRefSeriesOfSteps()
-{
-  Ref_type = 1;
-}
-float far TIPWindow::NeuralACEASE(int IC, int jj, double states[])
-{
-  // Neural Control/Simulation: Returns Voltage to Motor if in Control Mode
-
-  MSG msg;
-  TClientDC dc(this);
-  int i, Mag - 5, Choice;
-  float tt = 0;
-  int dlg.char trialtxt[80], txt[40];
-
-  if (!IC)
+  if (TSinWavRefDlg(this, "SINE WAVE REF", SinWavRefParam), Execute() IDOK)
   {
+    MessageBox("Sine Wave Ref OK", SinWavRefParam.Amp, MB_OK);
+    Ref_type = 0;
   }
-  randomize();
-  if (NeuralACEASEOptions Nonuniform)
-    ClusterInputSpace(dc);
-  if (NeuralACEASEOptions.CMAC) TrainCMACO);
+}
+  //-----------------------------------------------------------------------------
+  //  Page 122
+
+  void TIPWindow::CmRefSeriesOfSteps()
+  {
+    Ref_type = 1;
+    }
+    float far TIPWindow::NeuralACEASE(int IC, int jj, double states[])
+    {
+      // Neural Control/Simulation: Returns Voltage to Motor if in Control Mode
+
+      MSG msg;
+      TClientDC dc(this);
+      int i, Mag - 5, Choice;
+      float tt = 0;
+      int dlg.char trialtxt[80], txt[40];
+
+      if (!IC)
+      {
+      }
+      randomize();
+      if (NeuralACEASEOptions Nonuniform)
+        ClusterInputSpace(dc);
+      if (NeuralACEASEOptions.CMAC) TrainCMACO);
   InitializeNeuralACEASE(IC, Other Weights);
   // main loop Neural ACE ASE:
 
@@ -1592,8 +1567,8 @@ Interrupt: // User Interrupt or Failure Occurs then Jump to Here
 
 elg[i] = elg0[i];
 xbar[i] = elg0[i];
-}
-}
+            }
+         }
 ISNode[i] = 0.0;
 prevt = steps;
 if(SIMULATE) {  // Running Simulation or Training
@@ -1624,7 +1599,8 @@ if(RUNOptions.KeepSimGoing) CmBeginControl();
 else { //  NO FAILURE: USER INTERRUPT OR SIM END (BEYOND MAX/ STEPS)
 if(steps (MAX_STEPS-2)) {
 //MessageBox("MAX STEPS EXCEEDED","END",MB_OK); //RunWeight Save(); // Execute Weight Save Options
-if (TrialNum <MAX_TRIALS) { steps-1; prevt = 0; goto NextTrial; }
+if (TrialNum <MAX_TRIALS) { steps-1; prevt = 0; goto NextTrial;
+}
 else {
 randomize();
 InitializeNeuralACEASE(IC, 0);
