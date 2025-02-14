@@ -972,45 +972,61 @@ void TIPWindow::CmNeuralACEASE() // Setup
 
   TNeuralACEASEDlg *NeuralACEASEDlg = new TNeuralACEASEDlg(this, NeuralACEASEOptions);
   windowMenu->CheckMenuItem(CM_NEURAL_ACEASE, MF_BYCOMMAND | MF_CHECKED);
-  windowMenu->CheckMenuItem(CM_PIDCONTROL, MF BYCOMMAND | MF_UNCHECKED);
+  windowMenu->CheckMenuItem(CM_PIDCONTROL, MF_BYCOMMAND | MF_UNCHECKED);
 
   ControlType = NEURAL_ACE_ASE;
-  if (NeuralACEASEDIg->Execute() == IDOK)
+  if (NeuralACEASEDlg->Execute() == IDOK)
   {
-    NumThetaBoxes = atoi(NeuralACEASEOptions.NumThetaBoxes);   // Update space
-    NumDThetaBoxes = atoi(NeuralACEASEOptions.NumDThetaBoxes); // Variables
+    NumThetaBoxes = atoi(NeuralACEASEOptions.NumThetaBoxes);
+    NumDThetaBoxes = atoi(NeuralACEASEOptions.NumDThetaBoxes);
+
     if (NeuralACEASEOptions.Uniform)
       NumOfNodes = NumThetaBoxes * NumDThetaBoxes;
     else
       NumOfNodes = NUM_OF_ISNODES;
+
     ThetaExtreme = atof(NeuralACEASEOptions.ThetaExtreme);
     DThetaExtreme = atof(NeuralACEASEOptions.DThetaExtreme);
+
     MessageBox("Neural ASE ACE Controller Selected", "Neural ACEASE", MB_OK);
+
     if (NeuralACEASEOptions.ZeroizeWeights)
-      Other Weights = 0;
+      OtherWeights = 0;
     if (NeuralACEASEOptions.UseSimulationWeights)
-      Other Weights = 0;
+      OtherWeights = 0;
+
     if (NeuralACEASEOptions.WeightFromFile)
     {
       OtherWeights = 1;
-      FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, "Weight Files (*.wgt)|*.wgt|All Files (*.*)|*.*|", 0, "WGT", "*");
-      //-- Page 114 -----------------------------------------------------------------
+      FileData = new TOpenSaveDialog::TData(
+          OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
+          "Weight Files (*.wgt)|*.wgt|All Files (*.*)|*.*|", 0, "WGT", "*");
+
       strcpy(FileData->FileName, NeuralACEASEOptions.WeightFileName);
       if (TFileOpenDialog(this, *FileData).Execute() == IDOK)
       {
         ifstream is(FileData->FileName);
         strcpy(fileloc, FileData->FileName);
+
         if (!is)
+        {
           MessageBox("Unable to open file", "File Error", MB_OK | MB_ICONEXCLAMATION);
+        }
         else
         {
-          // Get File Extension, filename, and path. Convert Chars to lower.
+          // Convert fileloc to lowercase
           for (i = 0; i < strlen(fileloc); i++)
             fileloc[i] = tolower(fileloc[i]);
+
           if ((p2 = strchr(fileloc, '.')) != NULL)
             strcpy(ext, p2 + 1);
-          p1 = strrchr(fileloc, "\\");
-          strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
+
+          p1 = strrchr(fileloc, "\\\\"); // Corrected double backslash
+          if (p1)
+          {
+            strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
+          }
+
           if (strcmp(ext, "wgt") == 0)
           {
             strcpy(NeuralACEASEOptions.WeightFileName, filename);
@@ -1018,15 +1034,21 @@ void TIPWindow::CmNeuralACEASE() // Setup
             {
               MessageBox("Cannot open input file.\n", "Open Error", MB_OK);
             }
-            i = 0;
-            while (!feof(fdata))
-            { // Read in Weights From Weight File
-              fscanf(fdata, "%f%f%f %f", &wt[i], &vt[i], &elg[i], &xbar[i]);
-              i++;
+            else
+            {
+              i = 0;
+              while (fscanf(fdata, "%f%f%f%f", &wt[i], &vt[i], &elg[i], &xbar[i]) == 4)
+              {
+                i++;
+              }
+
+              if (i != (NumOfNodes + 1))
+              {
+                MessageBox("Number of Boxes Does not Match: May Cause Poor Performance",
+                           "Data Mismatch Error", MB_OK);
+              }
+              fclose(fdata);
             }
-            if (i != (NumOfNodes + 1))
-              MessageBox("Number of Boxes Does not Match: May Cause Poor Performance", "Data Mismatch Error", MB_OK);
-            fclose(fdata);
           }
         }
       }
@@ -1071,31 +1093,48 @@ void TIPWindow::CmDisplay()
   }
 }
 
-
 void TIPWindow::CmFileOpen()
 {
-  int i, j;
+  int i = 0, j;
   char ext[5] = "";
   char *p1, *p2, fileloc[200] = "";
   char filename[200] = "";
   FILE *fdata;
   int MaxYAxis = 10;
 
+  // Initialize FileData before using it
+  FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, "Data Files (*.dat)|*.dat|All Files (*.*)|*.*|", 0, "DAT", "*");
+
   if (TFileOpenDialog(this, *FileData).Execute() == IDOK)
   {
     ifstream is(FileData->FileName);
     strcpy(fileloc, FileData->FileName);
+
     if (!is)
+    {
       MessageBox("Unable to open file", "File Error", MB_OK | MB_ICONEXCLAMATION);
+    }
     else
-    { // Get File Extension, filename, and path. Convert Chars to lower.
+    {
+      // Convert filename to lowercase
       for (i = 0; i < strlen(fileloc); i++)
         fileloc[i] = tolower(fileloc[i]);
+
+      // Extract file extension
       if ((p2 = strchr(fileloc, '.')) != NULL)
         strcpy(ext, p2 + 1);
+
+      // Extract filename (without path)
       p1 = strrchr(fileloc, "\\");
-      strncat(filename, p1 + 1, strlen(p1) - strlen(ext) - 2);
-//-- Page 116 -----------------------------------------------------------------
+      if (p1)
+      {
+        size_t len = strlen(p1) - strlen(ext) - 2;
+        if (len > sizeof(filename) - 1)
+          len = sizeof(filename) - 1;
+        strncat(filename, p1 + 1, len);
+        filename[len] = '\0';
+      }
+
       if (strcmp(ext, "fle") == 0)
       {
         strcpy(MasterFileName, filename);
@@ -1106,28 +1145,35 @@ void TIPWindow::CmFileOpen()
         wsprintf(WindowOptions.WindowTitle, "%s%s", DEF_WINDOW_TITLE, filename);
         strcpy(DataParamStruct.DataFileName, filename);
         SetCaption(WindowOptions.WindowTitle);
-        if ((fdata = fopen(fileloc, "rt")) == NULL)
-          MessageBox("Cannot open input file.\n", "Open Error", MB_OK);
 
-        i = 0;
-        ratio = 1;
-        MaxAngMag = MaxAngVelMag = 1;
-        while (!feof(fdata))
+        if ((fdata = fopen(fileloc, "rt")) == NULL)
         {
-          i++;
-          fscanf(fdata, "%f", &ang[i]);
-          if (fabs(ang[i]) > MaxAngMag)
-            MaxAngMag = fabs(ang[i]);
-          if (fabs((ang[i + 1] - ang[i]) * fs) > MaxAngVelMag)
-            MaxAngVelMag = fabs((ang[i + 1] - ang[i]) * fs);
+          MessageBox("Cannot open input file.\n", "Open Error", MB_OK);
         }
-        NumOfDataPoints = i - 1;
-        fclose(fdata);
+        else
+        {
+          i = 0;
+          ratio = 1;
+          MaxAngMag = MaxAngVelMag = 1;
+
+          while (fscanf(fdata, "%f", &ang[i]) == 1)
+          {
+            if (fabs(ang[i]) > MaxAngMag)
+              MaxAngMag = fabs(ang[i]);
+            if (i > 0 && fabs((ang[i] - ang[i - 1]) * fs) > MaxAngVelMag)
+              MaxAngVelMag = fabs((ang[i] - ang[i - 1]) * fs);
+            i++;
+          }
+          NumOfDataPoints = i;
+          fclose(fdata);
+          // Only Invalidate if the file was successfully opened and read
+          Invalidate();
+        }
       }
     }
-    Invalidate();
   }
 }
+
 
 void TIPWindow::CmFileSave()
 {
