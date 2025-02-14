@@ -1060,14 +1060,16 @@ void TIPWindow::CmNeuralACEASE() // Setup
 
 void TIPWindow::CmCalibration()
 {
-  TCalibDlg *CalibDlg = new TCalibDlg(this, &Calibration);
-  char Degrees[10];
-//-- Page 115 ------------------------------------------------------------------
   if (!NIDAQENABLE)
   {
     MessageBox("Please select NIDAQ under setup to calibrate", "CALIBRATE", MB_OK);
     return;
   }
+
+  TCalibDlg *CalibDlg = new TCalibDlg(this, &Calibration);
+//-- Page 115 ------------------------------------------------------------------
+  char Degrees[10];
+
   temp_graph_output = graph_output;
   graph_output = 0;
   cal_jmp = 1;
@@ -1076,11 +1078,12 @@ void TIPWindow::CmCalibration()
   pos2 = 0.0;
   previous_measure = 0.0;
 
-  wsprintf(Degrees, " %f", Rad2Ang * Digital_Input(board, cal_jmp, IC));
+  snprintf(Degrees, sizeof(Degrees), " %.2f", Rad2Ang * Digital_Input(board, cal_jmp, IC));
   strcpy(Calibration.PoleAngle, Degrees);
-  CalibDlg->Execute();
-}
 
+  CalibDlg->Execute();
+  delete CalibDlg; // Prevent memory leak
+}
 
 void TIPWindow::CmDisplay()
 {
@@ -1164,8 +1167,10 @@ void TIPWindow::CmFileOpen()
               MaxAngVelMag = fabs((ang[i] - ang[i - 1]) * fs);
             i++;
           }
+
           NumOfDataPoints = i;
           fclose(fdata);
+
           // Only Invalidate if the file was successfully opened and read
           Invalidate();
         }
@@ -1173,7 +1178,6 @@ void TIPWindow::CmFileOpen()
     }
   }
 }
-
 
 void TIPWindow::CmFileSave()
 {
@@ -1185,7 +1189,7 @@ void TIPWindow::CmFileSave()
   float temp;
 
   FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, "Weight Files(*.wgt)|*.wgt|Data Files (*.dat)|*.dat|All Files (*.*)|*.*|", 0, "WGT", "DAT");
-//-- Page 117 -----------------------------------------------------------------
+
   strcpy(FileData->FileName, SaveFileName);
 
   if (TFileSaveDialog(this, *FileData).Execute() == IDOK)
@@ -1199,11 +1203,11 @@ void TIPWindow::CmFileSave()
     }
     else
     {
-      // Convert filename to lowercase
+      // Convert file name to lowercase
       for (i = 0; i < strlen(fileloc); i++)
         fileloc[i] = tolower(fileloc[i]);
 
-      //  Get File extension
+      // Get file extension
       if ((p2 = strchr(fileloc, '.')) != NULL)
       {
         strcpy(ext, p2 + 1);
@@ -1217,19 +1221,18 @@ void TIPWindow::CmFileSave()
       }
       else
       {
-        strcpy(SaveFileName, filename); // Update (edited) save file name.
+        strcpy(SaveFileName, filename); // Update save file name
 
         if (strcmp(ext, "wgt") == 0)
         {
           for (i = 1; i < NumOfNodes; i++)
           {
             // Write Weights to a File
-            fprintf(fdata, "%f %f %f %f\n", &wt[i], &vt[i], &elg[i], &xbar[i]);
+            fprintf(fdata, "%f %f %f %f\n", wt[i], vt[i], elg[i], xbar[i]);
           }
           fclose(fdata);
           MessageBox(filename, "SAVED WEIGHT FILE", MB_OK);
         }
-
         else if (strcmp(ext, "dat") == 0)
         {
           if (!SIMULATE)
@@ -1256,9 +1259,8 @@ void TIPWindow::CmFileSave()
               fprintf(fdata, "Number_of_Failures_per_Run=%i\n", NumRunFails[RunNum]);
               for (TrialNum = 0; TrialNum < MAX_TRIALS; TrialNum++)
               {
-                fprintf(fdata, "%10i %10i %10i \n ", RunNum, TrialNum, LifeTime[RunNum][TrialNum]);
+                fprintf(fdata, "%10i %10i %10 \n ", RunNum, TrialNum, LifeTime[RunNum][TrialNum]);
               }
-  //-- Page 118 -----------------------------------------------------------------
             }
             RunNum = 0;
           }
@@ -1267,7 +1269,7 @@ void TIPWindow::CmFileSave()
         }
         else
         {
-          MessageBox(filename, "UNKNOWN FILE TYPE, NOTHING SAVED ", MB_OK);
+          MessageBox(filename, "UNKNOWN FILE TYPE, NOTHING SAVED", MB_OK);
           fclose(fdata);
         }
       }
