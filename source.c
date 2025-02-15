@@ -1,7 +1,7 @@
 /* 
  *
  *
- *  C Source Code from Original Thesis Named:
+ *  C++ Source Code from Original Thesis Named:
  *
  *  "Reinforcement Learning Experiments with State Classifiers
  *  for Controlling an Inverted Pendulum"
@@ -759,6 +759,7 @@ void TIPWindow::Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color)
 }
 
 
+
 void TIPWindow::SetupGraph(TDC& dc)
 {
   SIZE size;
@@ -784,10 +785,7 @@ void TIPWindow::SetupGraph(TDC& dc)
   htxt = strlen(txt);
   strcpy(txt, "Green=Reference Input");
   dc.TextOut(10 + cx*(4 + htxt), yMax - (10 + cy*2), txt, strlen(txt));
-
-//-----------------------------------------------------------------------------
-//  Page 110
-
+//-- Page 110 ------------------------------------------------------------------
   dc.SetTextColor(red);
   htxt+= strlen(txt);
   strcpy(txt, "Red=Compensator Output");
@@ -822,6 +820,7 @@ void TIPWindow::SetupGraph(TDC& dc)
 }
 
 
+
 void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOutput[], int jj)
 {
     TClientDC dc(*this);
@@ -842,10 +841,7 @@ void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOut
     if (xx >= xMax) xx = cx*5;
     if (xx2 >= xMax) xx2 = cx*5;
     // Erase Old Graph
-
-//-----------------------------------------------------------------------------
-//  Page 111
-
+//-- Page 111 ------------------------------------------------------------------
     if (xx2 != cx*5)  // cx*5 is Vertical (Angular) Axis Line
     {
       Line(dc, xx2, yGMin, xx2, yGMax, black);  // Eraser Line
@@ -876,6 +872,7 @@ void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOut
 }
 
 
+
 //  Set up maximum coordinate values
 void TIPWindow::SetMaxCoordinates()
 {
@@ -886,6 +883,8 @@ void TIPWindow::SetMaxCoordinates()
   yBase =  yMax - SPACEATBOTTOM;
 }
 
+
+
 void TIPWindow::EvSize(UINT sizeType, TSize& size)
 {
   TFrameWindow::EvSize(sizeType, size);
@@ -894,9 +893,8 @@ void TIPWindow::EvSize(UINT sizeType, TSize& size)
   UpdateWindow();  // Optional
 }
 
-//-----------------------------------------------------------------------------
-//  Page 112
 
+//-- Page 112 ------------------------------------------------------------------
 void TIPWindow::CmNIDAQEnable()  // Allow Real-Time Control
 {
   windowMenu->CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_CHECKED);
@@ -906,6 +904,7 @@ void TIPWindow::CmNIDAQEnable()  // Allow Real-Time Control
 }
 
 
+
 void TIPWindow::CmSimulate()  // Allow Simulation
 {
   windowMenu -> CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_CHECKED);
@@ -913,6 +912,7 @@ void TIPWindow::CmSimulate()  // Allow Simulation
   SIMULATE = 1;
   windowMenu -> CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_UNCHECKED);
 }
+
 
 
 void TIPWindow::CmSetupData()
@@ -931,9 +931,10 @@ void TIPWindow::CmSetupData()
   }
 
   else
-    ss="You Selected Cancel";
+    ss = "You Selected Cancel";
     MessageBox(ss, GetApplication()->GetName(), MB_OK);
 }
+
 
 
 void TIPWindow::CmFrequency()
@@ -942,15 +943,15 @@ void TIPWindow::CmFrequency()
   TClientDC dc(this);
   if (TFreqDlg(this, "FREQUENCY", Frequency).Execute() == IDOK)
     {
-      wsprintf(s, "%s", "John, You Selected Frequency, Dude");
+      wsprintf(s, "%s", "You Selected Frequency");
       dc.TextOut(10, 20, s, strlen(s));
       fs = atoi(Frequency.Freq);
     }
   }
 
-//-----------------------------------------------------------------------------
-//  Page 113
 
+//-- Page 113 ------------------------------------------------------------------
+ 
 void TIPWindow::CmPID()
 {
   TPIDDlg* PIDDlg = new TPIDDlg(this, &PIDOptions);
@@ -1058,6 +1059,8 @@ void TIPWindow::CmNeuralACEASE() // Setup
   }
 }
 
+
+
 void TIPWindow::CmCalibration()
 {
   if (!NIDAQENABLE)
@@ -1095,6 +1098,8 @@ void TIPWindow::CmDisplay()
     MagPD = atoi(Graphics.PixelsPerDegree);
   }
 }
+
+
 
 void TIPWindow::CmFileOpen()
 {
@@ -1178,6 +1183,8 @@ void TIPWindow::CmFileOpen()
     }
   }
 }
+
+
 
 void TIPWindow::CmFileSave()
 {
@@ -1279,10 +1286,13 @@ void TIPWindow::CmFileSave()
   }
 }
 
+
+
 void TIPWindow::CmFileExit()
 {
   CmExit();
 }
+
 
 
 void TIPWindow::CmOldDataGraph
@@ -1291,14 +1301,6 @@ void TIPWindow::CmOldDataGraph
   strcpy(gs, "Inside CmOldDataGraph");
   Invalidate();
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -1457,7 +1459,6 @@ void TIPWindow::CmBeginControl()
 
 
 
-
 void TIPWindow::CmRefSine Wave()
 {
   if (TSinWavRefDlg(this, "SINE WAVE REF", SinWavRefParam), Execute() IDOK)
@@ -1468,32 +1469,13 @@ void TIPWindow::CmRefSine Wave()
 }
 
 
-
-
-
-
-
-
-
-  //-----------------------------------------------------------------------------
-  //  Page 122
-
-
-
-
-
-
-
-
-
-
-
+//-- Page 122 ------------------------------------------------------------------
 
   
-  void TIPWindow::CmRefSeriesOfSteps()
-  {
-    Ref_type = 1;
-    }
+void TIPWindow::CmRefSeriesOfSteps()
+{
+  Ref_type = 1;
+    
     float far TIPWindow::NeuralACEASE(int IC, int jj, double states[])
     {
       // Neural Control/Simulation: Returns Voltage to Motor if in Control Mode
@@ -1506,7 +1488,7 @@ void TIPWindow::CmRefSine Wave()
 
       if (!IC)
       {
-      }
+      
       randomize();
       if (NeuralACEASEOptions Nonuniform)
         ClusterInputSpace(dc);
@@ -1519,8 +1501,8 @@ NextTrial:
         }
         {c=1;
           //assume zero input for ASE at the 1st time step
-          xx=cx*5+1;
-          xx2=cx*5+11; // reset graph line
+          xx = cx * 5+1;
+          xx2 = cx*5+11; // reset graph line
           t1 = 0;
           ace();
           ase(); //initial action Invalidate();
@@ -1529,19 +1511,17 @@ NextStep:
           // Check for User Interrupt During Simulation
           if (SIMULATE && PeekMessage(&msg,NULL,0,0,PM_REMOVE))
           {
-          }
+          
           TranslateMessage(&msg); DispatchMessage(&msg);
           if (data_rec == 1) { // User Interrupt, Stop Run
-          }
+          
           MessageBox("USER INTERRUPT","ACE & ASE",MB_OK);
           goto Interrupt; //End Training
           wsprintf(txt, "Runs=%i Trials=%i Steps-%i", RunNum, TrialNum+1, steps);
           dc.SetTextColor(green);
 
 
-//-----------------------------------------------------------------------------
-//  Page 123
-
+//-- Page 123 ------------------------------------------------------------------
 
           dc.SetBkColor(black);
           if (SIMULATE) steps++;
@@ -1713,10 +1693,13 @@ Nx-MaxAngMag: Ny-MaxAng VelMag;
 
 for(j=1;j<=NumOfDataPoints;j++) {
 }
-// angle and angular velocity normalized data between -1.0 and 1.0 yyc[j]=ang[j]/Nx; xxc[j]=(ang[j]-angl[j-1])*fs/Ny;
-avgx+=xxc[j]; avgy+=yyc[j]; // plot data to be clustered dc.Ellipse(xxc[j]*xMax/2+xo,yyc[j]*yMax/2+yo, xxc[j]*xMax/2+5+xo,yyc[j]*yMax/2+5+yo);
+// angle and angular velocity normalized data between -1.0 and 1.0
+yyc[j]=ang[j]/Nx;
+xxc[j]=(ang[j]-angl[j-1])*fs/Ny;
+avgx+=xxc[j]; avgy+=yyc[j]; // plot data to be clustered
+dc.Ellipse(xxc[j]*xMax/2+xo,yyc[j]*yMax/2+yo, xxc[j]*xMax/2+5+xo,yyc[j]*yMax/2+5+yo);
 iscx-avgx/NumOfDataPoints;
-iscy-avgy/NumOfDataPoints; ..
+iscy-avgy/NumOfDataPoints; 
 // find closest data point to center of mass of input space data // start dmin with value of 1st data point (initial seed center) dmin-pow(xxc[1]-iscx,2)+pow(yyc[1]-iscy,2); ccm=1; for(j=1;j<=NumOfDataPoints;j++) {
 }
 dis-pow(xxc[j]-iscx,2)+pow(yyc[j]-iscy,2);
@@ -1746,20 +1729,20 @@ NextIteration:
 
 // smallest distance to point (jg) // and set that U[ig][ig]=1
 for(j=1; j<=NumOfDataPoints; j++) { // Data Loop
-dmin-pow(xxc[j]-ncx[1],2)+pow(yyc[j]-ncy[1],2); // Set Min. Val to Start
+dmin-pow(xxc[j]-ncx[1],2)+ pow(yyc[j]-ncy[1], 2); // Set Min. Val to Start
 ig=1;
 for(i=1;i<=c;i++) { // Center's Loop
 Ui=0;
-dd-pow(xxc[j]-ncx[i],2)+pow(yyc[j]-ncy[i],2);
-if(dd<=dmin) {
+dd-pow(xxc[j]-ncx[i],2)+pow(yyc[j]-ncy[i], 2);
+if(dd <= dmin) {
 dmin-dd;
-ig=i;
+ig = i;
 }
 }
-U[ig][j]=1;
+U[ig][j] = 1;
 }
 // Compute Cost
-JT=0;
+JT = 0;
 for(i=1; i<=c; i++) {
 }
 J[i]=0;
@@ -1795,9 +1778,7 @@ Line(dc, cxx-50, cyy, cxx+50, cyy, white);
 Line(dc, cxx, cyy-50, cxx, cyy+50, white);
 
 
-//-----------------------------------------------------------------------------
-//  Page 128
-
+//-- Page 128 ------------------------------------------------------------------
 
 }
 void TIPWindow::TrainCMACO
@@ -1840,9 +1821,7 @@ class TIPControlApp: public TApplication {
 public:
 
 
-//-----------------------------------------------------------------------------
-//  Page 129
-
+//-- Page 129 ------------------------------------------------------------------
 
 TIPControlApp(const char* name)
 : TApplication(name) {};
@@ -1850,14 +1829,17 @@ void InitMainWindow();
 void InitInstance();
 };
 
+
 void TIPControlApp::InitMainWindow()
 {
   EnableCtl3d();
   TIPWindow* IPWindow = new TIPWindow(0);
-  IPWindow->GetPIDOptions();
-  IPWindow->GetCalibOptions(); IPWindow->GetGraphics();
+  IPWindow -> GetPIDOptions();
+  IPWindow -> GetCalibOptions();
+  IPWindow -> GetGraphics();
   MainWindow = IPWindow;
 }
+
 
 void TIPControlApp::InitInstance()
 {
@@ -1884,14 +1866,11 @@ return app.Run();
 // Algorithm:
 // Initialize Neural ACE ASE variables here
 
+
+
 void InitializeNeuralACEASE(int IC, int OtherWeights)
 {
-
-
-//-----------------------------------------------------------------------------
-//  Page 130
-
-
+//-- Page 130 ------------------------------------------------------------------
   int i, j, B;
   float s0to1, sltoб, sбto12;
   float ThetaBoxSpacing = ThetaExtreme/NumThetaBoxes;
@@ -1956,7 +1935,8 @@ Sigma Theta[i]=sqrt(-(pow(ThetaBoxSpacing, 2))/(2.0*log(Overlap)));
 Sigma Theta[i]=sqrt(-(pow(DThetaBoxSpacing, 2))/(2.0*log(Overlap)));
 FailAng-12*Ang2Rad; //Failure Angle (by degrees)
 if(NeuralACEASEOptions. Uniform)
-for(i=0; i<NumThetaBoxes; i++)  // Input space normalized to -1 and 1 for(j=0;j<NumDThetaBoxes;j++) { // nc = node or box center
+for(i=0; i<NumThetaBoxes; i++)  // Input space normalized to -1 and 1
+for(j=0; j<NumDThetaBoxes; j++) { // nc = node or box center
 ncx[j+1+i*NumDThetaBoxes]=
 -DThetaExtreme+j*DThetaBoxSpacing*2+DThetaBoxSpacing;
 -ThetaExtreme+i*ThetaBoxSpacing*2+ThetaBoxSpacing,
@@ -2000,9 +1980,7 @@ void ase()
   int ij;
 
 
-//-----------------------------------------------------------------------------
-//  Page 132
-
+//-- Page 132 ------------------------------------------------------------------
 
 double wtsum = 0.0, dom;
 
@@ -2044,13 +2022,12 @@ if((TempISNode (int*)malloc(NumOfNodes))-NULL) exit(-1); //Dynamically Allocate 
 for(i=1; i <= NumOfNodes; i++) ISNode[i] = 0.0;  // Clear Boxes for New State
 if (failure) return;
 
-//-----------------------------------------------------------------------------
-//  Page 133
-
+//-- Page 133 ------------------------------------------------------------------
+  
 if(NeuralACEASEOptions.RBF)
   for (i = 1; i <= NumOfNodes; i++)
   {
-  }
+  
 // 2D Gausian, pow(x,y) = x to power of y
 tn = -pow((x[0] - ncy[i]), 2);
 td = (2 * pow(SigmaTheta[i], 2));
@@ -2092,8 +2069,7 @@ else if(NeuralACEASEOptions.CMAC) {
 
   // free(TempISNode);
 
-  //-----------------------------------------------------------------------------
-  //  Page 134
+//-- Page 134 ------------------------------------------------------------------
 
 }
 
@@ -2152,9 +2128,7 @@ void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
   k1 = 0.0833;   // Nm/amp, Proportionality const. between
 
 
-//-----------------------------------------------------------------------------
-//  Page 135
-
+//-- Page 135 ------------------------------------------------------------------
 
   k2 = 0.0821;    // Torque delivered and winding current  
   jm = 0.000044;  // Vsec/rad, Proportionality const between induced emf & angular velocity.
@@ -2262,34 +2236,31 @@ class TBeginControlDlg: public TDialog {
   public:
 };
 TBeginControlDlg(TWindow* parent, TResId resId) : TDialog(parent,resId) {}
-//
-//// Dialog Constructors
+
+// Dialog Constructors
 ///#
-///TDataDig::TDataDig(TWindow* parent, const char* name,
-///}
-///TDataParamStruct& dataparams)
-///: TDialog(parcnt, DATADIALOG), TWindow(parent)
-///new TEdit(this,DATAFILENAME,sizeof(dataparams.DataFileName)); new TEdit(this,NUMBEROFDATAPOINTS, sizeof(dataparams.NumOutPoints)); new TEdit(this,NUMSKIPDATAPOINTS,sizeof(dataparams.NumSkipPoints)); new TRadioButton(this,IDC_SYNC);
-///new TRadioButton(this, IDC_LIFETIMES); new TRadioButton(this,IDC_STATES);
-///dataparams.CollectSync=FALSE;
-///TransferBuffer = (void far*)&dataparams;
-///TPIDDIg::TPIDDIg(TWindow* parent, PIDStruct* PIDOptions)
-///{
-///}
-///:TDialog(parent, PIDDIALOG)
-///new TRadioButton(this, IDC_SINGLELOOP);
-///new TRadioButton(this, IDC_DUALLOOP);
-///SetTransferBuffer(PIDOptions);
-///TRUNDig::TRUNDlg(TWindow* parent, RUNStruct* RUNOptions)
+TDataDig::TDataDig(TWindow* parent, const char* name,
+}
+TDataParamStruct& dataparams)
+: TDialog(parcnt, DATADIALOG), TWindow(parent)
+new TEdit(this,DATAFILENAME,sizeof(dataparams.DataFileName)); new TEdit(this,NUMBEROFDATAPOINTS, sizeof(dataparams.NumOutPoints)); new TEdit(this,NUMSKIPDATAPOINTS,sizeof(dataparams.NumSkipPoints)); new TRadioButton(this,IDC_SYNC);
+new TRadioButton(this, IDC_LIFETIMES); new TRadioButton(this,IDC_STATES);
+dataparams.CollectSync=FALSE;
+TransferBuffer = (void far*)&dataparams;
+TPIDDIg::TPIDDIg(TWindow* parent, PIDStruct* PIDOptions)
+{
+}
+:TDialog(parent, PIDDIALOG)
+new TRadioButton(this, IDC_SINGLELOOP);
+new TRadioButton(this, IDC_DUALLOOP);
+SetTransferBuffer(PIDOptions);
+TRUNDig::TRUNDlg(TWindow* parent, RUNStruct* RUNOptions)
 ///01~
 
 
-//-----------------------------------------------------------------------------
-//  Page 138
+//-- Page 138 ------------------------------------------------------------------
 
 
-{
-}
 : TDialog(parent, DIASIMBREAK)
 new TRadioButton(this, IDC_KEEPSIMGOING); 
 new TRadioButton(this,IDC_SAVEWEIGHTSMEM);
@@ -2297,73 +2268,74 @@ new TRadioButton(this, IDC_SAVEWEIGHTSFILE);
 new TRadioButton(this, IDC_DONTSAVEWEIGHTS);
  SetTransferBuffer(RUNOptions);
 // For Setup
-// TNeuralACEASEDlg::TNeuralACEASEDlg(TWindow* parent,
-// NeuralACEASEStruct& NeuralACEASEOptions): TDialog(parent,
-// NEURALACEASEDLG)
-// {
-// char txt[10];
-// // note: The order of the new statements must be kept for proper operation
+TNeuralACEASEDlg::TNeuralACEASEDlg(TWindow* parent,
+ NeuralACEASEStruct& NeuralACEASEOptions): TDialog(parent,
+ NEURALACEASEDLG)
+{
+ char txt[10];
+// note: The order of the new statements must be kept for proper operation
 // and their size in memory must be the same as transferbuffer
-// new TRadioButton(this,IDC_ZEROIZEWEIGHTS);
-// new TRadioButton(this,IDC_USESIMULATIONWEIGHTS);
-// new TRadioButton(this,IDC_WEIGHTSFROMFILE);
-// new TEdit(this,IDC_WEIGHTFILENAME,
-// sizeof(NeuralACEASEOptions. WeightFileName));
-// new TRadioButton(this, IDC_UNIFORM);
-// new TRadioButton(this, IDC_NONUNIFORM);
-// new TRadioButton(this, IDC_CMAC);
-// new TEdit(this,IDC_NUMTHETABOXES, sizeof(NeuralACEASEOptions NumThetaBoxes)); new TEdit(this,IDC_NUMDTHETABOXES,sizeof(NeuralACEASEOptions NumD ThetaBoxes)); new TEdit(this,IDC_THETAEXTREME,sizeof(NeuralACEASEOptions ThetaExtreme));
-// new TEdit(this,IDC_DTHETAEXTREME,sizeof(NeuralACEASEOptions DThctaExtrcmc)); new TEdit(this,IDC_ALPHA,sizeof(NeuralACEASEOptions.Alpha));
-// new TRadioButton(this,IDC_SIGMOIDALOUT);
-// new TRadioButton(this, IDC_BANGBANGOUT);
-// new TRadioButton(this,IDC_DISTURBANCEYES);
-// new TRadioButton(this, IDC_DISTURBANCENO);
-// new TCheckBox(this, IDC_RBF),
-// BangBangSlider = new TScrollBar(this, IDC_BANGBANGMAG); BBMagSTxt = new TStatic(this,IDC_VOLTS,10);
-// OverlapSlider = new TScrollBar(this, IDC_OVERLAPSLIDER);
-// OverlapSTxt = new TStatic(this,IDC_OVERLAPVALUE, 10);
-// TransferBuffer = (void far*)&NeuralACEASEOptions; //Set TransferBuffer(NeuralACEASEOptions); //ACEASEOptions = NeuralACEASEOptions;
-// }
-// void TNeuralACEASEDlg::SetupWindow()
-// {
-//
+ new TRadioButton(this,IDC_ZEROIZEWEIGHTS);
+ new TRadioButton(this,IDC_USESIMULATIONWEIGHTS);
+ new TRadioButton(this,IDC_WEIGHTSFROMFILE);
+ new TEdit(this,IDC_WEIGHTFILENAME,
+ sizeof(NeuralACEASEOptions. WeightFileName));
+ new TRadioButton(this, IDC_UNIFORM);
+ new TRadioButton(this, IDC_NONUNIFORM);
+ new TRadioButton(this, IDC_CMAC);
+ new TEdit(this,IDC_NUMTHETABOXES, sizeof(NeuralACEASEOptions NumThetaBoxes));
+ new TEdit(this,IDC_NUMDTHETABOXES,sizeof(NeuralACEASEOptions NumD ThetaBoxes));
+ new TEdit(this,IDC_THETAEXTREME,sizeof(NeuralACEASEOptions ThetaExtreme));
+ new TEdit(this,IDC_DTHETAEXTREME,sizeof(NeuralACEASEOptions DThctaExtrcmc));
+ new TEdit(this,IDC_ALPHA,sizeof(NeuralACEASEOptions.Alpha));
+ new TRadioButton(this,IDC_SIGMOIDALOUT);
+ new TRadioButton(this, IDC_BANGBANGOUT);
+ new TRadioButton(this,IDC_DISTURBANCEYES);
+ new TRadioButton(this, IDC_DISTURBANCENO);
+ new TCheckBox(this, IDC_RBF),
+ BangBangSlider = new TScrollBar(this, IDC_BANGBANGMAG);
+ BBMagSTxt = new TStatic(this,IDC_VOLTS,10);
+ OverlapSlider = new TScrollBar(this, IDC_OVERLAPSLIDER);
+ OverlapSTxt = new TStatic(this,IDC_OVERLAPVALUE, 10);
+ TransferBuffer = (void far*)&NeuralACEASEOptions; //Set TransferBuffer(NeuralACEASEOptions); //ACEASEOptions = NeuralACEASEOptions;
+ }
 
 
 
-//-----------------------------------------------------------------------------
-//  Page 139
-    }
+ void TNeuralACEASEDlg::SetupWindow()
+ {
+
+//-- Page 139 ------------------------------------------------------------------
 TWindow::SetupWindow();
 char txt[10] = "";
 BangBangSlider -> SetRange(1, 600); OverlapSlider -> SetRange(1, 100);
 // Initial Thumb Position
-// BangBangSlider->SetPosition((int)(BangBangGain* 10)); OverlapSlider->SetPosition(100*Overlap); sprintf(txt,"%6.2f", BangBangGain),
- // BBMagSTxt->SetText(txt);
- // sprintf(txt,"%6.2f", Overlap);
- // OverlapSTxt->SetText(txt);
- // void TNeuralACEASEDig::EvBangBang Slide(UINT)
- // {
- // }
- // char txt[10]="";
- // BangBangGain=((float)BangBang Slider->GetPosition())/10; sprintf(txt,"%6.2f", BangBangGain);
- // BBMagSTxt->SetText(txt);
- // void TNeuralACEASEDlg::EvOverlapSlide(UINT)
- // {
- // char txt[10]="";
- // Overlap ((float)(OverlapSlider->GetPosition())/100);
- // sprintf(txt,"%6.2f",Overlap);
- // OverlapSTxt->SetText(txt);
- // TCalibDlg::TCalibDlg(TWindow* parent, TCalibration* Calibration)
- // }
- // : TDialog(parent, CALIBRATIONDIALOG)
- // {
- // new TRadioButton(this,IDC_DIRECTCONTROL); new TRadioButton(this,IDC_CENTERPOSITION); new TRadioButton(this, IDC_ENDPOSITION); new TControl(this, IDC_ZEROIZE);
- // SAngleTxt = new TStatic(this,IDC_ENCODER);
- // Calib Calibration; SetTransferBuffer(Calib);
- // CalDone=0;
- // }
- // //Destructor
- //
+ BangBangSlider->SetPosition((int)(BangBangGain* 10)); OverlapSlider->SetPosition(100*Overlap); sprintf(txt,"%6.2f", BangBangGain),
+ BBMagSTxt->SetText(txt);
+ sprintf(txt,"%6.2f", Overlap);
+/ OverlapSTxt->SetText(txt);
+ void TNeuralACEASEDig::EvBangBang Slide(UINT)
+ {
+ }
+ char txt[10]="";
+ BangBangGain=((float)BangBang Slider->GetPosition())/10; sprintf(txt,"%6.2f", BangBangGain);
+ BBMagSTxt->SetText(txt);
+ void TNeuralACEASEDlg::EvOverlapSlide(UINT)
+ {
+ char txt[10]="";
+ Overlap ((float)(OverlapSlider->GetPosition())/100);
+ sprintf(txt,"%6.2f",Overlap);
+ OverlapSTxt->SetText(txt);
+ TCalibDlg::TCalibDlg(TWindow* parent, TCalibration* Calibration)
+ }
+ : TDialog(parent, CALIBRATIONDIALOG)
+ {
+ new TRadioButton(this,IDC_DIRECTCONTROL); new TRadioButton(this,IDC_CENTERPOSITION); new TRadioButton(this, IDC_ENDPOSITION); new TControl(this, IDC_ZEROIZE);
+ SAngleTxt = new TStatic(this,IDC_ENCODER);
+ Calib Calibration; SetTransferBuffer(Calib);
+ CalDone=0;
+ }
+ //Destructor
 
 
 
@@ -2376,11 +2348,17 @@ TCalibDlg::~TCalibDlg()
 {
 }
 KillTimer(TIMER_ID);
+
+
+
 void TCalibDig::SetupWindow()
 {
   TWindow::SetupWindow();
   SetTimer(TIMER_ID,10);
-}
+
+
+
+
 void TCalibDlg::EvTimer(UINT /*timerId*/)
 {
   char Degrees[10];
@@ -2418,19 +2396,12 @@ void TCalibDlg::CmCalibok()
 
 
 
-//-----------------------------------------------------------------------------
-//  Page 141
-
+//-- Page 141 ------------------------------------------------------------------
 
   Destroy(0);
-  }
 void TCalibDlg::CmCalibZeroize()
-{
-}
 calibrate-current_measurel;
 TGraphicsDlg:: TGraphicsDlg(TWindow" parent, TGraphics Graphics)
-{
-}
 : TDialog(parent, GRAPHICSDIALOG)
 new TRadioButton(this, IDC_GRAPHICSON);
 new TRadioButton(this,IDC_GRAPHICSOFF);
@@ -2439,24 +2410,19 @@ new TEdit(this, IDC_PIXELSDEGREE, 10);
 SetTransferBuffer(Graphics);
 
 void TDataDlg::CmSync
-{
-}
 //dataparams CollectSync-dataparams CollectSync
-////if(!dataparams.CollectSync) return;
-///string s "Data Collected in Sync??";
-///MessageBeep(0);
-///MessageBox(s.c_str(), "Sync", MB_OK);
-///TFreqDlg::TFreqDlg(TWindow* parent, const char* name, TFrequency& freq)
-{
-}
-///: TDialog(parent, name), TWindow(parent)
-///new TEdit(this,IDC_FREQUENCY,sizeof(freq));
-///TransferBuffer = (void far*)&freq;
-///TSinWavRefDig: TSinWayRefDig(TWindow* parent, const char* name,
-///TSinWavRefParam& SinWayRefParam)
-///:TDialog(parent, DIASINEREF), TWindow(parent)
-///new TEdit(this,IDC_SINE_REF_AMP sizeof(SaWayRefParam. Amp)); new TEdit(this IDC_SINE_REF_FREQ sizeof(SaWayRefParam Freq));
-///TransferBuffer = (void for*)&S
-
+if(!dataparams.CollectSync) return;
+string s "Data Collected in Sync??";
+MessageBeep(0);
+MessageBox(s.c_str(), "Sync", MB_OK);
+TFreqDlg::TFreqDlg(TWindow* parent, const char* name, TFrequency& freq)
+: TDialog(parent, name), TWindow(parent)
+new TEdit(this,IDC_FREQUENCY,sizeof(freq));
+TransferBuffer = (void far*)&freq;
+TSinWavRefDig: TSinWayRefDig(TWindow* parent, const char* name,
+TSinWavRefParam& SinWayRefParam)
+:TDialog(parent, DIASINEREF), TWindow(parent)
+new TEdit(this,IDC_SINE_REF_AMP sizeof(SaWayRefParam. Amp)); new TEdit(this IDC_SINE_REF_FREQ sizeof(SaWayRefParam Freq));
+TransferBuffer = (void for*)&S
 
 
