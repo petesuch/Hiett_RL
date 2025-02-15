@@ -1076,7 +1076,7 @@ void TIPWindow::CmCalibration()
   strcpy(Calibration.PoleAngle, Degrees);
 
   CalibDlg->Execute();
-  delete CalibDlg; // Prevent memory leak
+  delete CalibDlg;  // Prevent memory leak
 }
 
 void TIPWindow::CmDisplay()
@@ -1225,7 +1225,7 @@ void TIPWindow::CmFileSave()
         {
           for (i = 1; i < NumOfNodes; i++)
           {
-            // Write Weights to a File
+            //  Write Weights to a File
             fprintf(fdata, "%f %f %f %f\n", wt[i], vt[i], elg[i], xbar[i]);
           }
           fclose(fdata);
@@ -1449,9 +1449,9 @@ void TIPWindow::CmBeginControl()
 
 
 
-void TIPWindow::CmRefSine Wave()
+void TIPWindow::CmRefSineWave()
 {
-  if (TSinWavRefDlg(this, "SINE WAVE REF", SinWavRefParam), Execute() IDOK)
+  if (TSinWavRefDlg(this, "SINE WAVE REF", SinWavRefParam).Execute() == IDOK)
   {
     MessageBox("Sine Wave Ref OK", SinWavRefParam.Amp, MB_OK);
     Ref_type = 0;
