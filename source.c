@@ -1443,7 +1443,6 @@ void TIPWindow::CmBeginControl()
         continue;
     }
   }
-
   if (NIDAQENABLE)
     AO_VWrite(board, 0, 0.0);
 }
