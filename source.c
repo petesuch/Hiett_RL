@@ -1460,12 +1460,10 @@ void TIPWindow::CmRefSineWave()
 
 //-- Page 122 ------------------------------------------------------------------
 
-
 void TIPWindow::CmRefSeriesOfSteps()
 {
   Ref_type = 1;
 }
-  
 
 float far TIPWindow::NeuralACEASE(int IC, int jj, double states[])
 {
@@ -1489,20 +1487,20 @@ float far TIPWindow::NeuralACEASE(int IC, int jj, double states[])
 
   randomize();
 
-  // main loop Neural ACE ASE:
-  NextTrial:
+// main loop Neural ACE ASE:
+NextTrial:
 
   if (SIMULATE)
   {
-    //assume zero input for ASE at the 1st time step
-    xx = cx * 5+1;
-    xx2 = cx * 5+11 ; // reset graph line
+    // assume zero input for ASE at the 1st time step
+    xx = cx * 5 + 1;
+    xx2 = cx * 5 + 11; // reset graph line
     tt = 0;
     ace();
-    ase(); //initial action 
+    ase(); // initial action
     Invalidate();
   }
-  
+
   IC = 1;
 
 NextStep:
@@ -1514,12 +1512,12 @@ NextStep:
   }
 
   if (data_rec == -1)
-  { 
+  {
     // User Interrupt,Stop Run
     MessageBox("USER INTERRUPT", "ACE & ASE", MB_OK);
-    goto Interrupt;  // End Training
+    goto Interrupt; // End Training
   }
-  wsprintf(txt, "Runs=%i Trials=%i Steps=%i", RunNum, TrialNum+1, steps);
+  wsprintf(txt, "Runs=%i Trials=%i Steps=%i", RunNum, TrialNum + 1, steps);
   dc.SetTextColor(green);
   //-- Page 123 -----------------------------------------------------------------
   dc.SetBkColor(black);
@@ -1527,35 +1525,40 @@ NextStep:
     steps++;
   else
     steps = jj;
-          
+
   // force is voltage applied to windings (max/min +/-.2)
-  force[steps] = BangBangGain*action;
+  force[steps] = BangBangGain * action;
   if (SIMULATE)
     PoleModelSolve();
-  
+
   tt = tt + tstep;
   systime[steps] = tt;
-  
-  for(i = 0; i < NS; i++) 
+
+  for (i = 0; i < NS; i++)
     y0[i] = states[i];
 
   ang[steps] = states[0] * Rad2Ang;
+
   if (fabs(ang[steps]) > MaxAngMag)
     MaxAngMag = fabs(ang[steps]);
+
   if ((fabs(ang[steps] - ang[steps - 1]) * fs) > MaxAngVelMag)
-    MaxAngVelMag - fabs(ang[steps] - ang[steps -1 ]) * fs;
+    MaxAngVelMag = fabs(ang[steps] - ang[steps - 1]) * fs;
+
   if (abs(states[0]) > FailAng)
   {
     failure = 1;
-    reinf = 1;
+    reinf = -1;
     NumRunFails[RunNum] += 1;
   }
   decoder(); // Find which Box states are in
   predlast = pred;
   ace();
   ase(); // initial action
+
   if (SIMULATE && Graphics.GraphicsOn)
     Graph(ang, V_reff, force, steps); // DISPLAY GRAPH
+
   if (!failure)
   {
     for (i = 1; i <= NumOfNodes; i++)
@@ -1564,274 +1567,311 @@ NextStep:
       xbar[i] = Lamda * xbar[i] + (1 - Lamda) * ISNode[i];
     }
   }
+
   dc.SetTextColor(white);
   dc.TextOut(xMax - cx * (strlen(txt) + 5), yMax - 10 - cy, txt, strlen(txt));
+
   if (!SIMULATE && !failure)
     return (float far)force[steps] / MOTORVOLT_GAIN;
+
   if (!failure && steps < (MAX_STEPS - 2) && SIMULATE)
     goto NextStep;
 
 Interrupt: // User Interrupt or Failure Occurs then Jump to Here
 
-          LifeTime[RunNum][TrialNum] = steps - prevt;
-          TrialNum++;
-          if(failure) {
-            // If SIMULATE=1 END Trial or Failure Occurs, not time to reset. // Reset Variables for next trial
-            for(i=0; i<NS; i++) yo[i]=0;
-            // Find New Node Centers Based on Clustering of Input Data // From all Previous Trials
-            failure = 0;
-            reinf = 0;
-            predlast = 0;
-            for (i = 1; i <= NumOfNodes; i++) {
+  LifeTime[RunNum][TrialNum] = steps - prevt;
+  TrialNum++;
 
-//-- Page 124 ---------------------------------------------------------------------
+  if (failure)
+  {
+    // If SIMULATE=1 END Trial or Failure Occurs, not time to reset.
+    // Reset Variables for next trial
+    for (i = 0; i < NS; i++)
+      y0[i] = 0;
+    // Find New Node Centers Based on Clustering of Input Data
+    // From all Previous Trials
+    failure = 0;
+    reinf = 0;
+    predlast = 0;
+    for (i = 1; i <= NumOfNodes; i++)
+    {
+      //-- Page 124 ----------------------------------------------------
+      elg[i] = elg0[i];
+      xbar[i] = elg0[i];
+      ISNode[i] = 0.0;
+    }
+    prevt = steps;
+    if (SIMULATE)
+    {
+      // Running Simulation or Training
+      if (TrialNum < MAX_TRIALS && steps < (MAX_STEPS - 2))
+        goto Next Trial;
+      else
+      {
+        randomize();
+        InitializeNeuralACEASE(IC, 0);
+        RunNum++;
+        // MessageBox("Completed Run", "NEXT RUN",MB_OK);
+        if (RunNum > MAX_RUNS)
+        {
+          RunNum = 0;
+          TrialNum = 0;
+          IC = 0;
+          RunWeightSave();
+          goto EndACEASE;
+        }
+        TrialNum = 0;
+        goto NextTrial;
+        // MessageBox("EXCEEDED MAX TRIALS","RUN STOPPED", MB_OK);
+        // RunWeijghtSave();  // Execute Weight Save Options
+      }
+    }
+    else
+    {
+      // Real-Time Control
+      if (NIDAQENABLE)
+        AO_VWrite(board, 0, 0.0);
+      MessageBox("FAILURE HAS OCCURED! RUN AGAIN TO/ TRAIN", "CONTROL STOPPED", MB_OK);
+      RunWeightSave(); // Execute Weight Save Options
+      Invalidate();
+      if (RUNOptions.KeepSimGoing)
+        CmBeginControl();
+    }
+  }
+  else
+  {
+    //  NO FAILURE: USER INTERRUPT OR SIM END (BEYOND MAX/ STEPS)
+    if (steps >= (MAX_STEPS - 2))
+    {
+      // MessageBox("MAX STEPS EXCEEDED","END",MB_OK); //RunWeight Save(); // Execute Weight Save Options
+      if (TrialNum < MAX_TRIALS)
+      {
+        steps - 1;
+        prevt = 0;
+        goto NextTrial;
+      }
+      else
+      {
+        randomize();
+        InitializeNeuralACEASE(IC, 0);
+        RunNum++;
+        if (RunNum > MAX_RUNS)
+        {
+          RunNum = 0;
+          TrialNum = 0;
+          IC = 0;
+          RunWeightSave(); // Execute Weight Save Options
 
-              elg[i] = elg0[i];
-              xbar[i] = elg0[i];
-            }
-          }
-          ISNode[i] = 0.0;
-          prevt = steps;
-          if(SIMULATE) {  // Running Simulation or Training
-          }
-          if (TrialNum<MAX TRIALS && steps < (MAX_STEPS - 2))
-          else {
-            goto Next Trial;
-            randomize();
-            InitializeNeuralACEASE(IC, 0);
-            RunNum++;
-            //MessageBox("Completed Run", "NEXT RUN",MB_OK);
-            if(RunNum>MAX_RUNS) { RunNum = 0;
-            }
-            TrialNum = 0; IC = 0;
-            RunWeightSave();
-            goto EndACEASE;
-            TrialNum = 0;
-            goto NextTrial;
-            MessageBox("EXCEEDED MAX TRIALS","RUN STOPPED", MB_OK);
-            //RunWeightSave();  // Execute Weight Save Options
-            else {  //Real-Time Control
-            }
-            if (NIDAQENABLE) AO_VWrite(board, 0, 0.0);
-            MessageBox("FAILURE HAS OCCURED! RUN AGAIN TO/ TRAIN", "CONTROL STOPPED",MB_OK);
-            RunWeightSave();  // Execute Weight Save Options Invalidate();
-            if(RUNOptions.KeepSimGoing) CmBeginControl();
-            else { //  NO FAILURE: USER INTERRUPT OR SIM END (BEYOND MAX/ STEPS)
-              if(steps (MAX_STEPS-2))
-              {
-                //MessageBox("MAX STEPS EXCEEDED","END",MB_OK); //RunWeight Save(); // Execute Weight Save Options
-                if (TrialNum <MAX_TRIALS)
-                { steps-1;
-                  prevt = 0; goto NextTrial;
-                }
-                else {
-                  randomize();
-                  InitializeNeuralACEASE(IC, 0);
-                  RunNum++;
-                  if(RunNum > MAX_RUNS)
-                  { 
-                    RunNum = 0;
-                    TrialNum = 0;
-                    IC = 0;
-                    RunWeightSave();
+          goto EndACEASE;
+        }
 
-                    goto EndACEASE; 
-                  }
+        //-- Page 125 ---------------------------------------------------------------------
 
-
-//-- Page 125 ---------------------------------------------------------------------
-
-                  TrialNum=0;
-                  goto NextTrial;
-                }
-              }
-              else {
-                if(SIMULATE) 
-                {  // Running Simulation or Training
-                MessageBox("SIMULATION STOPPED","USER INTERRUPT", MB_OK);
-                Choice-RunWeightSave();  // Execute Weight Save Options 
-                if(RUNOptions.KeepSimGoing && steps<(MAX_STEPS-2))
-                { 
-                  data_rec=1;
-              }
-              delay = 0;
-              goto NextStep:
-                if(Choice IDCANCEL) goto NextStep;
-                else { //Real-Time Control
-                  if (NIDAQENABLE) AO_VWrite(board, 0, 0.0); MessageBox("CONTROL STOPPED","USER/
+        TrialNum = 0;
+        goto NextTrial;
+      }
+    }
+    else
+    {
+      if (SIMULATE)
+      { // Running Simulation or Training
+        MessageBox("SIMULATION STOPPED", "USER INTERRUPT", MB_OK);
+        Choice - RunWeightSave(); // Execute Weight Save Options
+        if (RUNOptions.KeepSimGoing && steps < (MAX_STEPS - 2))
+        {
+          data_rec = 1;
+        }
+        delay = 0;
+        goto NextStep : if (Choice IDCANCEL) goto NextStep;
+        else
+        { // Real-Time Control
+          if (NIDAQENABLE)
+            AO_VWrite(board, 0, 0.0); MessageBox("CONTROL STOPPED","USER/
                       INTERRUPT", MB_OK);
                   RunWeightSave(); // Execute Weight Save Options
-                }
-              }
-EndACEASE:
-              if (SIMULATE) MessageBox("END SIMULATION/CONTROL", "END", MB_OK); data rec=1;
-              IC = 0;
-              return 0.0;  // Simulation Ends return arbitrary float value
-              void TIPWindow::ClusterInputSpace(TDC &dc)
-              {
-                float DDMAXAVG = 0, DD = 0;
-                static int a, i, j, ig. jg, k, xOff, yOff, G, pp;
-                static float Nx, Ny, JT, OldJT, JTFirst, d1, d2, Gain = 2.0;
-                static double xsum, ysum;
-                int ri, cc, c-NumOfNodes, xo-xMax/2, yo-yMax/2;  // xo x offset yo y offset
-                int IN, ccm;
-                static long r, th, p1, p2, si;
-                static float a1, a2, a3, a4, a5, iscx, iscy;
-                static double nx, ny, cxx, cyy;
-                static float dd,dmin,dis;
-                static float avgx, avgy, PG;
-                float ThetaBoxSpacing = 2 * ThetaExtreme/NumThetaBoxes;
-                float DThetaBoxSpacing = 2 * DThetaExtreme/NumDThetaBoxes;
-                static char txt[50];
-                int ridx;
-                TRect rect;
-                HPEN RedPen, BluePen, WhitePen, BlackPen:
-//-- Page 126 ---------------------------------------------------------------------
-                  HPEN hOldPen, GreenPen;
-                IN=0;
-                sprintf(txt, "xMax=%i yMax-%i ", xMax, yMax); dc.TextOut(10, 10, txt, strlen(txt));
-                Line(dc, xMax/2,10, xMax/2, yMax-10, yellow); // vertical
-                Line(dc, 10, yMax/2, xMax-10, yMax/2, yellow); // horizontal
-                MessageBox("Choose Data File to Cluster", "CLUSTERING", MB_OK);
-                CmFileOpen();
-                if(NumOfDataPoints<1) 
-                {
+        }
+      }
+    EndACEASE:
+      if (SIMULATE)
+        MessageBox("END SIMULATION/CONTROL", "END", MB_OK);
+      data rec = 1;
+      IC = 0;
+      return 0.0; // Simulation Ends return arbitrary float value
+    }
+  }
+}
 
-                }
-                MessageBox("No Data File Chosen", "Error",MB_OK);
-                return;
-                // find center of mass of input space avgx=0; avgy=0;
-                Nx-MaxAngMag: Ny-MaxAng VelMag;
+void TIPWindow::ClusterInputSpace(TDC &dc)
+{
+  float DDMAXAVG = 0, DD = 0;
+  static int a, i, j, ig.jg, k, xOff, yOff, G, pp;
+  static float Nx, Ny, JT, OldJT, JTFirst, d1, d2, Gain = 2.0;
+  static double xsum, ysum;
+  int ri, cc, c - NumOfNodes, xo - xMax / 2, yo - yMax / 2; // xo x offset yo y offset
+  int IN, ccm;
+  static long r, th, p1, p2, si;
+  static float a1, a2, a3, a4, a5, iscx, iscy;
+  static double nx, ny, cxx, cyy;
+  static float dd, dmin, dis;
+  static float avgx, avgy, PG;
+  float ThetaBoxSpacing = 2 * ThetaExtreme / NumThetaBoxes;
+  float DThetaBoxSpacing = 2 * DThetaExtreme / NumDThetaBoxes;
+  static char txt[50];
+  int ridx;
+  TRect rect;
+  HPEN RedPen, BluePen, WhitePen, BlackPen :
+      //-- Page 126 ---------------------------------------------------------------------
+      HPEN hOldPen,
+      GreenPen;
+  IN = 0;
+  sprintf(txt, "xMax=%i yMax-%i ", xMax, yMax);
+  dc.TextOut(10, 10, txt, strlen(txt));
+  Line(dc, xMax / 2, 10, xMax / 2, yMax - 10, yellow); // vertical
+  Line(dc, 10, yMax / 2, xMax - 10, yMax / 2, yellow); // horizontal
+  MessageBox("Choose Data File to Cluster", "CLUSTERING", MB_OK);
+  CmFileOpen();
+  if (NumOfDataPoints < 1)
+  {
+  }
+  MessageBox("No Data File Chosen", "Error", MB_OK);
+  return;
+  // find center of mass of input space avgx=0; avgy=0;
+  Nx - MaxAngMag : Ny - MaxAng VelMag;
 
-                for (j = 1; j <= NumOfDataPoints; j++)
-                {
-                  // angle and angular velocity normalized data between -1.0 and 1.0
-                  yyc[j] = ang[j] / Nx;
-                  xxc[j] = (ang[j] - angl[j - 1]) * fs / Ny;
-                  avgx += xxc[j];
-                  avgy += yyc[j]; // plot data to be clustered
-                  dc.Ellipse(xxc[j] * xMax / 2 + xo, yyc[j] * yMax / 2 + yo, xxc[j] * xMax / 2 + 5 + xo, yyc[j] * yMax / 2 + 5 + yo);
-                  iscx - avgx / NumOfDataPoints;
-                  iscy - avgy / NumOfDataPoints;
-                  // find closest data point to center of mass of input space data // start dmin with value of 1st data point (initial seed center) dmin-pow(xxc[1]-iscx,2)+pow(yyc[1]-iscy,2); ccm=1; for(j=1;j<=NumOfDataPoints;j++) {
-                }
-              dis-pow(xxc[j]-iscx,2) + pow(yyc[j] - iscy, 2);
-              if(dis <= dmin) { ccm-j; dmin=dis;
-              }
-              // Set initial center closest to center of mass of input space cxx-ncx[1]*xMax/2+xo; cyy-ncy[1]*yMax/2+yo;
-              Line(dc, cxx-20, cyy, cxx+20, cyy, red);
-              Line(dc, cxx, cyy-20, cxx, cyy+20, red);
+  for (j = 1; j <= NumOfDataPoints; j++)
+  {
+    // angle and angular velocity normalized data between -1.0 and 1.0
+    yyc[j] = ang[j] / Nx;
+    xxc[j] = (ang[j] - angl[j - 1]) * fs / Ny;
+    avgx += xxc[j];
+    avgy += yyc[j]; // plot data to be clustered
+    dc.Ellipse(xxc[j] * xMax / 2 + xo, yyc[j] * yMax / 2 + yo, xxc[j] * xMax / 2 + 5 + xo, yyc[j] * yMax / 2 + 5 + yo);
+    iscx - avgx / NumOfDataPoints;
+    iscy - avgy / NumOfDataPoints;
+    // find closest data point to center of mass of input space data // start dmin with value of 1st data point (initial seed center) dmin-pow(xxc[1]-iscx,2)+pow(yyc[1]-iscy,2); ccm=1; for(j=1;j<=NumOfDataPoints;j++) {
+  }
+  dis - pow(xxc[j] - iscx, 2) + pow(yyc[j] - iscy, 2);
+  if (dis <= dmin)
+  {
+    ccm - j;
+    dmin = dis;
+  }
+  // Set initial center closest to center of mass of input space cxx-ncx[1]*xMax/2+xo; cyy-ncy[1]*yMax/2+yo;
+  Line(dc, cxx - 20, cyy, cxx + 20, cyy, red);
+  Line(dc, cxx, cyy - 20, cxx, cyy + 20, red);
 
-              for(i=1; i< NumOfNodes; i++)
-              {
+  for (i = 1; i < NumOfNodes; i++)
+  {
 
-NextIteration:
-                ridx=random(NumOfDataPoints);
-                ncx[i]=xxc[ridx]; 
-                ncy[i]=yyc[ridx];
-                si=20+1*20;
-                cxx ncx[i+1]*xMax/2+xo;
-                cyy-ncy[i+1]*yMax/2+yo;
-                Line(dc, cxx-si, cyy, cxx + si, cyy, blue);
+  NextIteration:
+    ridx = random(NumOfDataPoints);
+    ncx[i] = xxc[ridx];
+    ncy[i] = yyc[ridx];
+    si = 20 + 1 * 20;
+    cxx ncx[i + 1] * xMax / 2 + xo;
+    cyy - ncy[i + 1] * yMax / 2 + yo;
+    Line(dc, cxx - si, cyy, cxx + si, cyy, blue);
 
-                // Display All Initial Centers
-                Line(dc, cxx, cyy-si, cxx, cyy+si, blue);
-                // Determine Cluster Membership Matrix
-                // initialize all U[i][j] to 0
-                // until all points have been
-                // checked. Then find group (ig)with
+    // Display All Initial Centers
+    Line(dc, cxx, cyy - si, cxx, cyy + si, blue);
+    // Determine Cluster Membership Matrix
+    // initialize all U[i][j] to 0
+    // until all points have been
+    // checked. Then find group (ig)with
 
+    //-- Page 127 --------------------------------------------------------------------
+    // smallest distance to point (jg) // and set that U[ig][ig]=1
+    for (j = 1; j <= NumOfDataPoints; j++)
+    {                                                           // Data Loop
+      dmin - pow(xxc[j] - ncx[1], 2) + pow(yyc[j] - ncy[1], 2); // Set Min. Val to Start
+      ig = 1;
+      for (i = 1; i <= c; i++)
+      { // Center's Loop
+        Ui = 0;
+        dd - pow(xxc[j] - ncx[i], 2) + pow(yyc[j] - ncy[i], 2);
+        if (dd <= dmin)
+        {
+          dmin - dd;
+          ig = i;
+        }
+      }
+      U[ig][j] = 1;
+    }
+    // Compute Cost
+    JT = 0;
+    for (i = 1; i <= c; i++)
+    {
+    }
+    J[i] = 0;
+    for (k = 1; k <= NumOfDataPoints; k++)
+      JT += J[i];
+    if (!IN)
+      JTFirst - JT;
+    if (U[i][k])
+      J[i] + -pow(xxc[k] - ncx[i], 2) + pow(yyc[k] - ncy[i], 2);
+    if (JTFirst - 0.0 && JT > 0.0)
+      JTFirst - JT;
+    IN++;
+    for (i = 1; i <= c; i++)
+    {
+      G = 0;
+      xsum = ysum = 0.0;
+      for (j = 1; j <= NumOfDataPoints; j++)
+      {
+        G += U[i][j];
+        if (U[i][j])
+        {
+          xsum + -xxc[j];
+          ysum + -yyc[j];
+        }
+        dc.TextOut(10, 100, "ERROR", 5);
+        if (G == 0)
+        {
+          goto end;
+        }
+        ncx[i] = xsum / (double)G;
+        ncy[i] = ysum / (double)G;
+      }
+    end:
+      if (IN < 50)
+        goto NextItcration;
+      sprintf(txt, "IN=%i Init. Cost-%15.2f Final Cost JT=%15.2f", IN, JTFirst, JT);
+      dc.TextOut(10, 30, txt, strlen(txt));
+      for (i = 1; i <= c; i++) // Draw final centers as white
+      {
+        // De-normalize
+        cxx - ncx[i] * xMax / 2 + xo;
+        cyy - ncy[i] * yMax / 2 + yo;
+        Line(dc, cxx - 50, cyy, cxx + 50, cyy, white);
+      }
+      Line(dc, cxx, cyy - 50, cxx, cyy + 50, white);
 
-//-- Page 127 --------------------------------------------------------------------
-               // smallest distance to point (jg) // and set that U[ig][ig]=1
-                for(j=1; j<=NumOfDataPoints; j++)
-                { // Data Loop
-                  dmin-pow(xxc[j]-ncx[1],2) + pow(yyc[j] - ncy[1], 2); // Set Min. Val to Start
-                  ig=1;
-                  for(i=1; i<=c; i++) 
-                  { // Center's Loop
-                    Ui=0;
-                    dd-pow(xxc[j]-ncx[i],2)+pow(yyc[j]-ncy[i], 2);
-                    if(dd <= dmin) {
-                      dmin-dd;
-                      ig = i;
-                    }
-                  }
-                  U[ig][j] = 1;
-                }
-                // Compute Cost
-                JT = 0;
-                for(i=1; i<=c; i++)
-                {
-                }
-                J[i]=0;
-                for(k=1; k<=NumOfDataPoints; k++)
-                  JT+=J[i];
-                if(!IN) JTFirst-JT;
-                if(U[i][k]) J[i]+-pow(xxc[k] - ncx[i],2) + pow(yyc[k] - ncy[i],2);
-                if(JTFirst-0.0 && JT>0.0) JTFirst-JT;
-                IN++;
-                for(i=1; i<=c; i++)
-                {
-                  G=0;
-                  xsum=ysum=0.0;
-                  for(j=1; j<=NumOfDataPoints; j++)
-                  {
-                    G+=U[i][j];
-                    if(U[i][j]) 
-                    { 
-                      xsum+-xxc[j]; ysum+-yyc[j];
-                     }
-                    dc.TextOut(10, 100, "ERROR", 5);
-                    if(G==0)
-                    {
-                      goto end;
-                    }
-                    ncx[i] = xsum/(double)G;
-                    ncy[i] = ysum/(double)G;
-                  }
-end:
-                  if(IN < 50) goto NextItcration;
-                  sprintf(txt, "IN=%i Init. Cost-%15.2f Final Cost JT=%15.2f", IN, JTFirst, JT);
-                  dc.TextOut(10,30,txt, strlen(txt));
-                  for(i=1; i<=c; i++) // Draw final centers as white
-                  {
-                    // De-normalize
-                    cxx-ncx[i]*xMax/2+xo; cyy-ncy[i]*yMax/2+yo;
-                    Line(dc, cxx-50, cyy, cxx+50, cyy, white);
-                  }
-                  Line(dc, cxx, cyy-50, cxx, cyy+50, white);
-
-
-//-- Page 128 ------------------------------------------------------------------
-
-                }
-
-              }
-            }
-
-
+      //-- Page 128 ------------------------------------------------------------------
+    }
+  }
+}
 
 void TIPWindow::TrainCMACO
 {
-   static int i;
-   static int states[NS];
-   static int beta=2;
-   MessageBox("Choose Data File to Train CMAC", "CMAC",MB_OK); CmFileOpen();
-   if(NumOfDataPoints<1) {
-("No Data File Chosen", "Error",MB_OK);
-     return;
-   }
-   for(i=1; i<NumOfDataPoints; i++) {
-     states[0]=int((float)random(1000)/1000.0*ThetaExtreme*2-ThetaExtreme);
-     states[1]=int((float)random(1000)/1000.0*DThetaExtreme*2-DThetaExtreme);
-     train_cmac(cmac_id,states, (int)ang,beta,40);// ang is training desired resp
-                                                  // in radians
-     MessageBox("Finished Training CMAC","CMAC",MB_OK);
-   }
- }
-
-
+  static int i;
+  static int states[NS];
+  static int beta = 2;
+  MessageBox("Choose Data File to Train CMAC", "CMAC", MB_OK);
+  CmFileOpen();
+  if (NumOfDataPoints < 1)
+  {
+    ("No Data File Chosen", "Error", MB_OK);
+    return;
+  }
+  for (i = 1; i < NumOfDataPoints; i++)
+  {
+    states[0] = int((float)random(1000) / 1000.0 * ThetaExtreme * 2 - ThetaExtreme);
+    states[1] = int((float)random(1000) / 1000.0 * DThetaExtreme * 2 - DThetaExtreme);
+    train_cmac(cmac_id, states, (int)ang, beta, 40); // ang is training desired resp
+                                                     // in radians
+    MessageBox("Finished Training CMAC", "CMAC", MB_OK);
+  }
+}
 
  int TIPWindow::RunWeightSave()
  {
