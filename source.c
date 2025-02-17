@@ -1186,7 +1186,7 @@ void TIPWindow::CmFileSave()
   float temp;
 
   FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, "Weight Files(*.wgt)|*.wgt|Data Files (*.dat)|*.dat|All Files (*.*)|*.*|", 0, "WGT", "DAT");
-
+//-- Page 117 -----------------------------------------------------------------
   strcpy(FileData->FileName, SaveFileName);
 
   if (TFileSaveDialog(this, *FileData).Execute() == IDOK)
@@ -1257,6 +1257,7 @@ void TIPWindow::CmFileSave()
               for (TrialNum = 0; TrialNum < MAX_TRIALS; TrialNum++)
               {
                 fprintf(fdata, "%10i %10i %10 \n ", RunNum, TrialNum, LifeTime[RunNum][TrialNum]);
+//-- Page 118 -----------------------------------------------------------------
               }
             }
             RunNum = 0;
@@ -1293,12 +1294,12 @@ void TIPWindow::CmOldDataGraph
 }
 
 
-
-void TIPWindow::CmBeginControl()
+void TIPWindow::CmBeginControl()  //  Refactored with ChatGPT; use with caution.
 {
   int start = 0, Mag = 500;
   char txt[30];
   static float oldx1 = 0;
+
   MSG msg;
   BOOL fRetVal = TRUE;
   TClientDC dc(*this);
@@ -1320,6 +1321,7 @@ void TIPWindow::CmBeginControl()
   {
     std::string s;
     s += "HINT: Be sure that everything is setup properly\n";
+    //-- Page 119 -------------------------------------------------------------
     s += "under the Setup Menu. It is highly likely\n";
     s += "that the system will not work as expected\n";
     s += "if you do not have options set correctly.\n";
@@ -1465,7 +1467,6 @@ void TIPWindow::CmRefSeriesOfSteps()
   Ref_type = 1;
 }
 
-
 float far TIPWindow::NeuralACEASE(int IC, int jj, double states[])
 {
   // Neural Control/Simulation: Returns Voltage to Motor if in Control Mode
@@ -1487,9 +1488,8 @@ float far TIPWindow::NeuralACEASE(int IC, int jj, double states[])
 
   randomize();
 
-// main loop Neural ACE ASE:
+  // main loop Neural ACE ASE:
 NextTrial:
-
   if (SIMULATE)
   {
     // assume zero input for ASE at the 1st time step
@@ -1577,7 +1577,6 @@ NextStep:
     goto NextStep;
 
 Interrupt: // User Interrupt or Failure Occurs then Jump to Here
-
   LifeTime[RunNum][TrialNum] = steps - prevt;
   TrialNum++;
 
@@ -1604,7 +1603,7 @@ Interrupt: // User Interrupt or Failure Occurs then Jump to Here
     {
       // Running Simulation or Training
       if (TrialNum < MAX_TRIALS && steps < (MAX_STEPS - 2))
-        goto Next Trial;
+        goto NextTrial;
       else
       {
         randomize();
@@ -1630,7 +1629,7 @@ Interrupt: // User Interrupt or Failure Occurs then Jump to Here
       // Real-Time Control
       if (NIDAQENABLE)
         AO_VWrite(board, 0, 0.0);
-      MessageBox("FAILURE HAS OCCURED! RUN AGAIN TO/ TRAIN", "CONTROL STOPPED", MB_OK);
+      MessageBox("FAILURE HAS OCCURED! RUN AGAIN TO TRAIN", "CONTROL STOPPED", MB_OK);
       RunWeightSave(); // Execute Weight Save Options
       Invalidate();
       if (RUNOptions.KeepSimGoing)
@@ -1639,10 +1638,11 @@ Interrupt: // User Interrupt or Failure Occurs then Jump to Here
   }
   else
   {
-    //  NO FAILURE: USER INTERRUPT OR SIM END (BEYOND MAX/ STEPS)
+    //  NO FAILURE: USER INTERRUPT OR SIM END (BEYOND MAX/STEPS)
     if (steps >= (MAX_STEPS - 2))
     {
-      // MessageBox("MAX STEPS EXCEEDED","END",MB_OK); //RunWeight Save(); // Execute Weight Save Options
+      // MessageBox("MAX STEPS EXCEEDED","END",MB_OK);
+      // RunWeight Save(); // Execute Weight Save Options
       if (TrialNum < MAX_TRIALS)
       {
         steps - 1;
@@ -1660,12 +1660,9 @@ Interrupt: // User Interrupt or Failure Occurs then Jump to Here
           TrialNum = 0;
           IC = 0;
           RunWeightSave(); // Execute Weight Save Options
-
           goto EndACEASE;
         }
-
         //-- Page 125 ---------------------------------------------------------------------
-
         TrialNum = 0;
         goto NextTrial;
       }
@@ -1675,29 +1672,34 @@ Interrupt: // User Interrupt or Failure Occurs then Jump to Here
       if (SIMULATE)
       { // Running Simulation or Training
         MessageBox("SIMULATION STOPPED", "USER INTERRUPT", MB_OK);
-        Choice - RunWeightSave(); // Execute Weight Save Options
+        Choice = RunWeightSave(); // Execute Weight Save Options
         if (RUNOptions.KeepSimGoing && steps < (MAX_STEPS - 2))
         {
           data_rec = 1;
+          delay = 0;
+          goto NextStep;
         }
-        delay = 0;
-        goto NextStep : if (Choice IDCANCEL) goto NextStep;
-        else
-        { // Real-Time Control
-          if (NIDAQENABLE)
-            AO_VWrite(board, 0, 0.0); MessageBox("CONTROL STOPPED","USER/
-                      INTERRUPT", MB_OK);
-                  RunWeightSave(); // Execute Weight Save Options
-        }
+
+        if (Choice IDCANCEL)
+          goto NextStep;
       }
-    EndACEASE:
-      if (SIMULATE)
-        MessageBox("END SIMULATION/CONTROL", "END", MB_OK);
-      data rec = 1;
-      IC = 0;
-      return 0.0; // Simulation Ends return arbitrary float value
+      else
+      {
+        // Real-Time Control
+        if (NIDAQENABLE)
+          AO_VWrite(board, 0, 0.0);
+        MessageBox("CONTROL STOPPED", "USERINTERRUPT", MB_OK);
+        RunWeightSave(); // Execute Weight Save Options
+      }
     }
   }
+
+EndACEASE:
+  if (SIMULATE)
+    MessageBox("END SIMULATION/CONTROL", "END", MB_OK);
+  data rec = -1;
+  IC = 0;
+  return 0.0; // Simulation Ends return arbitrary float value
 }
 
 void TIPWindow::ClusterInputSpace(TDC &dc)
