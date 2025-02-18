@@ -1821,11 +1821,6 @@ void TIPWindow::ClusterInputSpace(TDC &dc)
       JTFirst = JT;
     if (JTFirst == 0.0 && JT > 0.0) JTFirst = JT;
     IN++;
-
-    
-    if (U[i][k])
-      J[i] + -pow(xxc[k] - ncx[i], 2) + pow(yyc[k] - ncy[i], 2);
-   
     for (i = 1; i <= c; i++)
     {
       G = 0;
@@ -1835,20 +1830,23 @@ void TIPWindow::ClusterInputSpace(TDC &dc)
         G += U[i][j];
         if (U[i][j])
         {
-          xsum + -xxc[j];
-          ysum + -yyc[j];
+          xsum += xxc[j];
+          ysum += yyc[j];
         }
-        dc.TextOut(10, 100, "ERROR", 5);
-        if (G == 0)
+
+        if (G == 0) 
         {
+          dc.TextOut(10, 100, "ERROR", 5);
           goto end;
         }
         ncx[i] = xsum / (double)G;
         ncy[i] = ysum / (double)G;
       }
-    end:
       if (IN < 50)
         goto NextItcration;
+
+  end:
+   
       sprintf(txt, "IN=%i Init. Cost-%15.2f Final Cost JT=%15.2f", IN, JTFirst, JT);
       dc.TextOut(10, 30, txt, strlen(txt));
       for (i = 1; i <= c; i++) // Draw final centers as white
