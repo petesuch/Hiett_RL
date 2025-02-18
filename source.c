@@ -1679,8 +1679,7 @@ Interrupt: // User Interrupt or Failure Occurs then Jump to Here
           delay = 0;
           goto NextStep;
         }
-
-        if (Choice IDCANCEL)
+        if (Choice == IDCANCEL)
           goto NextStep;
       }
       else
@@ -1705,10 +1704,10 @@ EndACEASE:
 void TIPWindow::ClusterInputSpace(TDC &dc)
 {
   float DDMAXAVG = 0, DD = 0;
-  static int a, i, j, ig.jg, k, xOff, yOff, G, pp;
+  static int a, i, j, ig, jg, k, xOff, yOff, G, pp;
   static float Nx, Ny, JT, OldJT, JTFirst, d1, d2, Gain = 2.0;
   static double xsum, ysum;
-  int ri, cc, c - NumOfNodes, xo - xMax / 2, yo - yMax / 2; // xo x offset yo y offset
+  int ri, cc, c = NumOfNodes, xo = xMax/2, yo = yMax/2; // xo x offset yo y offset
   int IN, ccm;
   static long r, th, p1, p2, si;
   static float a1, a2, a3, a4, a5, iscx, iscy;
@@ -1720,79 +1719,90 @@ void TIPWindow::ClusterInputSpace(TDC &dc)
   static char txt[50];
   int ridx;
   TRect rect;
-  HPEN RedPen, BluePen, WhitePen, BlackPen :
+  HPEN RedPen, BluePen, WhitePen, BlackPen;
       //-- Page 126 ---------------------------------------------------------------------
-      HPEN hOldPen,
-      GreenPen;
+  HPEN hOldPen, GreenPen;
   IN = 0;
-  sprintf(txt, "xMax=%i yMax-%i ", xMax, yMax);
+  sprintf(txt, "xMax=%i yMax=%i ", xMax, yMax);
   dc.TextOut(10, 10, txt, strlen(txt));
-  Line(dc, xMax / 2, 10, xMax / 2, yMax - 10, yellow); // vertical
-  Line(dc, 10, yMax / 2, xMax - 10, yMax / 2, yellow); // horizontal
+  Line(dc, xMax/2, 10, xMax/2, yMax - 10, yellow); // vertical
+  Line(dc, 10, yMax/2, xMax - 10, yMax/2, yellow); // horizontal
+  
   MessageBox("Choose Data File to Cluster", "CLUSTERING", MB_OK);
   CmFileOpen();
   if (NumOfDataPoints < 1)
   {
+    MessageBox("No Data File Chosen", "Error", MB_OK);
+    return;
   }
-  MessageBox("No Data File Chosen", "Error", MB_OK);
-  return;
-  // find center of mass of input space avgx=0; avgy=0;
-  Nx - MaxAngMag : Ny - MaxAng VelMag;
+
+  // find center of mass of input space 
+  avgx=0; avgy=0;
+  Nx = MaxAngMag; Ny = MaxAngVelMag;
 
   for (j = 1; j <= NumOfDataPoints; j++)
   {
     // angle and angular velocity normalized data between -1.0 and 1.0
     yyc[j] = ang[j] / Nx;
-    xxc[j] = (ang[j] - angl[j - 1]) * fs / Ny;
+    xxc[j] = (ang[j] - angl[j-1]) * fs/Ny;
     avgx += xxc[j];
     avgy += yyc[j]; // plot data to be clustered
-    dc.Ellipse(xxc[j] * xMax / 2 + xo, yyc[j] * yMax / 2 + yo, xxc[j] * xMax / 2 + 5 + xo, yyc[j] * yMax / 2 + 5 + yo);
-    iscx - avgx / NumOfDataPoints;
-    iscy - avgy / NumOfDataPoints;
-    // find closest data point to center of mass of input space data // start dmin with value of 1st data point (initial seed center) dmin-pow(xxc[1]-iscx,2)+pow(yyc[1]-iscy,2); ccm=1; for(j=1;j<=NumOfDataPoints;j++) {
+    dc.Ellipse(xxc[j]*xMax/2+xo, yyc[j]*yMax/2+yo, xxc[j]*xMax/2+5+xo, yyc[j]*yMax/2+5+yo);  //  ?? 
   }
-  dis - pow(xxc[j] - iscx, 2) + pow(yyc[j] - iscy, 2);
-  if (dis <= dmin)
+  iscx = avgx/NumOfDataPoints;
+  iscy = avgy/NumOfDataPoints;
+  // find closest data point to center of mass of input space data
+  // start dmin with value of 1st data point (initial seed center) 
+  dmin = pow(xxc[1]-iscx, 2)+pow(yyc[1]-iscy, 2); ccm = 1;
+  
+  for(j=1;j<=NumOfDataPoints;j++)
   {
-    ccm - j;
-    dmin = dis;
+    dis = pow(xxc[j] - iscx, 2) + pow(yyc[j] - iscy, 2);
+    if (dis <= dmin)
+    {
+      ccm = j;
+      dmin = dis;
+    }
   }
-  // Set initial center closest to center of mass of input space cxx-ncx[1]*xMax/2+xo; cyy-ncy[1]*yMax/2+yo;
-  Line(dc, cxx - 20, cyy, cxx + 20, cyy, red);
-  Line(dc, cxx, cyy - 20, cxx, cyy + 20, red);
+  // Set initial center closest to center of mass of input space
+  cxx = ncx[1]*xMax/2+xo; cyy = ncy[1]*yMax/2+yo;
+  Line(dc, cxx-20, cyy, cxx+20, cyy, red);
+  Line(dc, cxx, cyy-20, cxx, cyy+20, red);
 
-  for (i = 1; i < NumOfNodes; i++)
+  for (i = 1; i <= NumOfNodes; i++)
   {
-
-  NextIteration:
     ridx = random(NumOfDataPoints);
     ncx[i] = xxc[ridx];
     ncy[i] = yyc[ridx];
-    si = 20 + 1 * 20;
-    cxx ncx[i + 1] * xMax / 2 + xo;
-    cyy - ncy[i + 1] * yMax / 2 + yo;
-    Line(dc, cxx - si, cyy, cxx + si, cyy, blue);
+    si = 20 + i*20;
+    cxx = ncx[i+1] * xMax/2 + xo;
+    cyy = ncy[i+1] * yMax/2 + yo;
+    Line(dc, cxx-si, cyy, cxx+si, cyy, blue);
+    Line(dc, cxx, cyy-si, cxx, cyy+si, blue);  // Display All Initial Centers
+  }
 
-    // Display All Initial Centers
-    Line(dc, cxx, cyy - si, cxx, cyy + si, blue);
+  NextIteration:
     // Determine Cluster Membership Matrix
     // initialize all U[i][j] to 0
     // until all points have been
     // checked. Then find group (ig)with
 
     //-- Page 127 --------------------------------------------------------------------
-    // smallest distance to point (jg) // and set that U[ig][ig]=1
+    // smallest distance to point (jg)
+    // and set that U[ig][ig]=1
+    
     for (j = 1; j <= NumOfDataPoints; j++)
-    {                                                           // Data Loop
-      dmin - pow(xxc[j] - ncx[1], 2) + pow(yyc[j] - ncy[1], 2); // Set Min. Val to Start
+    {
+      // Data Loop
+      dmin = pow(xxc[j] - ncx[1], 2) + pow(yyc[j] - ncy[1], 2); // Set Min. Val to Start
       ig = 1;
       for (i = 1; i <= c; i++)
       { // Center's Loop
-        Ui = 0;
-        dd - pow(xxc[j] - ncx[i], 2) + pow(yyc[j] - ncy[i], 2);
+        U[i][j] = 0;
+        dd = pow(xxc[j] - ncx[i], 2) + pow(yyc[j] - ncy[i], 2);
         if (dd <= dmin)
         {
-          dmin - dd;
+          dmin = dd;
           ig = i;
         }
       }
@@ -1802,17 +1812,20 @@ void TIPWindow::ClusterInputSpace(TDC &dc)
     JT = 0;
     for (i = 1; i <= c; i++)
     {
-    }
-    J[i] = 0;
-    for (k = 1; k <= NumOfDataPoints; k++)
+      J[i] = 0;
+      for (k = 1; k <= NumOfDataPoints; k++)
+        if(U[i][k]) J[i] += pow(xxc[k] - ncx[i], 2) + pow(yyc[k] - ncy[i], 2);
       JT += J[i];
+    }
     if (!IN)
-      JTFirst - JT;
+      JTFirst = JT;
+    if (JTFirst == 0.0 && JT > 0.0) JTFirst = JT;
+    IN++;
+
+    
     if (U[i][k])
       J[i] + -pow(xxc[k] - ncx[i], 2) + pow(yyc[k] - ncy[i], 2);
-    if (JTFirst - 0.0 && JT > 0.0)
-      JTFirst - JT;
-    IN++;
+   
     for (i = 1; i <= c; i++)
     {
       G = 0;
