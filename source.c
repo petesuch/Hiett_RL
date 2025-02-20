@@ -1,4 +1,4 @@
-/* 
+/*
  *
  *
  *  C++ Source Code from Original Masters Thesis Named:
@@ -7,16 +7,13 @@
  *  for Controlling an Inverted Pendulum"
  *
  *  by John Hiett, Arizona State University 1997
- *  
+ *
  *  (hardware/software: IBM PC clone running MS Windows 3.10, compiled with
  *   Borland C++ Compiler 4.52)
- * 
+ *
  */
 
-
-//-----------------------------------------------------------------------------
-//  Page 96
-
+//-- Page 96 ------------------------------------------------------------------
 
 // filename ip.h
 #include <owl\owlpch.h>
@@ -33,9 +30,9 @@
 #include <owl\scrollba.h>
 #include <owl\gdiobjec.h>
 #include <owl\dc.h>
-#include <string.h>  // for strcpy and strcat #include <stdlib.h>  // for atoi
+#include <string.h> // for strcpy and strcat #include <stdlib.h>  // for atoi
 #include <stdlib.h>
-#include <ctype.h>  // for isdigit and isalpha
+#include <ctype.h> // for isdigit and isalpha
 #include <conio.h>
 #include <float.h>
 #include <stdio.h>
@@ -46,8 +43,8 @@
 
 // Physical System Constants
 #define MOTORVOLT_GAIN 10.58 // See Alexander Thesis
-                             //#define PIE 3.141592654
-#define   PIE 3.14159265358979323846
+// #define PIE 3.141592654
+#define PIE 3.14159265358979323846
 
 // Sample Dialog Constants
 #define MAXNAMELEN 35
@@ -57,7 +54,7 @@
 #define MAXSECLEN 3
 #define MAXCUSTOMLEN 20
 
-//Data Parameter Constants
+// Data Parameter Constants
 #define MAXDATAFILENAMELEN 20
 #define MAXPOINTDIG 5
 
@@ -66,7 +63,6 @@
 
 // Special Dialog Controls
 const WORD IDC_BANGBANGSLIDE = 200;
-
 
 //-- Page 97 -------------------------------------------------------------------
 const WORD IDC_BANGBANGVALUE = 201;
@@ -169,7 +165,6 @@ double ISNode[MAX_NUM_NODES];
 double predlast, pred, tstep, Delta;
 int reinf;
 
-
 //-- Page 99 -------------------------------------------------------------------
 
 double internal_reinf;
@@ -192,8 +187,8 @@ int prevt;
 float MaxAngMag = 1.0, MaxAngVelMag = 1.0;
 // float xbox[MAX_BOXES]; // Box Membership Value
 // constants
-double Rad2Ang = 180/PIE;
-double Ang2Rad = PIE/180;
+double Rad2Ang = 180 / PIE;
+double Ang2Rad = PIE / 180;
 float FailAng;
 // functions
 void InitializeNeuralACEASE(int, int);
@@ -207,7 +202,12 @@ double angle, dtheta;
 void decoder();
 void PoleModelSolve();
 void PoleStateSpaceModel(double dtdx[], double t, double states2[], float u);
-enum TrapezoidType { reg, left, right } Typ;
+enum TrapezoidType
+{
+  reg,
+  left,
+  right
+} Typ;
 // a,b,c,d corner points of trapezoid from left to right
 float Trap(TrapezoidType Typ, float a, float b, float c, float d, float in);
 // MISCELANEOUS GLOBAL VARIABLES
@@ -278,7 +278,6 @@ struct NeuralACEASEStruct
   char WeightFileName[40];
   WORD Uniform;
 
-
   //-- Page 101 ------------------------------------------------------------------
 
   WORD Nonuniform;
@@ -324,11 +323,11 @@ struct TSinWavRefParam
 
 #include "ip.h"
 #include "unh_cmac.h" // CMAC header files
-#include "unh_cmac.c"  //  CMAC functions
+#include "unh_cmac.c" //  CMAC functions
 
 extern "C"
 {
-#include "alexfunc.c"  //  Chris Alexanders Functions
+#include "alexfunc.c" //  Chris Alexanders Functions
 }
 
 #include "ipdlg3_1.cpp" // Definitions for Dialog functions
@@ -339,37 +338,36 @@ class TIPWindow : public TFrameWindow
   int xMax, yMax; // Max client area coordinates
   int yBase;
 
-
-//-- Page 102 ------------------------------------------------------------------
+  //-- Page 102 ------------------------------------------------------------------
 
   int yOffset, xOffset;
 
-  public:
-  TIPWindow(TWindow* parent);
+public:
+  TIPWindow(TWindow *parent);
   ~TIPWindow(); // For Destructor
-  const PIDStruct* GetPIDOptions() { return &PIDOptions; }
-  const TCalibration* GetCalibOptions() { return &Calibration; }
-  const TGraphics* GetGraphics() { return &Graphics; }
-  const RUNStruct* GetRUNOptions() { return &RUNOptions; }
+  const PIDStruct *GetPIDOptions() { return &PIDOptions; }
+  const TCalibration *GetCalibOptions() { return &Calibration; }
+  const TGraphics *GetGraphics() { return &Graphics; }
+  const RUNStruct *GetRUNOptions() { return &RUNOptions; }
   float far NeuralACEASE(int IC, int jj, double states[]);
-  void ClusterInputSpace(TDC&);
+  void ClusterInputSpace(TDC &);
   void TrainCMAC();
   int RunWeightSave();
   void CmEmpInput();
   void CmFrequency();
-  void SetupGraph(TDC&);
+  void SetupGraph(TDC &);
   void Graph(float far Angle[], float far RefInput[], float far CompOutput[], int TimeStep);
   char DataFileName[50];
   char MasterFileName[50];
   char FilePath[200];
   void SetMaxCoordinates();
-  void DrawGrid(TDC& dc);
+  void DrawGrid(TDC &dc);
   BOOL EvEraseBkgnd(HDC);
   void Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color);
   void EvChar(UINT, UINT, UINT);
   int NumOfDataPoints;
 
-  private:
+private:
   TDataParamStruct DataParamStruct;
   TFrequency Frequency;
   PIDStruct PIDOptions;
@@ -378,68 +376,69 @@ class TIPWindow : public TFrameWindow
   TGraphics Graphics;
   TWindowOptions WindowOptions;
   TSinWavRefParam SinWavRefParam;
-  TMenu* windowMenu;
+  TMenu *windowMenu;
 
-  protected:
-  void Paint(TDC&, BOOL, TRect&);
+protected:
+  void Paint(TDC &, BOOL, TRect &);
   void SetupWindow();
   void CmFileExit();
   void CmSimulate();
   void CmNIDAQEnable();
   void CmSetupData();
   void InitOptions();
-  TOpenSaveDialog::TData* FileData;
+  TOpenSaveDialog::TData *FileData;
   void CmFileOpen();
   void CmFileSave();
   void CmPID();
   void CmNeuralACEASE();
 
-//-- Page 103 ------------------------------------------------------------------
+  //-- Page 103 ------------------------------------------------------------------
   void CmCalibration();
   void CmDisplay();
   void CmOldDataGraph();
   void CmBeginControl();
   void CmRefSineWave();
   void CmRefSeriesOfSteps();
-  void EvSize(UINT sizeType, TSize& size);
+  void EvSize(UINT sizeType, TSize &size);
   void EvKeyDown(UINT key, UINT repeatCount, UINT flags);
-  void EvMouseMove(UINT modKeys, TPoint& point);
-  void EvMButtonDown(UINT modKeys, TPoint& point);
+  void EvMouseMove(UINT modKeys, TPoint &point);
+  void EvMButtonDown(UINT modKeys, TPoint &point);
   DECLARE_RESPONSE_TABLE(TIPWindow);
 };
 
 DEFINE_RESPONSE_TABLE1(TIPWindow, TFrameWindow)
-  EV_WM_KEYDOWN,
-  EV_WM_MOUSEMOVE,
-  EV_WM_MBUTTONDOWN,
-  EV_WM_ERASEBKGND,
-  EV_COMMAND(CM_FREQUENCY, CmFrequency),
-  EV_COMMAND(CM_FILEOPEN, CmFileOpen),
-  EV_COMMAND(CM_FILESAVE, CmFileSave),
-  EV_COMMAND(CM_FILEEXIT, CmFileExit),
-  EV_COMMAND(CM_SETUPSIMULATE, CmSimulate),
-  EV_COMMAND(CM_SETUPNIDAQENABLE, CmNIDAQEnable),
-  EV_COMMAND(CM_SETUPDATA, CmSetupData),
-  EV_COMMAND(CM_PIDCONTROL, CmPID),
-  EV_COMMAND(CM_NEURAL_ACEASE, CmNeuralACEASE),
-  EV_COMMAND(CM_CALIBRATION, CmCalibration),
-  EV_COMMAND(CM_DISPLAYSETUP, CmDisplay),
-  EV_COMMAND(CM_OLD_DATA_GRAPH, CmOldDataGraph),
-  EV_COMMAND(CM_BEGINCONTROL, CmBeginControl),
-  EV_COMMAND(CM_SINEWAVE, CmRefSineWave),
-  EV_COMMAND(CM_SERIESOFSTEPS, CmRefSeriesOfSteps),
-  END_RESPONSE_TABLE;
+EV_WM_KEYDOWN,
+    EV_WM_MOUSEMOVE,
+    EV_WM_MBUTTONDOWN,
+    EV_WM_ERASEBKGND,
+    EV_COMMAND(CM_FREQUENCY, CmFrequency),
+    EV_COMMAND(CM_FILEOPEN, CmFileOpen),
+    EV_COMMAND(CM_FILESAVE, CmFileSave),
+    EV_COMMAND(CM_FILEEXIT, CmFileExit),
+    EV_COMMAND(CM_SETUPSIMULATE, CmSimulate),
+    EV_COMMAND(CM_SETUPNIDAQENABLE, CmNIDAQEnable),
+    EV_COMMAND(CM_SETUPDATA, CmSetupData),
+    EV_COMMAND(CM_PIDCONTROL, CmPID),
+    EV_COMMAND(CM_NEURAL_ACEASE, CmNeuralACEASE),
+    EV_COMMAND(CM_CALIBRATION, CmCalibration),
+    EV_COMMAND(CM_DISPLAYSETUP, CmDisplay),
+    EV_COMMAND(CM_OLD_DATA_GRAPH, CmOldDataGraph),
+    EV_COMMAND(CM_BEGINCONTROL, CmBeginControl),
+    EV_COMMAND(CM_SINEWAVE, CmRefSineWave),
+    EV_COMMAND(CM_SERIESOFSTEPS, CmRefSeriesOfSteps),
+    END_RESPONSE_TABLE;
 
 // MAIN WINDOW CONSTRUCTOR(INITIALIZATION)
-TIPWindow::TIPWindow(TWindow* parent) : TFrameWindow(parent, ""), TWindow(parent, "")
+TIPWindow::TIPWindow(TWindow *parent) : TFrameWindow(parent, ""), TWindow(parent, "")
 {
   SIZE size;
   TClientDC dc(*this);
 
-  GetTextExtentPoint(dc, "A", 1, &size);  // A is arbitrary, gets text size
-  cx = size.cx; cy = size.cy;
+  GetTextExtentPoint(dc, "A", 1, &size); // A is arbitrary, gets text size
+  cx = size.cx;
+  cy = size.cy;
   FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
-      "Data Files (*.dat)|*.dat|Weight Files (*.wgt)|*.wgt|Master Files (*.fle)|*.fle|All Files (*.*)|*.*|",0,"DAT","WGT");
+                                        "Data Files (*.dat)|*.dat|Weight Files (*.wgt)|*.wgt|Master Files (*.fle)|*.fle|All Files (*.*)|*.*|", 0, "DAT", "WGT");
 
   //-- Page 104 ------------------------------------------------------------------
   AssignMenu(200);
@@ -456,14 +455,15 @@ void TIPWindow::SetupWindow()
   // Create Menu Object Interface (for check marks on NIDAQ ENABLE and SIM)
   windowMenu = new TMenu(HWindow);
   if (NIDAQENABLE) // SETUP REAL-TIME vs. SIMULATION
-    windowMenu -> CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_CHECKED);
+    windowMenu->CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_CHECKED);
   else
-    windowMenu -> CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_CHECKED);
+    windowMenu->CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_CHECKED);
 
   SetCaption(WindowOptions.WindowTitle);
   SetMaxCoordinates();
-  xOffset = 10; yOffsetyMax/2;
-  board = getBoardToUse();  // int board is in case of >1 boards on system.
+  xOffset = 10;
+  yOffsetyMax / 2;
+  board = getBoardToUse(); // int board is in case of >1 boards on system.
 }
 
 // DESTRUCTOR: They do this to free up memory.
@@ -471,7 +471,6 @@ TIPWindow::~TIPWindow()
 {
   delete windowMenu;
 }
-
 
 void TIP Window::InitOptions()
 {
@@ -486,7 +485,7 @@ void TIP Window::InitOptions()
   DataParamStruct.States = FALSE;
   strcpy(Frequency.Freq, DEF_FREQUENCY);
 
-//-- Page 105 ------------------------------------------------------------------
+  //-- Page 105 ------------------------------------------------------------------
 
   PIDOptions.SingleLoop = FALSE;
   PIDOptions.DualLoop = TRUE;
@@ -540,7 +539,7 @@ void TIP Window::InitOptions()
   colorArray[1] = yellow;
   colorArray[2] = blue;
 
-//-- Page 106 ------------------------------------------------------------------
+  //-- Page 106 ------------------------------------------------------------------
   colorArray[3] = green;
   colorArray[4] = red;
   colorArray[5] = white;
@@ -549,11 +548,9 @@ void TIP Window::InitOptions()
   colorArray[8] = green;
   colorArray[9] = red;
   colorArray[10] = white;
-}  // End of TipWindow::InitOptions()
+} // End of TipWindow::InitOptions()
 
-
-
-void TIPWindow::Paint(TDC& dc, BOOL, TRect&)
+void TIPWindow::Paint(TDC &dc, BOOL, TRect &)
 {
   int t;
   if (PlotOldData == 1 || Graphics GraphicsOn)
@@ -561,14 +558,12 @@ void TIPWindow::Paint(TDC& dc, BOOL, TRect&)
     Setup Graph(dc); // Initialize Graphics Window // Plot Data
     for (t = 0; (t < xMax) && (t < tMax); t++)
     {
-      Line(dc, t + xOffset, ep[t] + yOffset, t+1 + xOffset, ep[t] + yOffset, blue);
-      Line(dc, t + xOffset, vr[t] + yOffset, t+1 + xOffset, ep[t+1] + yOffset, green);
-      Line(dc, t + xOffset, co[t] + yOffset, t+1 + xOffset, co[t+1] + yOffset, red);
+      Line(dc, t + xOffset, ep[t] + yOffset, t + 1 + xOffset, ep[t] + yOffset, blue);
+      Line(dc, t + xOffset, vr[t] + yOffset, t + 1 + xOffset, ep[t + 1] + yOffset, green);
+      Line(dc, t + xOffset, co[t] + yOffset, t + 1 + xOffset, co[t + 1] + yOffset, red);
     }
   }
 }
-
-
 
 BOOL TIPWindow::EvEraseBkgnd(HDC hDC)
 {
@@ -577,8 +572,6 @@ BOOL TIPWindow::EvEraseBkgnd(HDC hDC)
   FillRect(hDC, &rect, HBRUSH(GetStockObject(BLACK_BRUSH)));
 }
 
-
-
 void TIPWindow::EvChar(UINT, UINT, UINT)
 {
   TClientDC dc(*this);
@@ -586,22 +579,25 @@ void TIPWindow::EvChar(UINT, UINT, UINT)
   dc.TextOut(10, 10, s, strlen(s));
 }
 
-
-
-void TIPWindow::EvMouseMove(UINT modKeys, TPoint& point)
+void TIPWindow::EvMouseMove(UINT modKeys, TPoint &point)
 {
-  if (NIDAQENABLE) AO_VWrite(board, 0, 0.0);
-  if (delay > 500) { data_rec = -1; delay = 0; }
+  if (NIDAQENABLE)
+    AO_VWrite(board, 0, 0.0);
+  if (delay > 500)
+  {
+    data_rec = -1;
+    delay = 0;
+  }
 }
-
-
 
 void TIPWindow::EvMButtonDown(UINT modKeys, TPoint &point)
 {
-  if (delay > 500) { data_rec = -1; delay = 0; }
+  if (delay > 500)
+  {
+    data_rec = -1;
+    delay = 0;
+  }
 }
-
-
 
 //-- Page 107 ------------------------------------------------------------------
 
@@ -616,7 +612,8 @@ void TIPWindow::EvKeyDown(UINT key, UINT, UINT)
   {
     goto NOIC;
   }
-  /* Set "del" to the change in the digital compensator coefficient
+  /*
+   * Set "del" to the change in the digital compensator coefficient
    * and set "buff" to the digital compensator gain
    */
   ii = 0;
@@ -626,107 +623,107 @@ NOIC:
   dc.TextOut(10, 10, "EvKeyDown", 9);
   switch (key)
   {
-    case 82: // R key pressed
-      rotate_buff = rotate_buff + 1;
-      if (rotate_buff > 1) rotate_buff = 0;
-      switch (rotate_buff)
-      {
-        case 0:
-          buff = c_gain[0];
-          del = delta_g[0];
-          break;
-        case 1:
-          buff = c_gain[1];
-          del = delta_g[1];
-          break;
-      }
-
-      /*
-       *  If a "U" is pressed, increase the digital gain by the given amount
-       *  ("delta_g"). If a "u" is pressed, increase the digital gain by the
-       *  given amount divided by 10. Both "D" & "d" do the same thing except
-       *  they decrease the digital gain.
-       */
-
-    case 85: // U pressed
-      buff = buff + del;
-      goto jp;
+  case 82: // R key pressed
+    rotate_buff = rotate_buff + 1;
+    if (rotate_buff > 1)
+      rotate_buff = 0;
+    switch (rotate_buff)
+    {
+    case 0:
+      buff = c_gain[0];
+      del = delta_g[0];
       break;
-
-    case 90: // Z pressed, Before Alexander used 'u'
-      buff = buff + (del / 10.0);
-      goto jp;
-
-//-- Page 108 ------------------------------------------------------------------
-
+    case 1:
+      buff = c_gain[1];
+      del = delta_g[1];
       break;
+    }
 
-    case 68:  // D pressed
-      buff = buff - del;
-      goto jp;
+    /*
+     *  If a "U" is pressed, increase the digital gain by the given amount
+     *  ("delta_g"). If a "u" is pressed, increase the digital gain by the
+     *  given amount divided by 10. Both "D" & "d" do the same thing except
+     *  they decrease the digital gain.
+     */
+
+  case 85: // U pressed
+    buff = buff + del;
+    goto jp;
+    break;
+
+  case 90: // Z pressed, Before Alexander used 'u'
+    buff = buff + (del / 10.0);
+    goto jp;
+
+    //-- Page 108 ------------------------------------------------------------------
+
+    break;
+
+  case 68: // D pressed
+    buff = buff - del;
+    goto jp;
+    break;
+
+  case 89: // Y pressed, Before Alexander used 'd'
+    buff = buff - (del / 10.0);
+
+  jp:
+    switch (rotate_buff)
+    {
+    case 0:
+      c_gain[0] = buff;
+      delta_g[0] = del;
       break;
-
-    case 89:  // Y pressed, Before Alexander used 'd'
-      buff = buff - (del/10.0);
-
-jp:
-      switch (rotate_buff)
-      {
-        case 0:
-          c_gain[0] = buff;
-          delta_g[0] = del;
-          break;
-        case 1:
-          c_gain[1] = buff;
-          delta_g[1] = del;
-          break;
-      }
+    case 1:
+      c_gain[1] = buff;
+      delta_g[1] = del;
       break;
+    }
+    break;
 
-    case 83:  
-      /*  S pressed: If a "S" is pressed set the "data_rec" flag high start data
-       *  recording. If any other key is pressed (except those mentioned
-       *  above) set the flag with low logic (stop the control of the pendulum).
-       */
-      data_rec = 1;
-      break;
+  case 83:
+    /*  S pressed: If a "S" is pressed set the "data_rec" flag high start data
+     *  recording. If any other key is pressed (except those mentioned
+     *  above) set the flag with low logic (stop the control of the pendulum).
+     */
+    data_rec = 1;
+    break;
 
-    case 67:  // C pressed
-      calibrate = current_measure1;
-      break;
+  case 67: // C pressed
+    calibrate = current_measure1;
+    break;
 
-    case VK_SPACE:
-      if (NIDAQENABLE) AO_VWrite(board, 0, 0.0);
-      data rec=-1;
-      break;
+  case VK_SPACE:
+    if (NIDAQENABLE)
+      AO_VWrite(board, 0, 0.0);
+    data rec = -1;
+    break;
 
-    default:
-      if (NIDAQENABLE)
-        AO_VWrite(board, 0, 0.0);
-      /*
-       * If record flag is set put system variables (position,
-       * compensator output, reference and other info) into a file.
-       */
+  default:
+    if (NIDAQENABLE)
+      AO_VWrite(board, 0, 0.0);
+    /*
+     * If record flag is set put system variables (position,
+     * compensator output, reference and other info) into a file.
+     */
 
-      if (data_rec == 1 || sync == 1)
-      {
-        sprintf(SaveFileName, "%s.dat\0", DataParamStruct.DataFileName);
-        NumOfDataPoints = jj;
-        CmFileSave();
-        sprintf(DataParamStruct.DataFileName, "%s.dat\0", SaveFileName);
-      }
+    if (data_rec == 1 || sync == 1)
+    {
+      sprintf(SaveFileName, "%s.dat\0", DataParamStruct.DataFileName);
+      NumOfDataPoints = jj;
+      CmFileSave();
+      sprintf(DataParamStruct.DataFileName, "%s.dat\0", SaveFileName);
+    }
 
-//-- Page 109 ------------------------------------------------------------------
-      if (delay > 500)
-      {
-        data_rec = -1;
-        delay = 0;
-      }
-      break;
-  }  // END CASE
+    //-- Page 109 ------------------------------------------------------------------
+    if (delay > 500)
+    {
+      data_rec = -1;
+      delay = 0;
+    }
+    break;
+  } // END CASE
 }
-
-
 
 void TIPWindow::Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color)
 {
@@ -734,12 +731,18 @@ void TIPWindow::Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color)
   HPEN hOldPen = HPEN(SelectObject(hDC, hPen));
 
   // Keep Everything Inside Display Context
-  if (x1 < 0 || x1 > xMax) x1 = 0;
-  if (y1 < yGMin) y1 = yGMin;
-  else if (y1 > yGMax) y1 = yGMax;
-  if (x2 < 0 || x2 > xMax) x2 = 0;
-  if (y2 < yGMin) y2 = yGMin;
-  else if (y2 > yGMax) y2 = yGMax;
+  if (x1 < 0 || x1 > xMax)
+    x1 = 0;
+  if (y1 < yGMin)
+    y1 = yGMin;
+  else if (y1 > yGMax)
+    y1 = yGMax;
+  if (x2 < 0 || x2 > xMax)
+    x2 = 0;
+  if (y2 < yGMin)
+    y2 = yGMin;
+  else if (y2 > yGMax)
+    y2 = yGMax;
 
   MoveTo(hDC, x1, y1);
   LineTo(hDC, x2, y2);
@@ -747,121 +750,119 @@ void TIPWindow::Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color)
   DeleteObject(hPen);
 }
 
-
-
-void TIPWindow::SetupGraph(TDC& dc)
+void TIPWindow::SetupGraph(TDC &dc)
 {
   SIZE size;
   TPen pen(white);
-  TPen* pen2;
+  TPen *pen2;
   RECT rect;
   char txt[40] = "", txt2[40] = "";
   int htxt = 0;
   // Define Safe haven for text (graph will not overwrite this region)
-  yGMin = 3*cy; yGMax = yMax-3*cy;  // Allows 4 lines of text to be displayed on top and bottom
+  yGMin = 3 * cy;
+  yGMax = yMax - 3 * cy; // Allows 4 lines of text to be displayed on top and bottom
 
   dc.SetBkColor(black);
   dc.SetTextColor(white);
-  dc.SetTextAlign(TA_CENTER);  // Aligns text about its center
+  dc.SetTextAlign(TA_CENTER); // Aligns text about its center
   sprintf(txt, "FILE: %s", SaveFileName);
-  dc.TextOut(xMax/2, 10, txt, strlen(txt));
-  dc.SetTextAlign(TA_LEFT|TA_TOP);  // Back to default
+  dc.TextOut(xMax / 2, 10, txt, strlen(txt));
+  dc.SetTextAlign(TA_LEFT | TA_TOP); // Back to default
   dc.SetBkColor(black);
   dc.SetTextColor(blue);
   strcpy(txt, "Blue=Encoder Output (Angle in degrees)");
-  dc.TextOut(10 + cx*6, yMax - (10 + cy*2), txt, strlen(txt));
+  dc.TextOut(10 + cx * 6, yMax - (10 + cy * 2), txt, strlen(txt));
   dc.SetTextColor(green);
   htxt = strlen(txt);
   strcpy(txt, "Green=Reference Input");
-  dc.TextOut(10 + cx*(4 + htxt), yMax - (10 + cy*2), txt, strlen(txt));
-//-- Page 110 ------------------------------------------------------------------
+  dc.TextOut(10 + cx * (4 + htxt), yMax - (10 + cy * 2), txt, strlen(txt));
+  //-- Page 110 ------------------------------------------------------------------
   dc.SetTextColor(red);
-  htxt+= strlen(txt);
+  htxt += strlen(txt);
   strcpy(txt, "Red=Compensator Output");
-  dc.TextOut(10 + cx*(4 + htxt), yMax - (10 + cy*2), txt, strlen(txt));
+  dc.TextOut(10 + cx * (4 + htxt), yMax - (10 + cy * 2), txt, strlen(txt));
   dc.SelectObject(pen);
   // Plot Horiz. and Vert. Axis
-  Line(dc, cx*2, yOffset, xMax-10, yOffset, white); // Time Axis
+  Line(dc, cx * 2, yOffset, xMax - 10, yOffset, white); // Time Axis
   dc.TextOut(10, yOffset, "0.0", 3);
-  Line(dc, cx*5, yGMin, cx*5, yGMax, white);   // Vertical Axis
+  Line(dc, cx * 5, yGMin, cx * 5, yGMax, white); // Vertical Axis
   dc.RestorePen();
   dc.SetTextColor(yellow);
   strcpy(txt, "COMPENSATOR TYPE: ");
 
   switch (ControlType)
   {
-    case PID:
-      strcpy(txt2, "PID");
-      break;
-    case NEURAL_ACE_ASE:
-      strcpy(txt2, "Neural ACE & ASE");
-      break;
+  case PID:
+    strcpy(txt2, "PID");
+    break;
+  case NEURAL_ACE_ASE:
+    strcpy(txt2, "Neural ACE & ASE");
+    break;
   }
   strcat(txt, txt2);
-  dc.TextOut(10 + cx*6, 10 + cy*1, txt, strlen(txt));  //  ?? cy*1
+  dc.TextOut(10 + cx * 6, 10 + cy * 1, txt, strlen(txt)); //  ?? cy*1
   htxt = strlen(txt);
   strcpy(txt, "RUN STATUS: ");
   if (SIMULATE)
     strcat(txt, "SIMULATION");
   else
     strcat(txt, "REAL-TIME CONTROL");
-  dc.TextOut(10 + cx*(16 + htxt), 10 + cy*1, txt, strlen(txt));  //  ??
+  dc.TextOut(10 + cx * (16 + htxt), 10 + cy * 1, txt, strlen(txt)); //  ??
 }
-
-
 
 void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOutput[], int jj)
 {
   TClientDC dc(*this);
   char Buff[100];
   int al, a2, rl, r2, cl, c2;
-  float kPD = MagPD*Rad2Ang;
+  float kPD = MagPD * Rad2Ang;
   // Define Variables To Graph
-  a1 = Angle[jj-1]*kPD/Rad2Ang + yOffset;
-  a2 = Angle[jj]*kPD + yOffset;
-  r1 = RefInput[jj-1] * kPD + yOffset;
-  r2 = RefInput[jj]*kPD + yOffset;
-  c1 = CompOutput[jj-1]*MagPV + yOffset;
-  c2 = CompOutput[jj]*MagPV + yOffset;
+  a1 = Angle[jj - 1] * kPD / Rad2Ang + yOffset;
+  a2 = Angle[jj] * kPD + yOffset;
+  r1 = RefInput[jj - 1] * kPD + yOffset;
+  r2 = RefInput[jj] * kPD + yOffset;
+  c1 = CompOutput[jj - 1] * MagPV + yOffset;
+  c2 = CompOutput[jj] * MagPV + yOffset;
 
   // Check if Graph at right edge of window. If so, move to vertical axis
   xx++;
   xx2++;
-  if (xx >= xMax) xx = cx*5;
-  if (xx2 >= xMax) xx2 = cx*5;
+  if (xx >= xMax)
+    xx = cx * 5;
+  if (xx2 >= xMax)
+    xx2 = cx * 5;
 
-//-- Page 111 ------------------------------------------------------------------
+  //-- Page 111 ------------------------------------------------------------------
 
   // Erase Old Graph
-  if (xx2 != cx*5)  // cx*5 is Vertical (Angular) Axis Line
+  if (xx2 != cx * 5) // cx*5 is Vertical (Angular) Axis Line
   {
-    Line(dc, xx2, yGMin, xx2, yGMax, black);  // Eraser Line
-    Line(dc, xx2, yOffset, xx2+1, yOffset, white);  // Refresh time axis pixel
+    Line(dc, xx2, yGMin, xx2, yGMax, black);         // Eraser Line
+    Line(dc, xx2, yOffset, xx2 + 1, yOffset, white); // Refresh time axis pixel
   }
   else
-    Line(dc, xx2, yGMin, xx2, yGMax, white);  // Refresh vertical axis
+    Line(dc, xx2, yGMin, xx2, yGMax, white); // Refresh vertical axis
 
   // Draw New Graph
-  Line(dc, xx, a1, xx+1, a2, blue);
-  Line(dc, xx, r1, xx+1, r2, green);
-  Line(dc, xx, c1, xx+1, c2, red);
+  Line(dc, xx, a1, xx + 1, a2, blue);
+  Line(dc, xx, r1, xx + 1, r2, green);
+  Line(dc, xx, c1, xx + 1, c2, red);
 
   dc.SetTextColor(white);
   dc.SetBkColor(black);
   if (SIMULATE)
     sprintf(Buff, "Simulation Run Time: %10.2f seconds\0", systime[steps]);
   else
-    sprintf(Buff, "Run Time: %10.2f seconds\0", jj/fs);
+    sprintf(Buff, "Run Time: %10.2f seconds\0", jj / fs);
 
   // Display Numerical Values
-  dc.SetTextAlign(TA_CENTER);  // Aligns text about its center
-  dc.TextOut(xMax/2, 10 + 2*cy, Buff, strlen(Buff));
-  dc.SetTextAlign(TA_LEFT|TA_TOP);  // back to default
+  dc.SetTextAlign(TA_CENTER); // Aligns text about its center
+  dc.TextOut(xMax / 2, 10 + 2 * cy, Buff, strlen(Buff));
+  dc.SetTextAlign(TA_LEFT | TA_TOP); // back to default
   sprintf(Buff, "Encoder=%6.2f Refinput=%6.2f CompOutput=%6.2f \0", Angle[jj], RefInput[jj], CompOutput[jj]);
   dc.SetTextColor(yellow);
-  dc.TextOut(10 + 6*cx, yMax - (10 + cy*1), Buff, strlen(Buff));
+  dc.TextOut(10 + 6 * cx, yMax - (10 + cy * 1), Buff, strlen(Buff));
 }
-
 
 //  Set up maximum coordinate values
 void TIPWindow::SetMaxCoordinates()
@@ -870,46 +871,41 @@ void TIPWindow::SetMaxCoordinates()
   GetClientRect(rect);
   xMax = rect.right;
   yMax = rect.bottom;
-  yBase =  yMax - SPACEATBOTTOM;
+  yBase = yMax - SPACEATBOTTOM;
 }
 
-
-void TIPWindow::EvSize(UINT sizeType, TSize& size)
+void TIPWindow::EvSize(UINT sizeType, TSize &size)
 {
   TFrameWindow::EvSize(sizeType, size);
   SetMaxCoordinates();
   Invalidate();
-  UpdateWindow();  // Optional
+  UpdateWindow(); // Optional
 }
-
 
 //-- Page 112 ------------------------------------------------------------------
 
-void TIPWindow::CmNIDAQEnable()  // Allow Real-Time Control
+void TIPWindow::CmNIDAQEnable() // Allow Real-Time Control
 {
   windowMenu->CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_CHECKED);
   NIDAQENABLE = 1;
   SIMULATE = 0;
-  windowMenu -> CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_UNCHECKED);
+  windowMenu->CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_UNCHECKED);
 }
 
-
-
-void TIPWindow::CmSimulate()  // Allow Simulation
+void TIPWindow::CmSimulate() // Allow Simulation
 {
-  windowMenu -> CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_CHECKED);
+  windowMenu->CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_CHECKED);
   NIDAQENABLE = 0;
   SIMULATE = 1;
-  windowMenu -> CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_UNCHECKED);
+  windowMenu->CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_UNCHECKED);
 }
-
-
 
 void TIPWindow::CmSetupData()
 {
   char DataParamInfo[sizeof(TDataParamStruct) + 5 + 1];
   char *ss;
-  if (TDataDlg(this, "DATA", DataParamStruct).Execute() == IDOK) {
+  if (TDataDlg(this, "DATA", DataParamStruct).Execute() == IDOK)
+  {
     strcpy(DataParamInfo, DataParamStruct.DataFileName);
     strcat(DataParamInfo, "\n");
     strcat(DataParamInfo, DataParamStruct.NumOutPoints);
@@ -925,8 +921,6 @@ void TIPWindow::CmSetupData()
   MessageBox(ss, GetApplication()->GetName(), MB_OK);
 }
 
-
-
 void TIPWindow::CmFrequency()
 {
   char s[40];
@@ -939,18 +933,18 @@ void TIPWindow::CmFrequency()
   }
 }
 
-
 //-- Page 113 ------------------------------------------------------------------
 
 void TIPWindow::CmPID()
 {
-  TPIDDlg* PIDDlg = new TPIDDlg(this, &PIDOptions);
+  TPIDDlg *PIDDlg = new TPIDDlg(this, &PIDOptions);
   ControlType = PID;
 
   windowMenu->CheckMenuItem(CM_PIDCONTROL, MF_BYCOMMAND | MF_CHECKED);
   windowMenu->CheckMenuItem(CM_NEURAL_ACEASE, MF_BYCOMMAND | MF_UNCHECKED);
 
-  if (PIDDlg->Execute() == IDOK) ControlType = PID;
+  if (PIDDlg->Execute() == IDOK)
+    ControlType = PID;
 }
 
 void TIPWindow::CmNeuralACEASE() // Setup
@@ -1036,7 +1030,7 @@ void TIPWindow::CmNeuralACEASE() // Setup
               if (i != (NumOfNodes + 1))
               {
                 MessageBox("Number of Boxes Does not Match: May Cause Poor Performance",
-                    "Data Mismatch Error", MB_OK);
+                           "Data Mismatch Error", MB_OK);
               }
               fclose(fdata);
             }
@@ -1049,8 +1043,6 @@ void TIPWindow::CmNeuralACEASE() // Setup
   }
 }
 
-
-
 void TIPWindow::CmCalibration()
 {
   if (!NIDAQENABLE)
@@ -1060,7 +1052,7 @@ void TIPWindow::CmCalibration()
   }
 
   TCalibDlg *CalibDlg = new TCalibDlg(this, &Calibration);
-//-- Page 115 ------------------------------------------------------------------
+  //-- Page 115 ------------------------------------------------------------------
   char Degrees[10];
 
   temp_graph_output = graph_output;
@@ -1075,12 +1067,12 @@ void TIPWindow::CmCalibration()
   strcpy(Calibration.PoleAngle, Degrees);
 
   CalibDlg->Execute();
-  delete CalibDlg;  // Prevent memory leak
+  delete CalibDlg; // Prevent memory leak
 }
 
 void TIPWindow::CmDisplay()
 {
-  TGraphicsDlg* GraphicsDig = new TGraphicsDig(this, &Graphics);
+  TGraphicsDlg *GraphicsDig = new TGraphicsDig(this, &Graphics);
   if (GraphicsDlg->Execute() == IDOK)
   {
     MessageBox("Graphics OK", "DISPLAY", MB_OK);
@@ -1088,8 +1080,6 @@ void TIPWindow::CmDisplay()
     MagPD = atoi(Graphics.PixelsPerDegree);
   }
 }
-
-
 
 void TIPWindow::CmFileOpen()
 {
@@ -1174,8 +1164,6 @@ void TIPWindow::CmFileOpen()
   }
 }
 
-
-
 void TIPWindow::CmFileSave()
 {
   char ext[5] = "";
@@ -1186,7 +1174,7 @@ void TIPWindow::CmFileSave()
   float temp;
 
   FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, "Weight Files(*.wgt)|*.wgt|Data Files (*.dat)|*.dat|All Files (*.*)|*.*|", 0, "WGT", "DAT");
-//-- Page 117 -----------------------------------------------------------------
+  //-- Page 117 -----------------------------------------------------------------
   strcpy(FileData->FileName, SaveFileName);
 
   if (TFileSaveDialog(this, *FileData).Execute() == IDOK)
@@ -1257,7 +1245,7 @@ void TIPWindow::CmFileSave()
               for (TrialNum = 0; TrialNum < MAX_TRIALS; TrialNum++)
               {
                 fprintf(fdata, "%10i %10i %10 \n ", RunNum, TrialNum, LifeTime[RunNum][TrialNum]);
-//-- Page 118 -----------------------------------------------------------------
+                //-- Page 118 -----------------------------------------------------------------
               }
             }
             RunNum = 0;
@@ -1277,14 +1265,10 @@ void TIPWindow::CmFileSave()
   }
 }
 
-
-
 void TIPWindow::CmFileExit()
 {
   CmExit();
 }
-
-
 
 void TIPWindow::CmOldDataGraph
 {
@@ -1293,8 +1277,7 @@ void TIPWindow::CmOldDataGraph
   Invalidate();
 }
 
-
-void TIPWindow::CmBeginControl()  //  Refactored with ChatGPT; use with caution.
+void TIPWindow::CmBeginControl() //  Refactored with ChatGPT; use with caution.
 {
   int start = 0, Mag = 500;
   char txt[30];
@@ -1394,12 +1377,12 @@ void TIPWindow::CmBeginControl()  //  Refactored with ChatGPT; use with caution.
 
     switch (ControlType)
     {
-      case PID:
-        volt[jj] = PIDController(IC, jj);
-        break;
-      case NEURAL_ACE_ASE:
-        volt[jj] = NeuralACEASE(IC, jj, states) / 10.58;
-        break;
+    case PID:
+      volt[jj] = PIDController(IC, jj);
+      break;
+    case NEURAL_ACE_ASE:
+      volt[jj] = NeuralACEASE(IC, jj, states) / 10.58;
+      break;
     }
 
     if (Graphics.GraphicsOn)
@@ -1448,8 +1431,6 @@ void TIPWindow::CmBeginControl()  //  Refactored with ChatGPT; use with caution.
     AO_VWrite(board, 0, 0.0);
 }
 
-
-
 void TIPWindow::CmRefSineWave()
 {
   if (TSinWavRefDlg(this, "SINE WAVE REF", SinWavRefParam).Execute() == IDOK)
@@ -1458,7 +1439,6 @@ void TIPWindow::CmRefSineWave()
     Ref_type = 0;
   }
 }
-
 
 //-- Page 122 ------------------------------------------------------------------
 
@@ -1862,10 +1842,11 @@ end:
     Line(dc, cxx - 50, cyy, cxx + 50, cyy, white);
     Line(dc, cxx, cyy - 50, cxx, cyy + 50, white);
   }
-  //-- Page 128 ------------------------------------------------------------------
 }
 
-void TIPWindow::TrainCMACO
+//-- Page 128 ------------------------------------------------------------------
+
+void TIPWindow::TrainCMAC()
 {
   static int i;
   static int states[NS];
@@ -1874,430 +1855,454 @@ void TIPWindow::TrainCMACO
   CmFileOpen();
   if (NumOfDataPoints < 1)
   {
-    ("No Data File Chosen", "Error", MB_OK);
+    MessageBox("No Data File Chosen", "Error", MB_OK);
     return;
   }
   for (i = 1; i < NumOfDataPoints; i++)
   {
     states[0] = int((float)random(1000) / 1000.0 * ThetaExtreme * 2 - ThetaExtreme);
     states[1] = int((float)random(1000) / 1000.0 * DThetaExtreme * 2 - DThetaExtreme);
-    train_cmac(cmac_id, states, (int)ang, beta, 40); // ang is training desired resp
-                                                     // in radians
-    MessageBox("Finished Training CMAC", "CMAC", MB_OK);
+    train_cmac(cmac_id, states, (int *)ang, beta, 40); // ang is training desired resp in radians
   }
+  MessageBox("Finished Training CMAC", "CMAC", MB_OK);
 }
 
- int TIPWindow::RunWeightSave()
- {
-   int Choice;
-   TRUNDIg* RUNDIg= new TRUNDIg(this, &RUNOptions);
-   Choice-RUNDIg->Execute();
-   if(ChoiceIDOK)
-   {
-     data_rec=1;
-     if(RUNOptions.SaveWeightsToMemory)
-       OtherWeights=1;
-     if(RUNOptions.SaveWeightsToFile)
-     {
-       sprintf(SaveFileName,"%s\0",NeuralACEASEOptions. WeightFileName);
-       NumOfDataPoints=steps;
-       CmFileSave();
-       sprintf(NeuralACEASEOptions.WeightFileName,"%s\0", SaveFileName);
-       Other Weights=1;
-       if(RUNOptions.DontSaveWeights)
-         Other Weights=0;
-     }
-   }
-   else
-     data_rec=1;
-   return Choice;
- }
- class TIPControlApp: public TApplication {
-   public:
+int TIPWindow::RunWeightSave()
+{
+  int Choice;
+  TRUNDlg *RUNDlg = new TRUNDlg(this, &RUNOptions);
+  Choice = RUNDlg->Execute();
+  if (Choice == IDOK)
+  {
+    data_rec = -1;
+    if (RUNOptions.SaveWeightsToMemory)
+      OtherWeights = 1;
+    if (RUNOptions.SaveWeightsToFile)
+    {
+      sprintf(SaveFileName, "%s\0", NeuralACEASEOptions.WeightFileName);
+      NumOfDataPoints = steps;
+      CmFileSave();
+      sprintf(NeuralACEASEOptions.WeightFileName, "%s\0", SaveFileName);
+      OtherWeights = 1;
+    }
+    if (RUNOptions.DontSaveWeights)
+      OtherWeights = 0;
+  }
+  else
+    data_rec = 1;
+  return Choice;
+}
 
+//----------------------------------------------------------------------------
 
-//-- Page 129 ------------------------------------------------------------------
+class TIPControlApp : public TApplication
+{
+public:
+  //-- Page 129 ------------------------------------------------------------------
 
-	TIPControlApp(const char* name)
-		: TApplication(name) {};
-	void InitMainWindow();
-	void InitInstance();
+  TIPControlApp(const char *name)
+      : TApplication(name) {};
+  void InitMainWindow();
+  void InitInstance();
 };
-
 
 void TIPControlApp::InitMainWindow()
 {
-	EnableCtl3d();
-	TIPWindow* IPWindow = new TIPWindow(0);
-	IPWindow -> GetPIDOptions();
-	IPWindow -> GetCalibOptions();
-	IPWindow -> GetGraphics();
-	MainWindow = IPWindow;
+  EnableCtl3d();
+  TIPWindow *IPWindow = new TIPWindow(0);
+  IPWindow->GetPIDOptions();
+  IPWindow->GetCalibOptions();
+  IPWindow->GetGraphics();
+  MainWindow = IPWindow;
 }
-
 
 void TIPControlApp::InitInstance()
 {
-	if (hPrevInstance) {
-		HWND hwnd = ::FindWindow(WINCLASSNAME, 0); if (hwnd) {
-			hwnd = GetLast ActivePopup(hwnd);
-			Bring WindowToTop(hwnd);
-			ShowWindow(hwnd, SW_RESTORE);
-			PostAppMessage(GetCurrentTask(), WM_QUIT, 0, 0);
-		}
-	} else
+  if (hPrevInstance)
+  {
+    HWND hwnd = ::FindWindow(WINCLASSNAME, 0);
+    if (hwnd)
+    {
+      hwnd = GetLastActivePopup(hwnd);
+      BringWindowToTop(hwnd);
+      ShowWindow(hwnd, SW_RESTORE);
+    }
+    PostAppMessage(GetCurrentTask(), WM_QUIT, 0, 0);
+  }
+  else
+    TApplication::InitInstance();
 }
 
-
-
-    TApplication::InitInstance();
 #pragma argsused
-    int
-      OwlMain(int /*arge*/, char* /*argv*/ [])
-      {
+int OwlMain(int /*argc*/, char * /*argv*/[])
+{
+  TIPControlApp app("IPControlApp");
+  return app.Run();
+}
 
-        TIPControlApp app("IPControlApp");
-        return app.Run();
+//  FILENAME=acease.cpp
+//  Neural Adaptive Critic Element (ACE) and Associative Search Element (ASE)
+//  Algorithm: Bang-Bang Control
+//  Initialize Neural ACE ASE variables here
 
-        // FILENAME=acease.cpp
-        // Neural Adaptive Critic Element (ACE) and Associative Search Element (ASE) Bang-Bang Control
-        // Algorithm:
-        // Initialize Neural ACE ASE variables here
-
-
+//-- Page 130 ------------------------------------------------------------------
 
 void InitializeNeuralACEASE(int IC, int OtherWeights)
 {
-	//-- Page 130 ------------------------------------------------------------------
-	int i, j, B;
-	float s0to1, s1toб, sбto12;
-	float ThetaBoxSpacing = ThetaExtreme / NumThetaBoxes;
-	float DThetaBoxSpacing = DThetaExtreme / NumDThetaBoxes;
-	float MinDisX, MinDisY, Dx, Dy;
-	static int quant[2] = {10, 10};
-	IC = 1;
-	tstep = 1/fs;
-	NumOfNodes = NumThetaBoxes * NumDThetaBoxes;
+  int i, j, B;
+  float s0to1, s1toб, sбto12;
+  float ThetaBoxSpacing = ThetaExtreme / NumThetaBoxes;
+  float DThetaBoxSpacing = DThetaExtreme / NumDThetaBoxes;
+  float MinDisX, MinDisY, Dx, Dy;
+  static int quant[2] = {10, 10};
+  IC = 1;
+  tstep = 1 / fs;
+  NumOfNodes = NumThetaBoxes * NumDThetaBoxes;
 
-	if(NeuralACEASEOptions.CMAC) {  // Allocate Memory for CMAC decoder
-		cmac_id = 0;
-		cmac_id = allocate_cmac(NS, quant, NumOfNodes, 16, 1000, RECTANGULAR, 0);
-		if(lcmac_id)
+  if (NeuralACEASEOptions.CMAC)
+  {
+    // Allocate Memory for CMAC decoder
+    cmac_id = 0;
+    cmac_id = allocate_cmac(NS, quant, NumOfNodes, 16, 1000, RECTANGULAR, 0);
+    if (lcmac_id)
       exit(-1);
-		clear_cmac_weights(cmac_id);
-	}
+    clear_cmac_weights(cmac_id);
+  }
 
-	if(!OtherWeights)
+  if (!OtherWeights)
     TrialNum = 0;
 
-	for (i = 0; i < 100; i++)
+  for (i = 0; i < 100; i++)
     trx[i] = 0;
 
-	steps = 0;
-	jj = 1;
-	failure = 0;
-	t = 0;
+  steps = 0;
+  jj = 1;
+  failure = 0;
+  t = 0;
 
-	//learning parameters:
-	Alpha = 1000;
-	Delta = 0.9;
-	Beta = 0.5;
+  // learning parameters:
+  Alpha = 1000;
+  Delta = 0.9;
+  Beta = 0.5;
   Gamma = 0.95;
-	Lamda = 0.8;
+  Lamda = 0.8;
 
-	if(!Other Weights) {
-for (i=1; i <= NumOfNodes; i++) {
-			wt[i] = 0;
-			vt[i] = 0;
-			elg0[i] = 0;
-			elg[i] = 0;
-			xbar[i] = 0;
-			tempelg[i] = 0;
-		}
-		Other Weights=1;
-	}
-	predlast = 0;  //last prediction
-
-	for (i=0; i < MAX_STEPS; i++) {
-		ang[i] = 0;
-		systime[i] = 0;
-		force[i] = 0;
-		V_reff[i] = 0;
-	}
-	// Determine Sigma (Overlap) for all centers
-
-//-- Page 131 ---------------------------------------------------------------------
-
-	for(i=1; i<=NumOfNodes; i++)
+  if (!Other Weights)
   {
-		Sigma Theta[i] = sqrt(- (pow(ThetaBoxSpacing, 2)) / (2.0 *log(Overlap)));
-		Sigma Theta[i] = sqrt(- (pow(DThetaBoxSpacing, 2)) / (2.0 *log(Overlap)));
-		FailAng- 12 * Ang2Rad; //Failure Angle (by degrees)
-		if(NeuralACEASEOptions.Uniform)
-		{
-			for(i=0; i<NumThetaBoxes; i++)
-			{
-				// Input space normalized to -1 and 1
-				for(j=0; j<NumDThetaBoxes; j++)
-				{
-					// nc = node or box center
-					ncx[j+1+i*NumDThetaBoxes] = -DThetaExtreme+j*DThetaBoxSpacing*2+DThetaBoxSpacing;
-					-ThetaExtreme+i * ThetaBoxSpacing* 2 + ThetaBoxSpacing,
-						ncy[j+1+i*NumDThetaBoxes]=
-			}
+    for (i = 1; i <= NumOfNodes; i++)
+    {
+      wt[i] = 0;
+      vt[i] = 0;
+      elg0[i] = 0;
+      elg[i] = 0;
+      xbar[i] = 0;
+      tempelg[i] = 0;
+    }
+    OtherWeights = 1;
+  }
+  predlast = 0; // last prediction
+
+  for (i = 0; i < MAX_STEPS; i++)
+  {
+    ang[i] = 0;
+    systime[i] = 0;
+    force[i] = 0;
+    V_reff[i] = 0;
+  }
+  // Determine Sigma (Overlap) for all centers
+
+  //-- Page 131 ---------------------------------------------------------------------
+
+  for (i = 1; i <= NumOfNodes; i++)
+  {
+    Sigma Theta[i] = sqrt(-(pow(ThetaBoxSpacing, 2)) / (2.0 * log(Overlap)));
+    Sigma Theta[i] = sqrt(-(pow(DThetaBoxSpacing, 2)) / (2.0 * log(Overlap)));
+    FailAng - 12 * Ang2Rad; // Failure Angle (by degrees)
+    if (NeuralACEASEOptions.Uniform)
+    {
+      for (i = 0; i < NumThetaBoxes; i++)
+      {
+        // Input space normalized to -1 and 1
+        for (j = 0; j < NumDThetaBoxes; j++)
+        {
+          // nc = node or box center
+          ncx[j + 1 + i * NumDThetaBoxes] = -DThetaExtreme + j * DThetaBoxSpacing * 2 + DThetaBoxSpacing;
+          -ThetaExtreme + i *ThetaBoxSpacing * 2 + ThetaBoxSpacing,
+              ncy[j + 1 + i * NumDThetaBoxes] =
+        }
+      }
+
+      for (i = 1; i <= NumOfNodes; i++)
+        ISNode[i] = 0.0;
+
+      reinf = 0;
+      prevt = 0;
+
+      yo[0] = 0; // State 1 (Angle) theta Initial Condition
+      yo[1] = 0; // State 2 (Angular Velocity) theta prime
+    }
+  }
 }
-
-for(i = 1; i<=NumOfNodes; i++) ISNode[i] = 0.0;
-
-reinf = 0;
-prevt = 0;
-
-yo[0] = 0; // State 1 (Angle) theta Initial Condition
-yo[1] = 0; // State 2 (Angular Velocity) theta prime
 
 void ace()
 {
-	double vtsum = 0;
-	int i, j;
-	// ADAPTIVE CRITIC ELEMENT
-	// RETURNS: internal reinforcement (internal_reinf),
-	// weights for ACE(vt), and predition (pred)
+  double vtsum = 0;
+  int i, j;
 
-	if (failure) vtsum = 0;
-	else for(i = 1; i <= NumOfNodes; i++) vtsum = vtsum + vt[i] * ISNode[i];
+  // ADAPTIVE CRITIC ELEMENT
+  // RETURNS: internal reinforcement (internal_reinf),
+  // weights for ACE(vt), and predition (pred)
 
-	pred = vtsum;
-	// Internal Reinforcement (for on-line adaptation)
-	internal_reinf = reinf + (Gamma *pred) - predlast;
-	// Update Value Function for All Nodes
-	for (i=1; i <= NumOfNodes; i++)
-		vt[i] = vt[i] + (Beta * internal_reinf * xbar[i]);
+  if (failure)
+    vtsum = 0;
+  else
+    for (i = 1; i <= NumOfNodes; i++)
+      vtsum = vtsum + vt[i] * ISNode[i];
+
+  pred = vtsum;
+  // Internal Reinforcement (for on-line adaptation)
+  internal_reinf = reinf + (Gamma * pred) - predlast;
+  // Update Value Function for All Nodes
+  for (i = 1; i <= NumOfNodes; i++)
+    vt[i] = vt[i] + (Beta * internal_reinf * xbar[i]);
 }
-
 // Action Network
-        // Associative Search Element
+// Associative Search Element
 
 void ase()
 {
-	double noise;
-	int ij;
-//-- Page 132 ------------------------------------------------------------------
-	double wtsum = 0.0, dom;
-	// x=0 means zero input
-	// variance = 0.01
-	// to produce a probability density function value
-	noise ((double) (random(700)-300))/10000;
-	if (failure)
-	{
-	  // failure code
-	}
-	else
-	{
-		wtsum = 0.0;
-	}
-	for (i=1; i <= NumOfNodes; i++)
+  double noise;
+  int ij;
+  //-- Page 132 ------------------------------------------------------------------
+  double wtsum = 0.0, dom;
+  // x=0 means zero input
+  // variance = 0.01
+  // to produce a probability density function value
+  noise((double)(random(700) - 300)) / 10000;
+  if (failure)
+  {
+    // Failure code
+  }
+  else
+  {
+    wtsum = 0.0;
+  }
+  for (i = 1; i <= NumOfNodes; i++)
     wtsum = wtsum + ISNode[i] * wt[i];
-	dom = wtsum + noise;
-	if(NeuralACEASEOptions.OutSigmoid)
-		action = 2 * (1/(1 + exp(-dom)) - 0.50);  // Sigmoidal Function (between +1 and 1)
-	else
-	{
-		// Bang Bang Output
-	}
-	if (dom >= 0)
-		action = 1.0;
-	else
-		action =- 1.0;
-	// Ref is used as a disturbance signal
-	if(NeuralACEASEOptions.DisturbanceYes) {
-		V_reff[steps]=Ref(1)*10;
-		action+ V_reff[steps];
-	}
-	//update the weights:
-	for (i = 1; i <= NumOfNodes; i++)
-		wt[i] = wt[i] + Alpha*internal_reinf*elg[i];
-	}
+  dom = wtsum + noise;
+  if (NeuralACEASEOptions.OutSigmoid)
+    action = 2 * (1 / (1 + exp(-dom)) - 0.50); // Sigmoidal Function (between +1 and 1)
+  else
+  {
+    // Bang Bang Output
+  }
+  if (dom >= 0)
+    action = 1.0;
+  else
+    action = -1.0;
+  // Ref is used as a disturbance signal
+  if (NeuralACEASEOptions.DisturbanceYes)
+  {
+    V_reff[steps] = Ref(1) * 10;
+    action + V_reff[steps];
+  }
+  // update the weights:
+  for (i = 1; i <= NumOfNodes; i++)
+    wt[i] = wt[i] + Alpha * internal_reinf * elg[i];
+}
+
 void decoder()
 {
-	int i, j, idx;
-	double Theta, DTheta, D;
-	double tn, td, dn, dd, et, ed;
-	double ThetaBoxSpacing-ThetaExtreme/NumThetaBoxes;
-	double DThetaBoxSpacing-DThetaExtreme/NumDThetaBoxes;
-	static float x[NS];
-	static int TempISNode[25];
-	static float xcmac[NS];
-	if((TempISNode (int*)malloc(NumOfNodes))-NULL) exit(-1); //Dynamically Allocate Temp Memory
-	// Decoder for states,
-RETURNS: BoxNum //Input--2 state vetors from pole system: Normalized x[0]=states[0]*Rad2Ang; //angle of the pole with the vertical x[1] states[1]*Rad2Ang; //angular velocity all in degrees
-	for(i=1; i <= NumOfNodes; i++) ISNode[i] = 0.0;  // Clear Boxes for New State
-	if (failure) return;
+  int i, j, idx;
+  double Theta, DTheta, D;
+  double tn, td, dn, dd, et, ed;
+  double ThetaBoxSpacingR = ThetaExtreme / NumThetaBoxes;
+  double DThetaBoxSpacing = DThetaExtreme / NumDThetaBoxes;
+  static float x[NS];
+  static int TempISNode[25];
+  static float xcmac[NS];
+  if ((TempISNode(int *) malloc(NumOfNodes))-NULL)
+    exit(-1); // Dynamically Allocate Temp Memory
+  // Decoder for states
 
-//-- Page 133 ------------------------------------------------------------------
+RETURNS:
+  BoxNum //  Input-2 state vetors from pole system: Normalized
 
-if(NeuralACEASEOptions.RBF)
-	for (i = 1; i <= NumOfNodes; i++)
-	{
+      x[0] = states[0] * Rad2Ang; // Angle of the pole with the vertical
+  x[1] = states[1] * Rad2Ang;     // Aangular velocity all in degrees
+  for (i = 1; i <= NumOfNodes; i++)
+    ISNode[i] = 0.0; // Clear Boxes for New State
+  if (failure)
+    return;
 
-		// 2D Gausian, pow(x,y) = x to power of y
-		tn = -pow((x[0] - ncy[i]), 2);
-		td = (2 * pow(SigmaTheta[i], 2));
-									dn = -pow((x[1] - ncx[i]), 2);
-		dd = (2 * pow(SigmaDTheta[i], 2));
-		et = exp(tn / td); // Radial Basis Function for Theta (angle)
-		ed = exp(dn / dd); // Radial Basis Function for DTheta (angular vel.)
+  //-- Page 133 ------------------------------------------------------------------
+  //  Hello There this is a test
+  if (NeuralACEASEOptions.RBF)
+  {
+    for (i = 1; i <= NumOfNodes; i++)
+    {
+      // 2D Gausian, pow(x,y) = x to power of y
+      tn = -pow((x[0] - ncy[i]), 2);
+      td = (2 * pow(SigmaTheta[i], 2));
+      dn = -pow((x[1] - ncx[i]), 2);
+      dd = (2 * pow(SigmaDTheta[i], 2));
+      et = exp(tn / td); // Radial Basis Function for Theta (angle)
+      ed = exp(dn / dd); // Radial Basis Function for DTheta (angular vel.)
 
-		ISNode[i] = et * ed;
-		else if (NeuralACEASEOptions.Uniform) {
-			// Uniform Binary Grid With No Overlap (Rectangular) for(i=0;i<NumThetaBoxes;i++) {
-			// Set Boxes for Extreme Negative Angular Velocity if((x[1]<(ncx[i*NumDThetaBoxes+1]+DThetaBoxSpacing)) && (x[0]=(ncy[i*NumDThetaBoxes+1]-ThetaBoxSpacing)) && (x[0]<(ncy[i*NumDThetaBoxes+1]+ThetaBoxSpacing)))
-			else
-				ISNode[i * NumDThetaBoxes+1] = 1.0; // Binary output
-			ISNode[i * NumDThetaBoxes+1] = 0.0; // Binary Output
-																					//Set Boxes Between Extremes
-			for(j = 2; j < NumDThetaBoxes; j++) {
-				idx-j+i NumDThetaBoxes;
-				if((x[0] (ncy[idx]-ThetaBoxSpacing)) &&
-						(x[0] < (ncy[idx] + ThetaBoxSpacing)) && (x[1] (ncx[idx] - DThetaBoxSpacing)) && (x[1] < (ncx[idx] + DThetaBoxSpacing)))
-					ISNode[idx] = 1.0; // Binary Output
-			}
-			else
-				ISNode[idx] = 0.0; // Binary Output
-													 // Set Boxes for Extreme Positive Angular Velocity
-			if((x[1] = ncx[(i+1) * NumDThetaBoxes] - DThetaBoxSpacing) && (x[0] = ncy[(i+1) * NumDThetaBoxes] - ThetaBoxSpacing) && (x[0] < ncy[(i+1) * NumDThetaBoxes] + ThetaBoxSpacing))
-				ISNode[(i+1)*NumDThetaBoxes] - 1.0;
-			ISNode[(i-1)*NumDThetaBoxes] - 0.0;
-			else
-		}
-		}
-		else if(NeuralACEASEOptions.CMAC) {
-			for (i = 0; i <= NumOfNodes; i++)
-				TempISNode[i] = 0; // convert to int
-			for (i = 0; i < NS; i++)
-				xcmac[i] = (int)1000 * x[i];
-			// cmac_response(cmac_id,xcmac,TempISNode); // x is in degrees
-			j for (i = 1; i <= NumOfNodes; i++) ISNode[i] = ((float)TempISNode[i - 1]) / 1000;
+      ISNode[i] = et * ed;
+      else if (NeuralACEASEOptions.Uniform)
+      {
+        // Uniform Binary Grid With No Overlap (Rectangular) for(i=0;i<NumThetaBoxes;i++) {
+        // Set Boxes for Extreme Negative Angular Velocity if((x[1]<(ncx[i*NumDThetaBoxes+1]+DThetaBoxSpacing)) && (x[0]=(ncy[i*NumDThetaBoxes+1]-ThetaBoxSpacing)) && (x[0]<(ncy[i*NumDThetaBoxes+1]+ThetaBoxSpacing)))
+        else ISNode[i * NumDThetaBoxes + 1] = 1.0; // Binary output
+        ISNode[i * NumDThetaBoxes + 1] = 0.0;      // Binary Output
+                                                   // Set Boxes Between Extremes
+        for (j = 2; j < NumDThetaBoxes; j++)
+        {
+          idx - j + i NumDThetaBoxes;
+          if ((x[0](ncy[idx] - ThetaBoxSpacing)) &&
+              (x[0] < (ncy[idx] + ThetaBoxSpacing)) && (x[1](ncx[idx] - DThetaBoxSpacing)) && (x[1] < (ncx[idx] + DThetaBoxSpacing)))
+            ISNode[idx] = 1.0; // Binary Output
+        }
+        else ISNode[idx] = 0.0; // Binary Output
+                                // Set Boxes for Extreme Positive Angular Velocity
+        if ((x[1] = ncx[(i + 1) * NumDThetaBoxes] - DThetaBoxSpacing) && (x[0] = ncy[(i + 1) * NumDThetaBoxes] - ThetaBoxSpacing) && (x[0] < ncy[(i + 1) * NumDThetaBoxes] + ThetaBoxSpacing))
+          ISNode[(i + 1) * NumDThetaBoxes] - 1.0;
+        ISNode[(i - 1) * NumDThetaBoxes] - 0.0;
+        else
+      }
+    }
+    else if (NeuralACEASEOptions.CMAC)
+    {
+      for (i = 0; i <= NumOfNodes; i++)
+        TempISNode[i] = 0; // convert to int
+      for (i = 0; i < NS; i++)
+        xcmac[i] = (int)1000 * x[i];
+      // cmac_response(cmac_id,xcmac,TempISNode); // x is in degrees
+      j for (i = 1; i <= NumOfNodes; i++) ISNode[i] = ((float)TempISNode[i - 1]) / 1000;
 
-			// free(TempISNode);
+      // free(TempISNode);
 
-//-- Page 134 ------------------------------------------------------------------
+      //-- Page 134 ------------------------------------------------------------------
+    }
 
-}
-
-
-// SOLVE MODEL FOR SIMULATION AND/OR TRAINING: Returns x[NS]=Model States void PoleModelSolve
+    // SOLVE MODEL FOR SIMULATION AND/OR TRAINING: Returns x[NS]=Model States void PoleModelSolve
 void PoleModelSolve()
-
-/*
-	 function sts-polemod(uf, y0, t, tstep, method)
-	 cart-pole simulation function Solve ODE by using various methods:
-	 method = 0 default: Euler method; method = 1: Runge-Kutta 2nd order method
-	 method = 2: Runge-Kutta 4th order method
-	 */
 {
-int i;
+/*
+ * function sts-polemod(uf, y0, t, tstep, method)
+ * cart-pole simulation function Solve ODE by using various methods:
+ * method = 0 default: Euler method; method = 1: Runge-Kutta 2nd order method
+ * method = 2: Runge-Kutta 4th order method
+ */
 
-for(i=0; i<NS; i++) y[i]-y0[i];
-PoleStateSpaceModel(s1, t, y, force[steps]); // Euler's
-for(i=0; i<NS; i++) ys2[i] = y[i] + (tstep/2)*s1[i];
-PoleStateSpaceModel(s2, t+tstep/2, ys2, force[steps]);
+  int i;
 
-if (method == 2)
-{ // Runge-Kutta 4th order
-	for (i = 0; i < NS; i++)
-		ys3[i] = y[i] + (tstep / 2) * s2[i];
-	PoleStateSpaceModel(s3, t + tstep / 2, ys3, force[steps]);
-	for (i = 0; i < NS; i++)
-		ys4[i] = y[i] + tstep * s3[i];
-	PoleStateSpaceModel(s4, t + tstep, ys4, force[steps]);
-}
+  for (i = 0; i < NS; i++)
+    y[i] - y0[i];
+  PoleStateSpaceModel(s1, t, y, force[steps]); // Euler's
+  for (i = 0; i < NS; i++)
+    ys2[i] = y[i] + (tstep / 2) * s1[i];
+  PoleStateSpaceModel(s2, t + tstep / 2, ys2, force[steps]);
 
-//solution:
-if (method == 0) // Euler's Method
-	for (i=0; i<NS; i++) y[i] = y[i] + tstep*s1[i];
-else if (method == 1)
-	for (i=0; i<NS; i++) y[i] = y[i] + tstep*s2[i];
-else if (method == 2)
-	for (i=0; i<NS; i++) y[i]=y[i]+tstep*s1[i]/6+ \
-		tstep*s2[i]/3+tstep*s3[i]/3+tstep*s4[i]/6,
-		for(i=0; i<NS; i++) states[i] = y[i];  // return states
-}                                  
+  if (method == 2)
+  {
+    // Runge-Kutta 4th order
+    for (i = 0; i < NS; i++)
+      ys3[i] = y[i] + (tstep / 2) * s2[i];
+     PoleStateSpaceModel(s3, t + tstep / 2, ys3, force[steps]);
+     for (i = 0; i < NS; i++)
+       ys4[i] = y[i] + tstep * s3[i];
+     PoleStateSpaceModel(s4, t + tstep, ys4, force[steps]);
+  }
 
-
-	// STATE SPACE MODEL FOR POLE SYSTEM SIMULATIONS: Returns dtdx[NS]
+  // solution:
+  if (method == 0) // Euler's Method
+    for (i = 0; i < NS; i++)
+      y[i] = y[i] + tstep * s1[i];
+      else if (method == 1)
+        for (i = 0; i < NS; i++)
+          y[i] = y[i] + tstep * s2[i];
+      else if (method == 2)
+        for (i = 0; i < NS; i++)
+          y[i] = y[i] + tstep * s1[i] / 6 +
+                 tstep * s2[i] / 3 + tstep * s3[i] / 3 + tstep * s4[i] / 6,
+          for (i = 0; i < NS; i++) states[i] = y[i]; // return states
+    }
+  
+    // STATE SPACE MODEL FOR POLE SYSTEM SIMULATIONS: Returns dtdx[NS]
 void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
 {
-	double g, l, md, mr, r, k1, k2, jm;
-	double a1, a2, a3, a4;
+  double g, l, md, mr, r, k1, k2, jm;
+  double a1, a2, a3, a4;
 
-		// Physical Constants of Inverted Pendulum System
-		g = 9.8;       // m/sec, Gravity
-		l = 0.49927;   // m, Length of Pole
-		md = 0.26164;  // kg, Mass of Disc
-		mr = 0.04240;  // kg, Mass of Pole
-		r = 1.44;      // Ohms, resistance of motor windings
-		k1 = 0.0833;   // Nm/amp, Proportionality const. between
+      // Physical Constants of Inverted Pendulum System
+      g = 9.8;      // m/sec, Gravity
+      l = 0.49927;  // m, Length of Pole
+      md = 0.26164; // kg, Mass of Disc
+      mr = 0.04240; // kg, Mass of Pole
+      r = 1.44;     // Ohms, resistance of motor windings
+      k1 = 0.0833;  // Nm/amp, Proportionality const. between
 
+      //-- Page 135 ------------------------------------------------------------------
 
-//-- Page 135 ------------------------------------------------------------------
+      k2 = 0.0821;   // Torque delivered and winding current
+      jm = 0.000044; // Vsec/rad, Proportionality const between induced emf & angular velocity.
 
-	k2 = 0.0821;    // Torque delivered and winding current  
-	jm = 0.000044;  // Vsec/rad, Proportionality const between induced emf & angular velocity.
+      // u is DC voltage applied to motor (input)
+      // //states:
+      // acceleration
+      // // // kgm^2, Armature Inertia
+      // xl = angle, dxldt = angular velocity-x2, dx2dt-angular
+      // Il constants
+      a1 = g * (md * l + mr * 1 / 2);
+      a2 = (k1 * k2) / г;
+      a3 = k1 / r;
+      a4 = md l * 1 * 1 + (mr * 1 * 1) / 3 + jm;
+      // equations:
+      dtdx[0] = x[1];
+  dtdx[1] (a1*sin(x[0]-a2*x[1]+a3*u)/a4;
+    }
 
-	// u is DC voltage applied to motor (input)
-	// //states:
-	// acceleration
-	// // // kgm^2, Armature Inertia
-	// xl = angle, dxldt = angular velocity-x2, dx2dt-angular
-	// Il constants
-	a1 = g*(md*l + mr*1/2);
-	a2 = (k1*k2) / г;
-	a3 = k1 / r;
-	a4 = md l*1*1+ (mr * 1 *1 )/ 3 + jm;
-	//equations:
-	dtdx[0]=x[1];
-	dtdx[1] (a1*sin(x[0]-a2*x[1]+a3*u)/a4;
-			}
+    // Dialog Definitions
+    // *******
+    // class TDataDig: public TDialog {
+    // public:
+    // dataparams);
+    // protected:
+    // private:
+    // TDataDig(TWindow* parent, const char* name, TDataParamStruct&
+    // void CmSync();
+    // DECLARE_RESPONSE_TABLE(TDataDlg);
+    // DEFINE_RESPONSE_TABLE1(TDataDlg, TDialog)
+    // EV_COMMAND(IDC_SYNC, CmSync),
+    // END_RESPONSE_TABLE;
+    // class TFreqDlg: public TDialog {
+    // };
+    // public:
+    // TFreqDlg(TWindow* parent, const char* name, TFrequency& freq);
+    // class TPIDDIg: public TDialog {
+    // public:
+    // TPIDDlg(TWindow parent, PIDStruct* PIDOptions);
+    //
 
-			// Dialog Definitions
-			// *******
-			// class TDataDig: public TDialog {
-			// public:
-			// dataparams);
-			// protected:
-			// private:
-			// TDataDig(TWindow* parent, const char* name, TDataParamStruct&
-			// void CmSync();
-													// DECLARE_RESPONSE_TABLE(TDataDlg);
-			// DEFINE_RESPONSE_TABLE1(TDataDlg, TDialog)
-			// EV_COMMAND(IDC_SYNC, CmSync),
-			// END_RESPONSE_TABLE;
-			// class TFreqDlg: public TDialog {
-			// };
-													// public:
-			// TFreqDlg(TWindow* parent, const char* name, TFrequency& freq);
-													// class TPIDDIg: public TDialog {
-			// public:
-													// TPIDDlg(TWindow parent, PIDStruct* PIDOptions);
-													//
+    //-- Page 136 ---------------------------------------------------------------------
+  };
+  class TRUNDlg : public TDialog
+  {
+  };
 
-//-- Page 136 ---------------------------------------------------------------------
-                         };
-    class TRUNDlg : public TDialog
-                          {
-      };
-
-      public:
-    TRUNDIg(TWindow * parent, RUNStruct * RUNOptions);
-    class TNeuralACEASEDlg : public TDialog{} : public : protected : TNeuralACEASEDlg(TWindow * parent,
-        NeuralACEASEStruct & NeuralACEASEOptions);
-    void SetupWindow();
-    void EvBangBangSlide(UINT code);
-    void EvOverlapSlide(UINT code);
-    TStatic BBMagSTxt;
-    TStatic OverlapSTxt;
-    NeuralACEASEStruct ACEASEOptions;
-    TScrollBar BangBangSlider, TScrollBar OverlapSlider, DECLARE_RESPONSE_TABLE(TNeuralACEASED !g);
+public:
+  TRUNDIg(TWindow * parent, RUNStruct * RUNOptions);
+class TNeuralACEASEDlg : public TDialog{} : public : protected : TNeuralACEASEDlg(TWindow * parent,
+                                                                                  NeuralACEASEStruct & NeuralACEASEOptions);
+  void SetupWindow();
+  void EvBangBangSlide(UINT code);
+  void EvOverlapSlide(UINT code);
+  TStatic BBMagSTxt;
+  TStatic OverlapSTxt;
+  NeuralACEASEStruct ACEASEOptions;
+  TScrollBar BangBangSlider, TScrollBar OverlapSlider, DECLARE_RESPONSE_TABLE(TNeuralACEASED !g);
     DEFINE_RESPONSE_TABLE1(TNeuralACEASEDlg, TDialog) EvBangBangSlide), EV_CHILD_NOTIFY_ALL_CODES(IDC_BANGBANGMAG, EV_CHILD_NOTIFY_ALL_CODES(IDC_OVERLAPSLIDER, EvOverlap Slide),
     END_RESPONSE_TABLE;
 
@@ -2344,185 +2349,168 @@ class TCalibDig: public TDialog {
           // Dialog Constructors
           ///#
           TDataDig::TDataDig(TWindow* parent, const char* name,
-              }
+}
               TDataParamStruct& dataparams)
             : TDialog(parcnt, DATADIALOG), TWindow(parent)
           new TEdit(this, DATAFILENAME, sizeof(dataparams.DataFileName));
-          new TEdit(this, NUMBEROFDATAPOINTS, sizeof(dataparams.NumOutPoints));
-          new TEdit(this, NUMSKIrDATAPOINTS, sizeof(dataparams.NumSkipPoints));
-          new TRadioButton(this, IDC_SYNC);
-          new TRadioButton(this, IDC_LIFETIMES);
-          new TRadioButton(this, IDC_STATES);
-          dataparams.CollectSync = FALSE;
-          TransferBuffer = (void far * )&dataparams;
-          TPIDDIg::TPIDDIg(TWindow* parent, PIDStruct* PIDOptions)
-          {
-          }
-          :TDialog(parent, PIDDIALOG)
-          new TRadioButton(this, IDC_SINGLELOOP);
-          new TRadioButton(this, IDC_DUALLOOP);
-          SetTransferBuffer(PIDOptions);
-          TRUNDig::TRUNDlg(TWindow* parent, RUNStruct* RUNOptions)
-            ///01~
+              new TEdit(this, NUMBEROFDATAPOINTS, sizeof(dataparams.NumOutPoints));
+              new TEdit(this, NUMSKIrDATAPOINTS, sizeof(dataparams.NumSkipPoints));
+              new TRadioButton(this, IDC_SYNC);
+              new TRadioButton(this, IDC_LIFETIMES);
+              new TRadioButton(this, IDC_STATES);
+              dataparams.CollectSync = FALSE;
+              TransferBuffer = (void far *)&dataparams;
+              TPIDDIg::TPIDDIg(TWindow *parent, PIDStruct *PIDOptions){}
+                  : TDialog(parent, PIDDIALOG) new TRadioButton(this, IDC_SINGLELOOP);
+              new TRadioButton(this, IDC_DUALLOOP);
+              SetTransferBuffer(PIDOptions);
+              TRUNDig::TRUNDlg(TWindow *parent, RUNStruct *RUNOptions)
+                  /// 01~
 
+                  //-- Page 138 --------------------------------------------------------------------
 
- //-- Page 138 --------------------------------------------------------------------
+                  : TDialog(parent, DIASIMBREAK) new TRadioButton(this, IDC_KEEPSIMGOING);
+              new TRadioButton(this, IDC_SAVEWEIGHTSMEM);
+              new TRadioButton(this, IDC_SAVEWEIGHTSFILE);
+              new TRadioButton(this, IDC_DONTSAVEWEIGHTS);
+              SetTransferBuffer(RUNOptions);
+              // For Setup
+              TNeuralACEASEDlg::TNeuralACEASEDlg(TWindow *parent,
+                                                 NeuralACEASEStruct &NeuralACEASEOptions) : TDialog(parent,
+                                                                                                    NEURALACEASEDLG)
+              {
+                char txt[10];
+                // note: The order of the new statements must be kept for proper operation
+                // and their size in memory must be the same as transferbuffer
+                new TRadioButton(this, IDC_ZEROIZEWEIGHTS);
+                new TRadioButton(this, IDC_USESIMULATIONWEIGHTS);
+                new TRadioButton(this, IDC_WEIGHTSFROMFILE);
+                new TEdit(this, IDC_WEIGHTFILENAME, sizeof(NeuralACEASEOptions.WeightFileName));
+                new TRadioButton(this, IDC_UNIFORM);
+                new TRadioButton(this, IDC_NONUNIFORM);
+                new TRadioButton(this, IDC_CMAC);
+                new TEdit(this, IDC_NUMTHETABOXES, sizeof(NeuralACEASEOptions.NumThetaBoxes));
+                new TEdit(this, IDC_NUMDTHETABOXES, sizeof(NeuralACEASEOptions.NumDThetaBoxes));
+                new TEdit(this, IDC_THETAEXTREME, sizeof(NeuralACEASEOptions.ThetaExtreme));
+                new TEdit(this, IDC_DTHETAEXTREME, sizeof(NeuralACEASEOption.DThctaExtrcmc));
+                new TEdit(this, IDC_ALPHA, sizeof(NeuralACEASEOptions.Alpha));
+                new TRadioButton(this, IDC_SIGMOIDALOUT);
+                new TRadioButton(this, IDC_BANGBANGOUT);
+                new TRadioButton(this, IDC_DISTURBANCEYES);
+                new TRadioButton(this, IDC_DISTURBANCENO);
+                new TCheckBox(this, IDC_RBF),
 
+                    BangBangSlider = new TScrollBar(this, IDC_BANGBANGMAG);
+                BBMagSTxt = new TStatic(this, IDC_VOLTS, 10);
+                OverlapSlider = new TScrollBar(this, IDC_OVERLAPSLIDER);
+                OverlapSTxt = new TStatic(this, IDC_OVERLAPVALUE, 10);
+                TransferBuffer = (void far *)&NeuralACEASEOptions; // Set TransferBuffer(NeuralACEASEOptions); //ACEASEOptions = NeuralACEASEOptions;
+              }
 
-            : TDialog(parent, DIASIMBREAK)
-            new TRadioButton(this, IDC_KEEPSIMGOING); 
-          new TRadioButton(this,IDC_SAVEWEIGHTSMEM);
-          new TRadioButton(this, IDC_SAVEWEIGHTSFILE); 
-                              new TRadioButton(this, IDC_DONTSAVEWEIGHTS);
-          SetTransferBuffer(RUNOptions);
-          // For Setup
-          TNeuralACEASEDlg::TNeuralACEASEDlg(TWindow* parent,
-              NeuralACEASEStruct& NeuralACEASEOptions): TDialog(parent,
-                NEURALACEASEDLG)
-      {
-        char txt[10];
-        // note: The order of the new statements must be kept for proper operation
-                            // and their size in memory must be the same as transferbuffer
-        new TRadioButton(this, IDC_ZEROIZEWEIGHTS);
-        new TRadioButton(this, IDC_USESIMULATIONWEIGHTS);
-        new TRadioButton(this, IDC_WEIGHTSFROMFILE);
-        new TEdit(this, IDC_WEIGHTFILENAME, sizeof(NeuralACEASEOptions.WeightFileName));
-        new TRadioButton(this, IDC_UNIFORM);
-        new TRadioButton(this, IDC_NONUNIFORM);
-        new TRadioButton(this, IDC_CMAC);
-        new TEdit(this, IDC_NUMTHETABOXES, sizeof(NeuralACEASEOptions.NumThetaBoxes));
-        new TEdit(this, IDC_NUMDTHETABOXES, sizeof(NeuralACEASEOptions.NumDThetaBoxes));
-        new TEdit(this, IDC_THETAEXTREME, sizeof(NeuralACEASEOptions.ThetaExtreme));
-        new TEdit(this, IDC_DTHETAEXTREME, sizeof(NeuralACEASEOption.DThctaExtrcmc));
-        new TEdit(this, IDC_ALPHA,sizeof(NeuralACEASEOptions.Alpha));
-        new TRadioButton(this, IDC_SIGMOIDALOUT);
-        new TRadioButton(this, IDC_BANGBANGOUT);
-        new TRadioButton(this, IDC_DISTURBANCEYES);
-        new TRadioButton(this, IDC_DISTURBANCENO);
-        new TCheckBox(this, IDC_RBF),
-
-        BangBangSlider = new TScrollBar(this, IDC_BANGBANGMAG);
-        BBMagSTxt = new TStatic(this, IDC_VOLTS, 10);
-        OverlapSlider = new TScrollBar(this, IDC_OVERLAPSLIDER);
-        OverlapSTxt = new TStatic(this, IDC_OVERLAPVALUE, 10);
-        TransferBuffer = (void far*)&NeuralACEASEOptions; //Set TransferBuffer(NeuralACEASEOptions); //ACEASEOptions = NeuralACEASEOptions;
-      }
-
-
-
-void TNeuralACEASEDlg::SetupWindow()
-{
-//-- Page 139 ------------------------------------------------------------------
-  TWindow::SetupWindow();
-  char txt[10] = "";
-  BangBangSlider -> SetRange(1, 600);
-  OverlapSlider -> SetRange(1, 100);
-  // Initial Thumb Position
-  BangBangSlider -> SetPosition((int)(BangBangGain* 10));
-  OverlapSlider -> SetPosition(100*Overlap);
-  sprintf(txt,"%6.2f", BangBangGain),
-  BBMagSTxt -> SetText(txt);
-  sprintf(txt,"%6.2f", Overlap);
-  OverlapSTxt -> SetText(txt);
-}
+              void TNeuralACEASEDlg::SetupWindow()
+              {
+                //-- Page 139 ------------------------------------------------------------------
+                TWindow::SetupWindow();
+                char txt[10] = "";
+                BangBangSlider->SetRange(1, 600);
+                OverlapSlider->SetRange(1, 100);
+                // Initial Thumb Position
+                BangBangSlider->SetPosition((int)(BangBangGain * 10));
+                OverlapSlider->SetPosition(100 * Overlap);
+                sprintf(txt, "%6.2f", BangBangGain),
+                    BBMagSTxt->SetText(txt);
+                sprintf(txt, "%6.2f", Overlap);
+                OverlapSTxt->SetText(txt);
+              }
 
 
 void TNeuralACEASEDig::EvBangBang Slide(UINT)
 {
-  char txt[10]="";
-  BangBangGain = ((float)BangBang Slider -> GetPosition())/10;
-  sprintf(txt,"%6.2f", BangBangGain);
-  BBMagSTxt -> SetText(txt);
+	char txt[10] = "";
+	BangBangGain = ((float)BangBang Slider->GetPosition()) / 10;
+	sprintf(txt, "%6.2f", BangBangGain);
+	BBMagSTxt->SetText(txt);
 }
+
 
 
 void TNeuralACEASEDlg::EvOverlapSlide(UINT)
 {
-  char txt[10]="";
-  Overlap ((float)(OverlapSlider->GetPosition())/100);
-  sprintf(txt,"%6.2f",Overlap);
-  OverlapSTxt->SetText(txt);
-  TCalibDlg::TCalibDlg(TWindow* parent, TCalibration* Calibration)
+	char txt[10] = "";
+	Overlap((float)(OverlapSlider->GetPosition()) / 100);
+	sprintf(txt, "%6.2f", Overlap);
+	OverlapSTxt->SetText(txt);
+	TCalibDlg::TCalibDlg(TWindow * parent, TCalibration * Calibration)
 }
    :TDialog(parent, CALIBRATIONDIALOG)
    {
-     new TRadioButton(this,IDC_DIRECTCONTROL);
-     new TRadioButton(this,IDC_CENTERPOSITION);
+     new TRadioButton(this, IDC_DIRECTCONTROL);
+     new TRadioButton(this, IDC_CENTERPOSITION);
      new TRadioButton(this, IDC_ENDPOSITION);
      new TControl(this, IDC_ZEROIZE);
-     SAngleTxt = new TStatic(this,IDC_ENCODER);
-     Calib Calibration; SetTransferBuffer(Calib);
-     CalDone=0;
-   }    
-//Destructor
+     SAngleTxt = new TStatic(this, IDC_ENCODER);
+     Calib Calibration;
+     SetTransferBuffer(Calib);
+     CalDone = 0;
+   }
+   // Destructor
 
+   //-- Page 140 ---------------------------------------------------------------------
 
+   TCalibDlg::~TCalibDlg()
+   {
+     KillTimer(TIMER_ID);
+   }
 
+   void TCalibDig::SetupWindow()
+   {
+     TWindow::SetupWindow();
+     SetTimer(TIMER_ID, 10);
+   }
 
-//-- Page 140 ---------------------------------------------------------------------
+   void TCalibDlg::EvTimer(UINT /*timerId*/)
+   {
+     char Degrees[10];
+     char txt[30] = "";
+     ClientDC dc(*this);
+     printf(Degrees, "%f", Rad2 Ang Digital_Input(board.cal_jmp, 0));
+     AngleTxt->SetText(Degrees);
+   }
 
+   void TCalibDlg::CmCalibok()
+   {
+     char txt[30];
+     TransferData(tdGetData); // From Controls to Transfer Buffer
+     if (Calib->DirectlyDriven)
+     {
+       wsprintf(txt, "x%i", x);
+       encoder_constant = 2 * pi / 1024.0, max_dif = 3.5;
+       gear_type = 1;
+       else if (Calib->CenterPosition)
+       {
+         encoder_constant = (2 * pi) / (1024.0 * 3.75);
+         max_dif - 0.6702;
+         gear_type = 2;
+         else if (Calib->EndPosition)
+         {
+           encoder_constant(2 * pi) / (1024.0 14.05);
+           max_dif - 0.1745;
+           gear_type = 3;
+         }
+         KillTimer(1);
+         Destroy(0);
+       }
 
-TCalibDlg::~TCalibDlg()
-{
-  KillTimer(TIMER_ID);
-}
-
-
-
-void TCalibDig::SetupWindow()
-{
-  TWindow::SetupWindow();
-  SetTimer(TIMER_ID, 10);
-}
-
-
-
-void TCalibDlg::EvTimer(UINT /*timerId*/)
-{
-  char Degrees[10];
-  char txt[30] = "";
-  ClientDC dc(*this);
-  printf(Degrees,"%f", Rad2 Ang Digital_Input(board.cal_jmp, 0));
-  AngleTxt -> SetText(Degrees);
-}
-
-
-
-void TCalibDlg::CmCalibok()
-{
-  char txt[30];
-  TransferData(tdGetData); // From Controls to Transfer Buffer
-  if (Calib -> DirectlyDriven)
-  {
-    wsprintf(txt, "x%i", x);
-    encoder_constant = 2 * pi / 1024.0, max_dif = 3.5;
-    gear_type = 1;
-  else if (Calib -> CenterPosition)
-  {
-    encoder_constant = (2*pi)/(1024.0*3.75);
-    max_dif-0.6702;
-    gear_type=2;
-  else if (Calib -> EndPosition)
-  {
-    encoder_constant(2* pi)/(1024.0 14.05);
-    max_dif - 0.1745;
-    gear_type = 3;
-  }
-  KillTimer(1);
-  Destroy(0);
-  }
-
-
-void TCalibDlg::CmCalibCancel()
-{
-  KillTimer(1);
-
+       void TCalibDlg::CmCalibCancel()
+       {
+         KillTimer(1);
 
 //-- Page 141 ------------------------------------------------------------------
 
-Destroy(0);
-void TCalibDlg::CmCalibZeroize()
-calibrate-current_measurel;
+         Destroy(0);
+         void TCalibDlg::CmCalibZeroize()
+                 calibrate -
+             current_measurel;
 TGraphicsDlg::TGraphicsDlg(TWindow" parent, TGraphics Graphics)
 :TDialog(parent, GRAPHICSDIALOG)
 new TRadioButton(this, IDC_GRAPHICSON);
@@ -2549,3 +2537,4 @@ new TEdit(this, IDC_SINE_REF_FREQ sizeof(SaWayRefParam.Freq));
 TransferBuffer = (void for*)&S
 
 
+/// hello there
