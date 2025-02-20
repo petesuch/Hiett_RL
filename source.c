@@ -1939,10 +1939,6 @@ void TIPWindow::TrainCMAC()
 
 
 
-
-
-
-
 int TIPWindow::RunWeightSave()
 {
   int Choice;
@@ -1988,10 +1984,10 @@ public:
 void TIPControlApp::InitMainWindow()
 {
   EnableCtl3d();
-  TIPWindow *IPWindow = new TIPWindow(0);
-  IPWindow->GetPIDOptions();
-  IPWindow->GetCalibOptions();
-  IPWindow->GetGraphics();
+  TIPWindow* IPWindow = new TIPWindow(0);
+  IPWindow -> GetPIDOptions();
+  IPWindow -> GetCalibOptions();
+  IPWindow -> GetGraphics();
   MainWindow = IPWindow;
 }
 
