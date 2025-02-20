@@ -10,6 +10,7 @@
  *
  *  (hardware/software: IBM PC clone running MS Windows 3.10, compiled with
  *   Borland C++ Compiler 4.52)
+ *  last edit 5:54p feb 20, 2025
  */
 
 //-- Page 96 ------------------------------------------------------------------
@@ -2612,18 +2613,22 @@ new TEdit(this, IDC_PIXELSDEGREE, 10);
 SetTransferBuffer(Graphics)
 
 void TDataDlg::CmSync
-//dataparams CollectSync-dataparams CollectSync
-if(!dataparams.CollectSync) return;
-string s "Data Collected in Sync??";
-MessageBeep(0);
-MessageBox(s.c_str(), "Sync", MB_OK);
-TFreqDlg::TFreqDlg(TWindow* parent, const char* name, TFrequency& freq)
-:TDialog(parent, name), TWindow(parent)
-new TEdit(this, IDC_FREQUENCY, sizeof(freq));
-TransferBuffer = (void far*)&freq;
-TSinWavRefDig: TSinWayRefDig(TWindow* parent, const char* name,
-TSinWavRefParam& SinWayRefParam)
-:TDialog(parent, DIASINEREF), TWindow(parent)
-new TEdit(this, IDC_SINE_REF_AMP sizeof(SaWayRefParam.Amp));
-new TEdit(this, IDC_SINE_REF_FREQ sizeof(SaWayRefParam.Freq));
-TransferBuffer = (void for*)&S
+{
+  //dataparams CollectSync-dataparams CollectSync
+  if(!dataparams.CollectSync) return;
+  string s "Data Collected in Sync??";
+  MessageBeep(0);
+  MessageBox(s.c_str(), "Sync", MB_OK);
+  TFreqDlg::TFreqDlg(TWindow* parent, const char* name, TFrequency& freq)
+  :TDialog(parent, name), TWindow(parent)
+  new TEdit(this, IDC_FREQUENCY, sizeof(freq));
+  TransferBuffer = (void far*)&freq;
+  TSinWavRefDig: TSinWayRefDig(TWindow* parent, const char* name,
+  TSinWavRefParam& SinWayRefParam)
+  :TDialog(parent, DIASINEREF), TWindow(parent)
+  new TEdit(this, IDC_SINE_REF_AMP sizeof(SaWayRefParam.Amp));
+  new TEdit(this, IDC_SINE_REF_FREQ sizeof(SaWayRefParam.Freq));
+  TransferBuffer = (void for*)&S
+}  
+
+//  Holy Cow what a beast to wrestle with.
