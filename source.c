@@ -10,7 +10,6 @@
  *
  *  (hardware/software: IBM PC clone running MS Windows 3.10, compiled with
  *   Borland C++ Compiler 4.52)
- *
  */
 
 //-- Page 96 ------------------------------------------------------------------
@@ -879,18 +878,21 @@ void TIPWindow::EvSize(UINT sizeType, TSize &size)
   TFrameWindow::EvSize(sizeType, size);
   SetMaxCoordinates();
   Invalidate();
-  UpdateWindow(); // Optional
+  UpdateWindow();  // Optional
 }
+
 
 //-- Page 112 ------------------------------------------------------------------
 
 void TIPWindow::CmNIDAQEnable() // Allow Real-Time Control
 {
-  windowMenu->CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_CHECKED);
+  windowMenu -> CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_CHECKED);
   NIDAQENABLE = 1;
   SIMULATE = 0;
-  windowMenu->CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_UNCHECKED);
+  windowMenu -> CheckMenuItem(CM_SETUPSIMULATE, MF_BYCOMMAND | MF_UNCHECKED);
 }
+
+
 
 void TIPWindow::CmSimulate() // Allow Simulation
 {
@@ -899,6 +901,8 @@ void TIPWindow::CmSimulate() // Allow Simulation
   SIMULATE = 1;
   windowMenu->CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_UNCHECKED);
 }
+
+
 
 void TIPWindow::CmSetupData()
 {
@@ -921,6 +925,8 @@ void TIPWindow::CmSetupData()
   MessageBox(ss, GetApplication()->GetName(), MB_OK);
 }
 
+
+
 void TIPWindow::CmFrequency()
 {
   char s[40];
@@ -933,7 +939,10 @@ void TIPWindow::CmFrequency()
   }
 }
 
+
 //-- Page 113 ------------------------------------------------------------------
+
+
 
 void TIPWindow::CmPID()
 {
@@ -946,6 +955,8 @@ void TIPWindow::CmPID()
   if (PIDDlg->Execute() == IDOK)
     ControlType = PID;
 }
+
+
 
 void TIPWindow::CmNeuralACEASE() // Setup
 {
@@ -1043,6 +1054,10 @@ void TIPWindow::CmNeuralACEASE() // Setup
   }
 }
 
+
+
+
+
 void TIPWindow::CmCalibration()
 {
   if (!NIDAQENABLE)
@@ -1070,6 +1085,9 @@ void TIPWindow::CmCalibration()
   delete CalibDlg; // Prevent memory leak
 }
 
+
+
+
 void TIPWindow::CmDisplay()
 {
   TGraphicsDlg *GraphicsDig = new TGraphicsDig(this, &Graphics);
@@ -1080,6 +1098,12 @@ void TIPWindow::CmDisplay()
     MagPD = atoi(Graphics.PixelsPerDegree);
   }
 }
+
+
+
+
+
+
 
 void TIPWindow::CmFileOpen()
 {
@@ -1163,6 +1187,12 @@ void TIPWindow::CmFileOpen()
     }
   }
 }
+
+
+
+
+
+
 
 void TIPWindow::CmFileSave()
 {
@@ -1265,10 +1295,20 @@ void TIPWindow::CmFileSave()
   }
 }
 
+
+
+
+
+
+
 void TIPWindow::CmFileExit()
 {
   CmExit();
 }
+
+
+
+
 
 void TIPWindow::CmOldDataGraph
 {
@@ -1276,6 +1316,14 @@ void TIPWindow::CmOldDataGraph
   strcpy(gs, "Inside CmOldDataGraph");
   Invalidate();
 }
+
+
+
+
+
+
+
+
 
 void TIPWindow::CmBeginControl() //  Refactored with ChatGPT; use with caution.
 {
@@ -1431,6 +1479,12 @@ void TIPWindow::CmBeginControl() //  Refactored with ChatGPT; use with caution.
     AO_VWrite(board, 0, 0.0);
 }
 
+
+
+
+
+
+
 void TIPWindow::CmRefSineWave()
 {
   if (TSinWavRefDlg(this, "SINE WAVE REF", SinWavRefParam).Execute() == IDOK)
@@ -1442,10 +1496,21 @@ void TIPWindow::CmRefSineWave()
 
 //-- Page 122 ------------------------------------------------------------------
 
+
+
+
+
+
+
+
+
 void TIPWindow::CmRefSeriesOfSteps()
 {
   Ref_type = 1;
 }
+
+
+
 
 float far TIPWindow::NeuralACEASE(int IC, int jj, double states[])
 {
@@ -1681,6 +1746,8 @@ EndACEASE:
   return 0.0; // Simulation Ends return arbitrary float value
 }
 
+
+
 void TIPWindow::ClusterInputSpace(TDC &dc)
 {
   float DDMAXAVG = 0, DD = 0;
@@ -1846,15 +1913,11 @@ end:
 
 //-- Page 128 ------------------------------------------------------------------
 
-//
-// looks good
-//
 void TIPWindow::TrainCMAC()
 {
   static int i;
   static int states[NS];
   static int beta = 2;
-
   MessageBox("Choose Data File to Train CMAC", "CMAC", MB_OK);
   CmFileOpen();
   if (NumOfDataPoints < 1)
@@ -1870,6 +1933,11 @@ void TIPWindow::TrainCMAC()
   }
   MessageBox("Finished Training CMAC", "CMAC", MB_OK);
 }
+
+
+
+
+
 
 
 
@@ -1899,7 +1967,6 @@ int TIPWindow::RunWeightSave()
   return Choice;
 }
 
-
 //----------------------------------------------------------------------------
 
 class TIPControlApp : public TApplication
@@ -1912,7 +1979,6 @@ public:
   void InitMainWindow();
   void InitInstance();
 };
-
 
 
 
@@ -1959,6 +2025,8 @@ int OwlMain(int /*argc*/, char * /*argv*/[])
 //  Initialize Neural ACE ASE variables here
 
 //-- Page 130 ------------------------------------------------------------------
+
+
 
 void InitializeNeuralACEASE(int IC, int OtherWeights)
 {
@@ -2057,15 +2125,15 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
   }
 }
 
+
+
 void ace()
 {
   double vtsum = 0;
   int i, j;
-
   // ADAPTIVE CRITIC ELEMENT
   // RETURNS: internal reinforcement (internal_reinf),
   // weights for ACE(vt), and predition (pred)
-
   if (failure)
     vtsum = 0;
   else
@@ -2081,6 +2149,8 @@ void ace()
 }
 // Action Network
 // Associative Search Element
+
+
 
 void ase()
 {
@@ -2123,6 +2193,8 @@ void ase()
   for (i = 1; i <= NumOfNodes; i++)
     wt[i] = wt[i] + Alpha * internal_reinf * elg[i];
 }
+
+
 
 void decoder()
 {
@@ -2223,26 +2295,28 @@ void PoleModelSolve()
     // Runge-Kutta 4th order
     for (i = 0; i < NS; i++)
       ys3[i] = y[i] + (tstep / 2) * s2[i];
-     PoleStateSpaceModel(s3, t + tstep / 2, ys3, force[steps]);
-     for (i = 0; i < NS; i++)
-       ys4[i] = y[i] + tstep * s3[i];
-     PoleStateSpaceModel(s4, t + tstep, ys4, force[steps]);
+    PoleStateSpaceModel(s3, t + tstep / 2, ys3, force[steps]);
+    for (i = 0; i < NS; i++)
+      ys4[i] = y[i] + tstep * s3[i];
+    PoleStateSpaceModel(s4, t + tstep, ys4, force[steps]);
   }
 
   // solution:
   if (method == 0) // Euler's Method
     for (i = 0; i < NS; i++)
-      y[i] = y[i] + tstep * s1[i];
+  y[i] = y[i] + tstep * s1[i];
       else if (method == 1)
         for (i = 0; i < NS; i++)
           y[i] = y[i] + tstep * s2[i];
       else if (method == 2)
         for (i = 0; i < NS; i++)
-          y[i] = y[i] + tstep * s1[i] / 6 +
-                 tstep * s2[i] / 3 + tstep * s3[i] / 3 + tstep * s4[i] / 6,
-          for (i = 0; i < NS; i++) states[i] = y[i]; // return states
+          y[i] = y[i] + tstep * s1[i] / 6 + tstep * s2[i] / 3 + tstep * s3[i] / 3 + tstep * s4[i] / 6,
+          for (i = 0; i < NS; i++)
+            states[i] = y[i]; // return states
     }
-  
+
+
+
     // STATE SPACE MODEL FOR POLE SYSTEM SIMULATIONS: Returns dtdx[NS]
 void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
 {
@@ -2250,17 +2324,17 @@ void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
   double a1, a2, a3, a4;
 
       // Physical Constants of Inverted Pendulum System
-      g = 9.8;      // m/sec, Gravity
-      l = 0.49927;  // m, Length of Pole
-      md = 0.26164; // kg, Mass of Disc
-      mr = 0.04240; // kg, Mass of Pole
+  g = 9.8;      // m/sec, Gravity
+  l = 0.49927;  // m, Length of Pole
+  md = 0.26164; // kg, Mass of Disc
+  mr = 0.04240; // kg, Mass of Pole
       r = 1.44;     // Ohms, resistance of motor windings
-      k1 = 0.0833;  // Nm/amp, Proportionality const. between
+  k1 = 0.0833;  // Nm/amp, Proportionality const. between
 
       //-- Page 135 ------------------------------------------------------------------
 
-      k2 = 0.0821;   // Torque delivered and winding current
-      jm = 0.000044; // Vsec/rad, Proportionality const between induced emf & angular velocity.
+  k2 = 0.0821;   // Torque delivered and winding current
+  jm = 0.000044; // Vsec/rad, Proportionality const between induced emf & angular velocity.
 
       // u is DC voltage applied to motor (input)
       // //states:
@@ -2420,21 +2494,21 @@ class TCalibDig: public TDialog {
                 TransferBuffer = (void far *)&NeuralACEASEOptions; // Set TransferBuffer(NeuralACEASEOptions); //ACEASEOptions = NeuralACEASEOptions;
               }
 
-              void TNeuralACEASEDlg::SetupWindow()
-              {
-                //-- Page 139 ------------------------------------------------------------------
-                TWindow::SetupWindow();
-                char txt[10] = "";
-                BangBangSlider->SetRange(1, 600);
-                OverlapSlider->SetRange(1, 100);
-                // Initial Thumb Position
-                BangBangSlider->SetPosition((int)(BangBangGain * 10));
-                OverlapSlider->SetPosition(100 * Overlap);
-                sprintf(txt, "%6.2f", BangBangGain),
-                    BBMagSTxt->SetText(txt);
-                sprintf(txt, "%6.2f", Overlap);
-                OverlapSTxt->SetText(txt);
-              }
+void TNeuralACEASEDlg::SetupWindow()
+{
+	//-- Page 139 ------------------------------------------------------------------
+	TWindow::SetupWindow();
+	char txt[10] = "";
+	BangBangSlider->SetRange(1, 600);
+	OverlapSlider->SetRange(1, 100);
+	// Initial Thumb Position
+	BangBangSlider->SetPosition((int)(BangBangGain * 10));
+	OverlapSlider->SetPosition(100 * Overlap);
+	sprintf(txt, "%6.2f", BangBangGain),
+			BBMagSTxt->SetText(txt);
+	sprintf(txt, "%6.2f", Overlap);
+	OverlapSTxt->SetText(txt);
+}
 
 
 void TNeuralACEASEDig::EvBangBang Slide(UINT)
@@ -2518,7 +2592,7 @@ void TNeuralACEASEDlg::EvOverlapSlide(UINT)
        {
          KillTimer(1);
 
-//-- Page 141 ------------------------------------------------------------------
+         //-- Page 141 ------------------------------------------------------------------
 
          Destroy(0);
          void TCalibDlg::CmCalibZeroize()
@@ -2548,6 +2622,3 @@ TSinWavRefParam& SinWayRefParam)
 new TEdit(this, IDC_SINE_REF_AMP sizeof(SaWayRefParam.Amp));
 new TEdit(this, IDC_SINE_REF_FREQ sizeof(SaWayRefParam.Freq));
 TransferBuffer = (void for*)&S
-
-
-/// hello there
