@@ -1846,11 +1846,15 @@ end:
 
 //-- Page 128 ------------------------------------------------------------------
 
+//
+// looks good
+//
 void TIPWindow::TrainCMAC()
 {
   static int i;
   static int states[NS];
   static int beta = 2;
+
   MessageBox("Choose Data File to Train CMAC", "CMAC", MB_OK);
   CmFileOpen();
   if (NumOfDataPoints < 1)
@@ -1866,6 +1870,8 @@ void TIPWindow::TrainCMAC()
   }
   MessageBox("Finished Training CMAC", "CMAC", MB_OK);
 }
+
+
 
 int TIPWindow::RunWeightSave()
 {
@@ -1893,6 +1899,7 @@ int TIPWindow::RunWeightSave()
   return Choice;
 }
 
+
 //----------------------------------------------------------------------------
 
 class TIPControlApp : public TApplication
@@ -1906,6 +1913,10 @@ public:
   void InitInstance();
 };
 
+
+
+
+
 void TIPControlApp::InitMainWindow()
 {
   EnableCtl3d();
@@ -1915,6 +1926,8 @@ void TIPControlApp::InitMainWindow()
   IPWindow->GetGraphics();
   MainWindow = IPWindow;
 }
+
+
 
 void TIPControlApp::InitInstance()
 {
