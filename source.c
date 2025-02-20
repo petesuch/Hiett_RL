@@ -2393,110 +2393,110 @@ class TNeuralACEASEDlg : public TDialog{} : public : protected : TNeuralACEASEDl
     DEFINE_RESPONSE_TABLE1(TNeuralACEASEDlg, TDialog) EvBangBangSlide), EV_CHILD_NOTIFY_ALL_CODES(IDC_BANGBANGMAG, EV_CHILD_NOTIFY_ALL_CODES(IDC_OVERLAPSLIDER, EvOverlap Slide),
     END_RESPONSE_TABLE;
 
-class TCalibDig: public TDialog {
-          }:
+class TCalibDig: public TDialog
+{
 
-          public:
-          private:
-          protected:
+  public:
+  private:
+  protected:
 
-          TCalibDlg(TWindow* parent, TCalibration Calibration); TStatic *SAngleTxt;
-          ~TCalibDlg();
-          // Destructor
-          // virtual void SetupWindow();
-          // TRect rect;
-          int xxMax,yyMax;
-          int x;
-          // TCalibration "Calib,
-          int CalDone; // for calibration Loop
-          void CmCalibOk();
-          void CmCalibCancel();
-                              // void CmCalibZeroize();
-          void EvTimer(UINT timerld);
-          DECLARE_RESPONSE_TABLE(TCalibDlg);
-          DEFINE_RESPONSE_TABLE1(TCalibDlg, TDialog) EV_COMMAND(IDOKCALIB, CmCalibOk),
+  TCalibDlg(TWindow* parent, TCalibration Calibration); TStatic *SAngleTxt;
+  ~TCalibDlg();
+  // Destructor
+  // virtual void SetupWindow();
+  // TRect rect;
+  int xxMax,yyMax;
+  int x;
+  // TCalibration "Calib,
+  int CalDone; // for calibration Loop
+  void CmCalibOk();
+  void CmCalibCancel();
+                      // void CmCalibZeroize();
+  void EvTimer(UINT timerld);
+  DECLARE_RESPONSE_TABLE(TCalibDlg);
+  DEFINE_RESPONSE_TABLE1(TCalibDlg, TDialog) EV_COMMAND(IDOKCALIB, CmCalibOk),
 
 
 //-- Page 137 ---------------------------------------------------------------------
 
-          EV_COMMAND(IDCANCEL CALIB, CmCalibCancel).EV_COMMAND(IDC_ZEROIZE, CmCalibZeroize), EV_WM_TIMER, END_RESPONSE_TABLE;
-          class TGraphicsDig: public TDialog {
-          };
-          public:
-          TGraphicsDlg(TWindow* parent, TGraphics* Graphics);
-          class TSin WavRefDlg: public TDialog {
-            public:
-          };
-          TSinWavRefDlg(TWindow* parent, const char* name, TSinWavRefParam& SinWavRefParam);
-          class TBeginControlDlg: public TDialog {
-            public:
-                              };
-          TBeginControlDlg(TWindow* parent, TResId resId) : TDialog(parent,resId) {}
+  EV_COMMAND(IDCANCEL CALIB, CmCalibCancel).EV_COMMAND(IDC_ZEROIZE, CmCalibZeroize), EV_WM_TIMER, END_RESPONSE_TABLE;
+  class TGraphicsDig: public TDialog {
+  };
+  public:
+  TGraphicsDlg(TWindow* parent, TGraphics* Graphics);
+  class TSin WavRefDlg: public TDialog {
+    public:
+  };
+  TSinWavRefDlg(TWindow* parent, const char* name, TSinWavRefParam& SinWavRefParam);
+  class TBeginControlDlg: public TDialog {
+    public:
+                      };
+  TBeginControlDlg(TWindow* parent, TResId resId) : TDialog(parent,resId) {}
 
-          // Dialog Constructors
-          ///#
-          TDataDig::TDataDig(TWindow* parent, const char* name,
+  // Dialog Constructors
+  ///#
+  TDataDig::TDataDig(TWindow* parent, const char* name,
 }
-              TDataParamStruct& dataparams)
-            : TDialog(parcnt, DATADIALOG), TWindow(parent)
-          new TEdit(this, DATAFILENAME, sizeof(dataparams.DataFileName));
-              new TEdit(this, NUMBEROFDATAPOINTS, sizeof(dataparams.NumOutPoints));
-              new TEdit(this, NUMSKIrDATAPOINTS, sizeof(dataparams.NumSkipPoints));
-              new TRadioButton(this, IDC_SYNC);
-              new TRadioButton(this, IDC_LIFETIMES);
-              new TRadioButton(this, IDC_STATES);
-              dataparams.CollectSync = FALSE;
-              TransferBuffer = (void far *)&dataparams;
-              TPIDDIg::TPIDDIg(TWindow *parent, PIDStruct *PIDOptions){}
-                  : TDialog(parent, PIDDIALOG) new TRadioButton(this, IDC_SINGLELOOP);
-              new TRadioButton(this, IDC_DUALLOOP);
-              SetTransferBuffer(PIDOptions);
-              TRUNDig::TRUNDlg(TWindow *parent, RUNStruct *RUNOptions)
-                  /// 01~
+      TDataParamStruct& dataparams)
+    : TDialog(parcnt, DATADIALOG), TWindow(parent)
+  new TEdit(this, DATAFILENAME, sizeof(dataparams.DataFileName));
+      new TEdit(this, NUMBEROFDATAPOINTS, sizeof(dataparams.NumOutPoints));
+      new TEdit(this, NUMSKIrDATAPOINTS, sizeof(dataparams.NumSkipPoints));
+      new TRadioButton(this, IDC_SYNC);
+      new TRadioButton(this, IDC_LIFETIMES);
+      new TRadioButton(this, IDC_STATES);
+      dataparams.CollectSync = FALSE;
+      TransferBuffer = (void far *)&dataparams;
+      TPIDDIg::TPIDDIg(TWindow *parent, PIDStruct *PIDOptions){}
+          : TDialog(parent, PIDDIALOG) new TRadioButton(this, IDC_SINGLELOOP);
+      new TRadioButton(this, IDC_DUALLOOP);
+      SetTransferBuffer(PIDOptions);
+      TRUNDig::TRUNDlg(TWindow *parent, RUNStruct *RUNOptions)
+          /// 01~
 
-                  //-- Page 138 --------------------------------------------------------------------
+          //-- Page 138 --------------------------------------------------------------------
 
-                  : TDialog(parent, DIASIMBREAK) new TRadioButton(this, IDC_KEEPSIMGOING);
-              new TRadioButton(this, IDC_SAVEWEIGHTSMEM);
-              new TRadioButton(this, IDC_SAVEWEIGHTSFILE);
-              new TRadioButton(this, IDC_DONTSAVEWEIGHTS);
-              SetTransferBuffer(RUNOptions);
-              // For Setup
-              TNeuralACEASEDlg::TNeuralACEASEDlg(TWindow *parent,
-                                                 NeuralACEASEStruct &NeuralACEASEOptions) : TDialog(parent,
-                                                                                                    NEURALACEASEDLG)
-              {
-                char txt[10];
-                // note: The order of the new statements must be kept for proper operation
-                // and their size in memory must be the same as transferbuffer
-                new TRadioButton(this, IDC_ZEROIZEWEIGHTS);
-                new TRadioButton(this, IDC_USESIMULATIONWEIGHTS);
-                new TRadioButton(this, IDC_WEIGHTSFROMFILE);
-                new TEdit(this, IDC_WEIGHTFILENAME, sizeof(NeuralACEASEOptions.WeightFileName));
-                new TRadioButton(this, IDC_UNIFORM);
-                new TRadioButton(this, IDC_NONUNIFORM);
-                new TRadioButton(this, IDC_CMAC);
-                new TEdit(this, IDC_NUMTHETABOXES, sizeof(NeuralACEASEOptions.NumThetaBoxes));
-                new TEdit(this, IDC_NUMDTHETABOXES, sizeof(NeuralACEASEOptions.NumDThetaBoxes));
-                new TEdit(this, IDC_THETAEXTREME, sizeof(NeuralACEASEOptions.ThetaExtreme));
-                new TEdit(this, IDC_DTHETAEXTREME, sizeof(NeuralACEASEOption.DThctaExtrcmc));
-                new TEdit(this, IDC_ALPHA, sizeof(NeuralACEASEOptions.Alpha));
-                new TRadioButton(this, IDC_SIGMOIDALOUT);
-                new TRadioButton(this, IDC_BANGBANGOUT);
-                new TRadioButton(this, IDC_DISTURBANCEYES);
-                new TRadioButton(this, IDC_DISTURBANCENO);
-                new TCheckBox(this, IDC_RBF),
+          : TDialog(parent, DIASIMBREAK) new TRadioButton(this, IDC_KEEPSIMGOING);
+      new TRadioButton(this, IDC_SAVEWEIGHTSMEM);
+      new TRadioButton(this, IDC_SAVEWEIGHTSFILE);
+      new TRadioButton(this, IDC_DONTSAVEWEIGHTS);
+      SetTransferBuffer(RUNOptions);
+      // For Setup
+      TNeuralACEASEDlg::TNeuralACEASEDlg(TWindow *parent,
+                                         NeuralACEASEStruct &NeuralACEASEOptions) : TDialog(parent,
+                                                                                            NEURALACEASEDLG)
+      {
+        char txt[10];
+        // note: The order of the new statements must be kept for proper operation
+        // and their size in memory must be the same as transferbuffer
+        new TRadioButton(this, IDC_ZEROIZEWEIGHTS);
+        new TRadioButton(this, IDC_USESIMULATIONWEIGHTS);
+        new TRadioButton(this, IDC_WEIGHTSFROMFILE);
+        new TEdit(this, IDC_WEIGHTFILENAME, sizeof(NeuralACEASEOptions.WeightFileName));
+        new TRadioButton(this, IDC_UNIFORM);
+        new TRadioButton(this, IDC_NONUNIFORM);
+        new TRadioButton(this, IDC_CMAC);
+        new TEdit(this, IDC_NUMTHETABOXES, sizeof(NeuralACEASEOptions.NumThetaBoxes));
+        new TEdit(this, IDC_NUMDTHETABOXES, sizeof(NeuralACEASEOptions.NumDThetaBoxes));
+        new TEdit(this, IDC_THETAEXTREME, sizeof(NeuralACEASEOptions.ThetaExtreme));
+        new TEdit(this, IDC_DTHETAEXTREME, sizeof(NeuralACEASEOption.DThctaExtrcmc));
+        new TEdit(this, IDC_ALPHA, sizeof(NeuralACEASEOptions.Alpha));
+        new TRadioButton(this, IDC_SIGMOIDALOUT);
+        new TRadioButton(this, IDC_BANGBANGOUT);
+        new TRadioButton(this, IDC_DISTURBANCEYES);
+        new TRadioButton(this, IDC_DISTURBANCENO);
+        new TCheckBox(this, IDC_RBF),
 
-                    BangBangSlider = new TScrollBar(this, IDC_BANGBANGMAG);
-                BBMagSTxt = new TStatic(this, IDC_VOLTS, 10);
-                OverlapSlider = new TScrollBar(this, IDC_OVERLAPSLIDER);
-                OverlapSTxt = new TStatic(this, IDC_OVERLAPVALUE, 10);
-                TransferBuffer = (void far *)&NeuralACEASEOptions; // Set TransferBuffer(NeuralACEASEOptions); //ACEASEOptions = NeuralACEASEOptions;
-              }
+            BangBangSlider = new TScrollBar(this, IDC_BANGBANGMAG);
+        BBMagSTxt = new TStatic(this, IDC_VOLTS, 10);
+        OverlapSlider = new TScrollBar(this, IDC_OVERLAPSLIDER);
+        OverlapSTxt = new TStatic(this, IDC_OVERLAPVALUE, 10);
+        TransferBuffer = (void far *)&NeuralACEASEOptions; // Set TransferBuffer(NeuralACEASEOptions); //ACEASEOptions = NeuralACEASEOptions;
+      }
 
 void TNeuralACEASEDlg::SetupWindow()
 {
-	//-- Page 139 ------------------------------------------------------------------
+	//-- Page 139 ----------------------------------------------------------------
 	TWindow::SetupWindow();
 	char txt[10] = "";
 	BangBangSlider->SetRange(1, 600);
@@ -2504,8 +2504,7 @@ void TNeuralACEASEDlg::SetupWindow()
 	// Initial Thumb Position
 	BangBangSlider->SetPosition((int)(BangBangGain * 10));
 	OverlapSlider->SetPosition(100 * Overlap);
-	sprintf(txt, "%6.2f", BangBangGain),
-			BBMagSTxt->SetText(txt);
+	sprintf(txt, "%6.2f", BangBangGain), BBMagSTxt -> SetText(txt);
 	sprintf(txt, "%6.2f", Overlap);
 	OverlapSTxt->SetText(txt);
 }
@@ -2524,9 +2523,9 @@ void TNeuralACEASEDig::EvBangBang Slide(UINT)
 void TNeuralACEASEDlg::EvOverlapSlide(UINT)
 {
 	char txt[10] = "";
-	Overlap((float)(OverlapSlider->GetPosition()) / 100);
+	Overlap((float)(OverlapSlider -> GetPosition()) / 100);
 	sprintf(txt, "%6.2f", Overlap);
-	OverlapSTxt->SetText(txt);
+	OverlapSTxt -> SetText(txt);
 	TCalibDlg::TCalibDlg(TWindow * parent, TCalibration * Calibration)
 }
    :TDialog(parent, CALIBRATIONDIALOG)
@@ -2544,60 +2543,66 @@ void TNeuralACEASEDlg::EvOverlapSlide(UINT)
 
    //-- Page 140 ---------------------------------------------------------------------
 
-   TCalibDlg::~TCalibDlg()
-   {
-     KillTimer(TIMER_ID);
-   }
+TCalibDlg::~TCalibDlg()
+{
+  KillTimer(TIMER_ID);
+}
 
-   void TCalibDig::SetupWindow()
-   {
-     TWindow::SetupWindow();
-     SetTimer(TIMER_ID, 10);
-   }
+void TCalibDig::SetupWindow()
+{
+  TWindow::SetupWindow();
+  SetTimer(TIMER_ID, 10);
+}
 
-   void TCalibDlg::EvTimer(UINT /*timerId*/)
-   {
-     char Degrees[10];
-     char txt[30] = "";
-     ClientDC dc(*this);
-     printf(Degrees, "%f", Rad2 Ang Digital_Input(board.cal_jmp, 0));
-     AngleTxt->SetText(Degrees);
-   }
 
-   void TCalibDlg::CmCalibok()
-   {
-     char txt[30];
-     TransferData(tdGetData); // From Controls to Transfer Buffer
-     if (Calib->DirectlyDriven)
-     {
-       wsprintf(txt, "x%i", x);
-       encoder_constant = 2 * pi / 1024.0, max_dif = 3.5;
-       gear_type = 1;
-       else if (Calib->CenterPosition)
-       {
-         encoder_constant = (2 * pi) / (1024.0 * 3.75);
-         max_dif - 0.6702;
-         gear_type = 2;
-         else if (Calib->EndPosition)
-         {
-           encoder_constant(2 * pi) / (1024.0 14.05);
-           max_dif - 0.1745;
-           gear_type = 3;
-         }
-         KillTimer(1);
-         Destroy(0);
-       }
 
-       void TCalibDlg::CmCalibCancel()
-       {
-         KillTimer(1);
+void TCalibDlg::EvTimer(UINT /*timerId*/)
+{
+  char Degrees[10];
+  char txt[30] = "";
+  ClientDC dc(*this);
+  printf(Degrees, "%f", Rad2 Ang Digital_Input(board.cal_jmp, 0));
+  AngleTxt->SetText(Degrees);
+}
 
-         //-- Page 141 ------------------------------------------------------------------
 
-         Destroy(0);
-         void TCalibDlg::CmCalibZeroize()
-                 calibrate -
-             current_measurel;
+
+void TCalibDlg::CmCalibok()
+{
+  char txt[30];
+  TransferData(tdGetData); // From Controls to Transfer Buffer
+  if (Calib->DirectlyDriven)
+  {
+    wsprintf(txt, "x%i", x);
+    encoder_constant = 2 * pi / 1024.0, max_dif = 3.5;
+    gear_type = 1;
+    else if (Calib -> CenterPosition)
+    {
+      encoder_constant = (2 * pi) / (1024.0 * 3.75);
+      max_dif = 0.6702;
+      gear_type = 2;
+      else if (Calib -> EndPosition)
+      {
+        encoder_constant(2 * pi) / (1024.0 14.05);
+         max_dif - 0.1745;
+         gear_type = 3;
+      }
+      KillTimer(1);
+      Destroy(0);
+    }
+  }
+}
+
+
+
+void TCalibDlg::CmCalibCancel()
+{
+  KillTimer(1);
+//-- Page 141 ------------------------------------------------------------------
+
+   Destroy(0);
+   void TCalibDlg::CmCalibZeroize()
+  calibrate - current_measurel;
 TGraphicsDlg::TGraphicsDlg(TWindow" parent, TGraphics Graphics)
 :TDialog(parent, GRAPHICSDIALOG)
 new TRadioButton(this, IDC_GRAPHICSON);
