@@ -1930,7 +1930,8 @@ void TIPWindow::TrainCMAC()
   {
     states[0] = int((float)random(1000) / 1000.0 * ThetaExtreme * 2 - ThetaExtreme);
     states[1] = int((float)random(1000) / 1000.0 * DThetaExtreme * 2 - DThetaExtreme);
-    train_cmac(cmac_id, states, (int *)ang, beta, 40); // ang is training desired resp in radians
+    train_cmac(cmac_id, states, (int*)ang, beta, 40);
+    // ang is training desired resp in radians
   }
   MessageBox("Finished Training CMAC", "CMAC", MB_OK);
 }
@@ -1945,8 +1946,8 @@ void TIPWindow::TrainCMAC()
 int TIPWindow::RunWeightSave()
 {
   int Choice;
-  TRUNDlg *RUNDlg = new TRUNDlg(this, &RUNOptions);
-  Choice = RUNDlg->Execute();
+  TRUNDlg* RUNDlg = new TRUNDlg(this, &RUNOptions);
+  Choice = RUNDlg -> Execute();
   if (Choice == IDOK)
   {
     data_rec = -1;
@@ -1975,7 +1976,7 @@ class TIPControlApp : public TApplication
 public:
   //-- Page 129 ------------------------------------------------------------------
 
-  TIPControlApp(const char *name)
+  TIPControlApp(const char* name)
       : TApplication(name) {};
   void InitMainWindow();
   void InitInstance();
@@ -2014,7 +2015,7 @@ void TIPControlApp::InitInstance()
 }
 
 #pragma argsused
-int OwlMain(int /*argc*/, char * /*argv*/[])
+int OwlMain(int /*argc*/, char* /*argv*/[])
 {
   TIPControlApp app("IPControlApp");
   return app.Run();
@@ -2046,7 +2047,7 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
     // Allocate Memory for CMAC decoder
     cmac_id = 0;
     cmac_id = allocate_cmac(NS, quant, NumOfNodes, 16, 1000, RECTANGULAR, 0);
-    if (lcmac_id)
+    if (!cmac_id)
       exit(-1);
     clear_cmac_weights(cmac_id);
   }
