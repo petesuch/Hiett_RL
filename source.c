@@ -1,6 +1,5 @@
 /*
  *
- *
  *  C++ Source Code from Original Masters Thesis Named:
  *
  *  "Reinforcement Learning Experiments with State Classifiers
@@ -2092,22 +2091,21 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
   //-- Page 131 ---------------------------------------------------------------------
   for (i = 1; i <= NumOfNodes; i++)
   {
-    Sigma Theta[i] = sqrt(-(pow(ThetaBoxSpacing, 2)) / (2.0 * log(Overlap)));
-    Sigma Theta[i] = sqrt(-(pow(DThetaBoxSpacing, 2)) / (2.0 * log(Overlap)));
-    FailAng - 12 * Ang2Rad; // Failure Angle (by degrees)
+    SigmaTheta[i] = sqrt(-(pow(ThetaBoxSpacing, 2)) / (2.0 * log(Overlap)));
+    SigmaDTheta[i] = sqrt(-(pow(DThetaBoxSpacing, 2)) / (2.0 * log(Overlap)));
+    FailAng = 12 * Ang2Rad; // Failure Angle (by degrees)
+
     if (NeuralACEASEOptions.Uniform)
-    {
-      for (i = 0; i < NumThetaBoxes; i++)
+		{
+      for (i = 0; i < NumThetaBoxes; i++)  // Input space normalized to -1 and 1
       {
-        // Input space normalized to -1 and 1
-        for (j = 0; j < NumDThetaBoxes; j++)
+				for (j = 0; j < NumDThetaBoxes; j++)
         {
           // nc = node or box center
           ncx[j + 1 + i * NumDThetaBoxes] = -DThetaExtreme + j * DThetaBoxSpacing * 2 + DThetaBoxSpacing;
-          -ThetaExtreme + i *ThetaBoxSpacing * 2 + ThetaBoxSpacing,
-              ncy[j + 1 + i * NumDThetaBoxes] =
+          ncy[j + 1 + i * NumDThetaBoxes] = -ThetaExtreme + i *ThetaBoxSpacing * 2 + ThetaBoxSpacing;
         }
-      }
+			}
 
       for (i = 1; i <= NumOfNodes; i++)
         ISNode[i] = 0.0;
@@ -2115,10 +2113,8 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
       reinf = 0;
       prevt = 0;
 
-      yo[0] = 0; // State 1 (Angle) theta Initial Condition
-      yo[1] = 0; // State 2 (Angular Velocity) theta prime
-    }
-  }
+      y0[0] = 0; // State 1 (Angle) theta Initial Condition
+      y0[1] = 0; // State 2 (Angular Velocity) theta prime
 }
 
 
@@ -2127,9 +2123,11 @@ void ace()
 {
   double vtsum = 0;
   int i, j;
+
   // ADAPTIVE CRITIC ELEMENT
   // RETURNS: internal reinforcement (internal_reinf),
   // weights for ACE(vt), and predition (pred)
+
   if (failure)
     vtsum = 0;
   else
@@ -2145,14 +2143,13 @@ void ace()
 }
 
 
+
 // Action Network
 // Associative Search Element
-
-
 void ase()
 {
   double noise;
-  int ij;
+  int i,j;
   //-- Page 132 ------------------------------------------------------------------
   double wtsum = 0.0, dom;
   // x=0 means zero input
