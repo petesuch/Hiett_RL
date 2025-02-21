@@ -2089,9 +2089,7 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
     V_reff[i] = 0;
   }
   // Determine Sigma (Overlap) for all centers
-
   //-- Page 131 ---------------------------------------------------------------------
-
   for (i = 1; i <= NumOfNodes; i++)
   {
     Sigma Theta[i] = sqrt(-(pow(ThetaBoxSpacing, 2)) / (2.0 * log(Overlap)));
@@ -2145,9 +2143,10 @@ void ace()
   for (i = 1; i <= NumOfNodes; i++)
     vt[i] = vt[i] + (Beta * internal_reinf * xbar[i]);
 }
+
+
 // Action Network
 // Associative Search Element
-
 
 
 void ase()
@@ -2191,8 +2190,6 @@ void ase()
   for (i = 1; i <= NumOfNodes; i++)
     wt[i] = wt[i] + Alpha * internal_reinf * elg[i];
 }
-
-
 
 void decoder()
 {
@@ -2268,16 +2265,17 @@ RETURNS:
 
       //-- Page 134 ------------------------------------------------------------------
     }
-
+  }
+}
     // SOLVE MODEL FOR SIMULATION AND/OR TRAINING: Returns x[NS]=Model States void PoleModelSolve
 void PoleModelSolve()
 {
-/*
- * function sts-polemod(uf, y0, t, tstep, method)
- * cart-pole simulation function Solve ODE by using various methods:
- * method = 0 default: Euler method; method = 1: Runge-Kutta 2nd order method
- * method = 2: Runge-Kutta 4th order method
- */
+  /*
+   * function sts-polemod(uf, y0, t, tstep, method)
+   * cart-pole simulation function Solve ODE by using various methods:
+   * method = 0 default: Euler method; method = 1: Runge-Kutta 2nd order method
+   * method = 2: Runge-Kutta 4th order method
+   */
 
   int i;
 
@@ -2302,17 +2300,16 @@ void PoleModelSolve()
   // solution:
   if (method == 0) // Euler's Method
     for (i = 0; i < NS; i++)
-  y[i] = y[i] + tstep * s1[i];
-      else if (method == 1)
-        for (i = 0; i < NS; i++)
-          y[i] = y[i] + tstep * s2[i];
-      else if (method == 2)
-        for (i = 0; i < NS; i++)
-          y[i] = y[i] + tstep * s1[i] / 6 + tstep * s2[i] / 3 + tstep * s3[i] / 3 + tstep * s4[i] / 6,
-          for (i = 0; i < NS; i++)
-            states[i] = y[i]; // return states
-    }
-
+      y[i] = y[i] + tstep * s1[i];
+  else if (method == 1)
+    for (i = 0; i < NS; i++)
+      y[i] = y[i] + tstep * s2[i];
+  else if (method == 2)
+    for (i = 0; i < NS; i++)
+      y[i] = y[i] + tstep * s1[i] / 6 + tstep * s2[i] / 3 + tstep * s3[i] / 3 + tstep * s4[i] / 6,
+      for (i = 0; i < NS; i++)
+          states[i] = y[i]; // return states
+}
 
 
     // STATE SPACE MODEL FOR POLE SYSTEM SIMULATIONS: Returns dtdx[NS]
@@ -2321,33 +2318,30 @@ void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
   double g, l, md, mr, r, k1, k2, jm;
   double a1, a2, a3, a4;
 
-      // Physical Constants of Inverted Pendulum System
-  g = 9.8;      // m/sec, Gravity
-  l = 0.49927;  // m, Length of Pole
-  md = 0.26164; // kg, Mass of Disc
-  mr = 0.04240; // kg, Mass of Pole
-      r = 1.44;     // Ohms, resistance of motor windings
-  k1 = 0.0833;  // Nm/amp, Proportionality const. between
-
-      //-- Page 135 ------------------------------------------------------------------
-
+  // Physical Constants of Inverted Pendulum System
+  g = 9.8;       // m/sec, Gravity
+  l = 0.49927;   // m, Length of Pole
+  md = 0.26164;  // kg, Mass of Disc
+  mr = 0.04240;  // kg, Mass of Pole
+  r = 1.44;      // Ohms, resistance of motor windings
+  k1 = 0.0833;   // Nm/amp, Proportionality const. between
+                 //-- Page 135 ------------------------------------------------------------------
   k2 = 0.0821;   // Torque delivered and winding current
   jm = 0.000044; // Vsec/rad, Proportionality const between induced emf & angular velocity.
-
-      // u is DC voltage applied to motor (input)
-      // //states:
-      // acceleration
-      // // // kgm^2, Armature Inertia
-      // xl = angle, dxldt = angular velocity-x2, dx2dt-angular
-      // Il constants
-      a1 = g * (md * l + mr * 1 / 2);
-      a2 = (k1 * k2) / г;
-      a3 = k1 / r;
-      a4 = md l * 1 * 1 + (mr * 1 * 1) / 3 + jm;
-      // equations:
-      dtdx[0] = x[1];
+  // u is DC voltage applied to motor (input)
+  // //states:
+  // acceleration
+  // // // kgm^2, Armature Inertia
+  // xl = angle, dxldt = angular velocity-x2, dx2dt-angular
+  // Il constants
+  a1 = g * (md * l + mr * 1 / 2);
+  a2 = (k1 * k2) / г;
+  a3 = k1 / r;
+  a4 = md l * 1 * 1 + (mr * 1 * 1) / 3 + jm;
+  // equations:
+  dtdx[0] = x[1];
   dtdx[1] (a1*sin(x[0]-a2*x[1]+a3*u)/a4;
-    }
+}
 
     // Dialog Definitions
     // *******
@@ -2538,7 +2532,7 @@ void TNeuralACEASEDlg::EvOverlapSlide(UINT)
      CalDone = 0;
    }
    // Destructor
-
+  }}
    //-- Page 140 ---------------------------------------------------------------------
 
 TCalibDlg::~TCalibDlg()
@@ -2546,13 +2540,13 @@ TCalibDlg::~TCalibDlg()
   KillTimer(TIMER_ID);
 }
 
+
 void TCalibDig::SetupWindow()
 {
   TWindow::SetupWindow();
   SetTimer(TIMER_ID, 10);
 }
-
-
+  
 
 void TCalibDlg::EvTimer(UINT /*timerId*/)
 {
@@ -2563,8 +2557,6 @@ void TCalibDlg::EvTimer(UINT /*timerId*/)
   AngleTxt->SetText(Degrees);
 }
 
-
-
 void TCalibDlg::CmCalibok()
 {
   char txt[30];
@@ -2574,24 +2566,22 @@ void TCalibDlg::CmCalibok()
     wsprintf(txt, "x%i", x);
     encoder_constant = 2 * pi / 1024.0, max_dif = 3.5;
     gear_type = 1;
-    else if (Calib -> CenterPosition)
+    else if (Calib->CenterPosition)
     {
       encoder_constant = (2 * pi) / (1024.0 * 3.75);
       max_dif = 0.6702;
       gear_type = 2;
-      else if (Calib -> EndPosition)
+      else if (Calib->EndPosition)
       {
         encoder_constant(2 * pi) / (1024.0 14.05);
-         max_dif - 0.1745;
-         gear_type = 3;
+        max_dif - 0.1745;
+        gear_type = 3;
       }
       KillTimer(1);
       Destroy(0);
     }
   }
 }
-
-
 
 void TCalibDlg::CmCalibCancel()
 {
