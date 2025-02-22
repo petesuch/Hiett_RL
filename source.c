@@ -2144,76 +2144,78 @@ void ace()
 
 
 
-// Action Network
-// Associative Search Element
+//  Action Network Associative Search Element
 void ase()
 {
   double noise;
   int i,j;
-  //-- Page 132 ------------------------------------------------------------------
+  //-- Page 132 ----------------------------------------------------------------
   double wtsum = 0.0, dom;
-  // x=0 means zero input
+  // x = 0 means zero input
   // variance = 0.01
   // to produce a probability density function value
-  noise((double)(random(700) - 300)) / 10000;
+  noise = ((double)(random(700) - 300)) / 10000;
+
   if (failure)
-  {
-    // Failure code
-  }
-  else
-  {
     wtsum = 0.0;
-  }
-  for (i = 1; i <= NumOfNodes; i++)
-    wtsum = wtsum + ISNode[i] * wt[i];
+  else
+    for (i = 1; i <= NumOfNodes; i++)
+      wtsum = wtsum + ISNode[i] * wt[i];
+
   dom = wtsum + noise;
   if (NeuralACEASEOptions.OutSigmoid)
     action = 2 * (1 / (1 + exp(-dom)) - 0.50); // Sigmoidal Function (between +1 and 1)
   else
   {
     // Bang Bang Output
+    if (dom >= 0)
+      action = 1.0;
+  	else
+      action = -1.0;
   }
-  if (dom >= 0)
-    action = 1.0;
-  else
-    action = -1.0;
+
+
   // Ref is used as a disturbance signal
   if (NeuralACEASEOptions.DisturbanceYes)
   {
     V_reff[steps] = Ref(1) * 10;
-    action + V_reff[steps];
+    action += V_reff[steps];
   }
-  // update the weights:
+  // Update the weights:
   for (i = 1; i <= NumOfNodes; i++)
     wt[i] = wt[i] + Alpha * internal_reinf * elg[i];
 }
+
+
 
 void decoder()
 {
   int i, j, idx;
   double Theta, DTheta, D;
   double tn, td, dn, dd, et, ed;
-  double ThetaBoxSpacingR = ThetaExtreme / NumThetaBoxes;
+  double ThetaBoxSpacing = ThetaExtreme / NumThetaBoxes;
   double DThetaBoxSpacing = DThetaExtreme / NumDThetaBoxes;
   static float x[NS];
   static int TempISNode[25];
   static float xcmac[NS];
-  if ((TempISNode(int *) malloc(NumOfNodes))-NULL)
-    exit(-1); // Dynamically Allocate Temp Memory
-  // Decoder for states
 
-RETURNS:
-  BoxNum //  Input-2 state vetors from pole system: Normalized
+  ///if ((TempISNode(int*)malloc(NumOfNodes)) == NULL)
+  ///  exit(-1); 
+  //  Dynamically Allocate Temp Memory
 
-      x[0] = states[0] * Rad2Ang; // Angle of the pole with the vertical
-  x[1] = states[1] * Rad2Ang;     // Aangular velocity all in degrees
+  //  Decoder for states, RETURNS: BoxNum
+  //  Input--2 state vetors from pole system: Normalized
+
+  x[0] = states[0] * Rad2Ang;  // Angle of the pole with the vertical
+  x[1] = states[1] * Rad2Ang;  // Aangular velocity all in degrees
+
   for (i = 1; i <= NumOfNodes; i++)
     ISNode[i] = 0.0; // Clear Boxes for New State
+
   if (failure)
     return;
 
   //-- Page 133 ------------------------------------------------------------------
-  //  Hello There this is a test
   if (NeuralACEASEOptions.RBF)
   {
     for (i = 1; i <= NumOfNodes; i++)
