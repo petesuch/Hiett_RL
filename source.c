@@ -2217,7 +2217,6 @@ void decoder()
 
   //-- Page 133 ------------------------------------------------------------------
   if (NeuralACEASEOptions.RBF)
-  {
     for (i = 1; i <= NumOfNodes; i++)
     {
       // 2D Gausian, pow(x,y) = x to power of y
@@ -2227,15 +2226,20 @@ void decoder()
       dd = (2 * pow(SigmaDTheta[i], 2));
       et = exp(tn / td); // Radial Basis Function for Theta (angle)
       ed = exp(dn / dd); // Radial Basis Function for DTheta (angular vel.)
-
       ISNode[i] = et * ed;
-      else if (NeuralACEASEOptions.Uniform)
+    }
+    else if (NeuralACEASEOptions.Uniform)
+    {
+    // Uniform Binary Grid With No Overlap (Rectangular)
+      for(i = 0; i < NumThetaBoxes; i++)
       {
-        // Uniform Binary Grid With No Overlap (Rectangular) for(i=0;i<NumThetaBoxes;i++) {
-        // Set Boxes for Extreme Negative Angular Velocity if((x[1]<(ncx[i*NumDThetaBoxes+1]+DThetaBoxSpacing)) && (x[0]=(ncy[i*NumDThetaBoxes+1]-ThetaBoxSpacing)) && (x[0]<(ncy[i*NumDThetaBoxes+1]+ThetaBoxSpacing)))
-        else ISNode[i * NumDThetaBoxes + 1] = 1.0; // Binary output
-        ISNode[i * NumDThetaBoxes + 1] = 0.0;      // Binary Output
-                                                   // Set Boxes Between Extremes
+        // Set Boxes for Extreme Negative Angular Velocity
+        if((x[1] < (ncx[i * NumDThetaBoxes+1] + DThetaBoxSpacing)) && (x[0] >= (ncy[i * NumDThetaBoxes+1] - ThetaBoxSpacing)) && (x[0] < (ncy[i * NumDThetaBoxes+1] + ThetaBoxSpacing)))
+          ISNode[i * NumDThetaBoxes + 1] = 1.0;  // Binary output
+        else                                           
+        	ISNode[i * NumDThetaBoxes + 1] = 0.0;  // Binary output
+
+				// Set Boxes Between Extremes
         for (j = 2; j < NumDThetaBoxes; j++)
         {
           idx - j + i NumDThetaBoxes;
