@@ -1928,7 +1928,6 @@ void TIPWindow::TrainCMAC()
 }
 
 
-
 int TIPWindow::RunWeightSave()
 {
 	int Choice;
@@ -1959,16 +1958,13 @@ int TIPWindow::RunWeightSave()
 
 class TIPControlApp : public TApplication
 {
-	public:
-		//-- Page 129 ------------------------------------------------------------------
-
-		TIPControlApp(const char* name)
-			: TApplication(name) {};
-		void InitMainWindow();
-		void InitInstance();
+public:
+//-- Page 129 ------------------------------------------------------------------
+	TIPControlApp(const char* name)
+	: TApplication(name) {};
+	void InitMainWindow();
+	void InitInstance();
 };
-
-
 
 
 void TIPControlApp::InitMainWindow()
@@ -1980,7 +1976,6 @@ void TIPControlApp::InitMainWindow()
 	IPWindow -> GetGraphics();
 	MainWindow = IPWindow;
 }
-
 
 
 void TIPControlApp::InitInstance()
@@ -2013,7 +2008,6 @@ int OwlMain(int /*argc*/, char* /*argv*/[])
 //  Initialize Neural ACE ASE variables here
 
 //-- Page 130 ------------------------------------------------------------------
-
 
 
 void InitializeNeuralACEASE(int IC, int OtherWeights)
@@ -2079,7 +2073,7 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
 		V_reff[i] = 0;
 	}
 	// Determine Sigma (Overlap) for all centers
-	//-- Page 131 ---------------------------------------------------------------------
+	//-- Page 131 ------------------------------------------------------------------------
 	for (i = 1; i <= NumOfNodes; i++)
 	{
 		SigmaTheta[i] = sqrt(-(pow(ThetaBoxSpacing, 2)) / (2.0 * log(Overlap)));
@@ -2095,204 +2089,237 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
 					// nc = node or box center
 					ncx[j + 1 + i * NumDThetaBoxes] = -DThetaExtreme + j * DThetaBoxSpacing * 2 + DThetaBoxSpacing;
 					ncy[j + 1 + i * NumDThetaBoxes] = -ThetaExtreme + i *ThetaBoxSpacing * 2 + ThetaBoxSpacing;
-				}
 			}
-
-			for (i = 1; i <= NumOfNodes; i++)
-				ISNode[i] = 0.0;
-
-			reinf = 0;
-			prevt = 0;
-
-			y0[0] = 0; // State 1 (Angle) theta Initial Condition
-			y0[1] = 0; // State 2 (Angular Velocity) theta prime
 		}
 
+ 		for (i = 1; i <= NumOfNodes; i++)
+			ISNode[i] = 0.0;
+
+	reinf = 0;
+	prevt = 0;
+
+	y0[0] = 0; // State 1 (Angle) theta Initial Condition
+	y0[1] = 0; // State 2 (Angular Velocity) theta prime
+}
 
 
-		void ace()
+void ace()
+{
+	double vtsum = 0;
+	int i, j;
+
+	// ADAPTIVE CRITIC ELEMENT
+	// RETURNS: internal reinforcement (internal_reinf),
+	// weights for ACE(vt), and predition (pred)
+
+	if (failure)
+		vtsum = 0;
+	else
+		for (i = 1; i <= NumOfNodes; i++)
+			vtsum = vtsum + vt[i] * ISNode[i];
+
+	pred = vtsum;
+	// Internal Reinforcement (for on-line adaptation)
+	internal_reinf = reinf + (Gamma * pred) - predlast;
+	// Update Value Function for All Nodes
+	for (i = 1; i <= NumOfNodes; i++)
+		vt[i] = vt[i] + (Beta * internal_reinf * xbar[i]);
+}
+
+//  Action Network Associative Search Element
+void ase()
+{
+	double noise;
+	int i, j;
+	//-- Page 132 ------------------------------------------------------------------------
+	double wtsum = 0.0, dom;
+	// x = 0 means zero input
+	// variance = 0.01
+	// to produce a probability density function value
+	noise = ((double)(random(700) - 300)) / 10000;
+
+	if (failure)
+		wtsum = 0.0;
+	else
+		for (i = 1; i <= NumOfNodes; i++)
+			wtsum = wtsum + ISNode[i] * wt[i];
+
+	dom = wtsum + noise;
+	if (NeuralACEASEOptions.OutSigmoid)
+		action = 2 * (1 / (1 + exp(-dom)) - 0.50); // Sigmoidal Function (between +1 and 1)
+	else
+	{
+		// Bang Bang Output
+		if (dom >= 0)
+			action = 1.0;
+		else
+			action = -1.0;
+	}
+
+	// Ref is used as a disturbance signal
+	if (NeuralACEASEOptions.DisturbanceYes)
+	{
+		V_reff[steps] = Ref(1) * 10;
+		action += V_reff[steps];
+	}
+	// Update the weights:
+	for (i = 1; i <= NumOfNodes; i++)
+		wt[i] = wt[i] + Alpha * internal_reinf * elg[i];
+	}
+
+void decoder()
+{
+	int i, j, idx;
+	double Theta, DTheta, D;
+	double tn, td, dn, dd, et, ed;
+	double ThetaBoxSpacing = ThetaExtreme / NumThetaBoxes;
+	double DThetaBoxSpacing = DThetaExtreme / NumDThetaBoxes;
+	static float x[NS];
+	static int TempISNode[25];
+	static float xcmac[NS];
+
+	/// if ((TempISNode(int*)malloc(NumOfNodes)) == NULL)
+	///   exit(-1);
+	//  Dynamically Allocate Temp Memory
+
+	//  Decoder for states, RETURNS: BoxNum
+	//  Input--2 state vetors from pole system: Normalized
+
+	x[0] = states[0] * Rad2Ang; // Angle of the pole with the vertical
+	x[1] = states[1] * Rad2Ang; // Aangular velocity all in degrees
+
+	for (i = 1; i <= NumOfNodes; i++)
+	{
+		ISNode[i] = 0.0; // Clear Boxes for New State
+	}
+	if (failure)
+	{
+		return;
+	}
+//-- Page 133 -------------------------------------------------------------------------
+
+	if (NeuralACEASEOptions.RBF)
+	{
+		for (i = 1; i <= NumOfNodes; i++)
 		{
-			double vtsum = 0;
-			int i, j;
-
-			// ADAPTIVE CRITIC ELEMENT
-			// RETURNS: internal reinforcement (internal_reinf),
-			// weights for ACE(vt), and predition (pred)
-
-			if (failure)
-				vtsum = 0;
-			else
-				for (i = 1; i <= NumOfNodes; i++)
-					vtsum = vtsum + vt[i] * ISNode[i];
-
-			pred = vtsum;
-			// Internal Reinforcement (for on-line adaptation)
-			internal_reinf = reinf + (Gamma * pred) - predlast;
-			// Update Value Function for All Nodes
-			for (i = 1; i <= NumOfNodes; i++)
-				vt[i] = vt[i] + (Beta * internal_reinf * xbar[i]);
+			// 2D Gausian, pow(x,y) = x to power of y
+			tn = -pow((x[0] - ncy[i]), 2);
+			td = (2 * pow(SigmaTheta[i], 2));
+			dn = -pow((x[1] - ncx[i]), 2);
+			dd = (2 * pow(SigmaDTheta[i], 2));
+			et = exp(tn / td); // Radial Basis Function for Theta (angle)
+			ed = exp(dn / dd); // Radial Basis Function for DTheta (angular vel.)
+			ISNode[i] = et * ed;
 		}
 
-		//  Action Network Associative Search Element
-		void ase()
+		else if (NeuralACEASEOptions.Uniform)
 		{
-			double noise;
-			int i, j;
-			//-- Page 132 ----------------------------------------------------------------
-			double wtsum = 0.0, dom;
-			// x = 0 means zero input
-			// variance = 0.01
-			// to produce a probability density function value
-			noise = ((double)(random(700) - 300)) / 10000;
-
-			if (failure)
-				wtsum = 0.0;
-			else
-				for (i = 1; i <= NumOfNodes; i++)
-					wtsum = wtsum + ISNode[i] * wt[i];
-
-			dom = wtsum + noise;
-			if (NeuralACEASEOptions.OutSigmoid)
-				action = 2 * (1 / (1 + exp(-dom)) - 0.50); // Sigmoidal Function (between +1 and 1)
-			else
+		  // Uniform Binary Grid With No Overlap (Rectangular)
+			for (i = 0; i < NumThetaBoxes; i++)
 			{
-				// Bang Bang Output
-				if (dom >= 0)
-					action = 1.0;
+				// Set Boxes for Extreme Negative Angular Velocity
+				if ((x[1] < (ncx[i * NumDThetaBoxes + 1] + DThetaBoxSpacing))
+           && (x[0] >= (ncy[i * NumDThetaBoxes + 1] - ThetaBoxSpacing))
+           && (x[0] < (ncy[i * NumDThetaBoxes + 1] + ThetaBoxSpacing)))
+				{		
+					// Binary output
+				  ISNode[i * NumDThetaBoxes + 1] = 1.0; 
+				}
 				else
-					action = -1.0;
-			}
-
-			// Ref is used as a disturbance signal
-			if (NeuralACEASEOptions.DisturbanceYes)
-			{
-				V_reff[steps] = Ref(1) * 10;
-				action += V_reff[steps];
-			}
-			// Update the weights:
-			for (i = 1; i <= NumOfNodes; i++)
-				wt[i] = wt[i] + Alpha * internal_reinf * elg[i];
-		}
-
-		void decoder()
-		{
-			int i, j, idx;
-			double Theta, DTheta, D;
-			double tn, td, dn, dd, et, ed;
-			double ThetaBoxSpacing = ThetaExtreme / NumThetaBoxes;
-			double DThetaBoxSpacing = DThetaExtreme / NumDThetaBoxes;
-			static float x[NS];
-			static int TempISNode[25];
-			static float xcmac[NS];
-
-			/// if ((TempISNode(int*)malloc(NumOfNodes)) == NULL)
-			///   exit(-1);
-			//  Dynamically Allocate Temp Memory
-
-			//  Decoder for states, RETURNS: BoxNum
-			//  Input--2 state vetors from pole system: Normalized
-
-			x[0] = states[0] * Rad2Ang; // Angle of the pole with the vertical
-			x[1] = states[1] * Rad2Ang; // Aangular velocity all in degrees
-
-			for (i = 1; i <= NumOfNodes; i++)
-				ISNode[i] = 0.0; // Clear Boxes for New State
-
-			if (failure)
-				return;
-
-			//-- Page 133 ------------------------------------------------------------------
-			if (NeuralACEASEOptions.RBF)
-				for (i = 1; i <= NumOfNodes; i++)
 				{
-					// 2D Gausian, pow(x,y) = x to power of y
-					tn = -pow((x[0] - ncy[i]), 2);
-					td = (2 * pow(SigmaTheta[i], 2));
-					dn = -pow((x[1] - ncx[i]), 2);
-					dd = (2 * pow(SigmaDTheta[i], 2));
-					et = exp(tn / td); // Radial Basis Function for Theta (angle)
-					ed = exp(dn / dd); // Radial Basis Function for DTheta (angular vel.)
-					ISNode[i] = et * ed;
+					// Binary output
+					ISNode[i * NumDThetaBoxes + 1] = 0.0;
 				}
-			else if (NeuralACEASEOptions.Uniform)
-			{
-				// Uniform Binary Grid With No Overlap (Rectangular)
-				for (i = 0; i < NumThetaBoxes; i++)
+				for (j = 2; j < NumDThetaBoxes; j++)
 				{
-					// Set Boxes for Extreme Negative Angular Velocity
-					if ((x[1] < (ncx[i * NumDThetaBoxes + 1] + DThetaBoxSpacing)) &&
-							(x[0] >= (ncy[i * NumDThetaBoxes + 1] - ThetaBoxSpacing)) &&
-							(x[0] < (ncy[i * NumDThetaBoxes + 1] + ThetaBoxSpacing)))
-						ISNode[i * NumDThetaBoxes + 1] = 1.0; // Binary output
-					else
-						ISNode[i * NumDThetaBoxes + 1] = 0.0; // Binary output
-
 					// Set Boxes Between Extremes
-					for (j = 2; j < NumDThetaBoxes; j++)
+					idx = j + i * NumDThetaBoxes;
+					if ((x[0] >= (ncy[idx] - ThetaBoxSpacing))
+						&& (x[0] < (ncy[idx] + ThetaBoxSpacing))
+						&& (x[1] >= (ncx[idx] - DThetaBoxSpacing))
+						&& (x[1] < (ncx[idx] + DThetaBoxSpacing)))
 					{
-						idx = j + i * NumDThetaBoxes;
-						if ((x[0] >= (ncy[idx] - ThetaBoxSpacing)) &&
-								(x[0] < (ncy[idx] + ThetaBoxSpacing)) &&
-								(x[1] >= (ncx[idx] - DThetaBoxSpacing)) &&
-								(x[1] < (ncx[idx] + DThetaBoxSpacing)))
-							ISNode[idx] = 1.0; // Binary Output
+						// Binary Output
+				 		ISNode[idx] = 1.0;
 					}
-					else ISNode[idx] = 0.0; // Binary Output
+					else
+					{
+						// Binary Output	
+				  	ISNode[idx] = 0.0; 
+					}	
 
 					// Set Boxes for Extreme Positive Angular Velocity
-
-					if ((x[1] = ncx[(i + 1) * NumDThetaBoxes] - DThetaBoxSpacing) &&
-							(x[0] = ncy[(i + 1) * NumDThetaBoxes] - ThetaBoxSpacing) &&
-							(x[0] < ncy[(i + 1) * NumDThetaBoxes] + ThetaBoxSpacing))
+					if ((x[1] >= ncx[(i + 1) * NumDThetaBoxes] - DThetaBoxSpacing)
+					 	&& (x[0] >= ncy[(i + 1) * NumDThetaBoxes] - ThetaBoxSpacing)
+					 	&& (x[0] < ncy[(i + 1) * NumDThetaBoxes] + ThetaBoxSpacing))
+					{
 						ISNode[(i + 1) * NumDThetaBoxes] = 1.0;
-					ISNode[(i - 1) * NumDThetaBoxes] = 0.0;
+					}
 					else
-				}
+					{
+						ISNode[(i + 1) * NumDThetaBoxes] = 0.0;
+					}
+			 	}
+			} 
+		}
 
-				else if (NeuralACEASEOptions.CMAC)
-				{
-					for (i = 0; i <= NumOfNodes; i++)
-						TempISNode[i] = 0; // convert to int
-					for (i = 0; i < NS; i++)
-						xcmac[i] = (int)1000 * x[i];
-					// cmac_response(cmac_id,xcmac,TempISNode); // x is in degrees j
+		else if (NeuralACEASEOptions.CMAC)
+		{
+			for (i = 0; i <= NumOfNodes; i++)
+			{
+				TempISNode[i] = 0; // convert to int
+			}
+			for (i = 0; i < NS; i++)
+	 		{
+				xcmac[i] = (int)1000 * x[i];
+				// cmac_response(cmac_id,xcmac,TempISNode); // x is in degrees j
+			}
+			for (i = 1; i <= NumOfNodes; i++)
+			{
+				ISNode[i] = ((float)TempISNode[i - 1]) / 1000;
+				// free(TempISNode);
+			}
+	  }
+//-- Page 134 ---------------------------------------------------------------
+// SOLVE MODEL FOR SIMULATION AND/OR TRAINING: Returns x[NS]=Model States void PoleModelSolve void PoleModelSolve() { /* * function sts-polemod(uf, y0, t, tstep, method) * cart-pole simulation function Solve ODE by using various methods: * method = 0 default: Euler method; method = 1: Runge-Kutta 2nd order method * method = 2: Runge-Kutta 4th order method */ int i; for (i = 0; i < NS; i++) y[i] - y0[i];
 
-					for (i = 1; i <= NumOfNodes; i++)
-						ISNode[i] = ((float)TempISNode[i - 1]) / 1000;
-					// free(TempISNode);
-				}
+		PoleStateSpaceModel(s1, t, y, force[steps]); // Euler's
+		for (i = 0; i < NS; i++)
+			ys2[i] = y[i] + (tstep / 2) * s1[i];
+		PoleStateSpaceModel(s2, t + tstep / 2, ys2, force[steps]);
 
-				//-- Page 134 ------------------------------------------------------------------ } } } // SOLVE MODEL FOR SIMULATION AND/OR TRAINING: Returns x[NS]=Model States void PoleModelSolve void PoleModelSolve() { /* * function sts-polemod(uf, y0, t, tstep, method) * cart-pole simulation function Solve ODE by using various methods: * method = 0 default: Euler method; method = 1: Runge-Kutta 2nd order method * method = 2: Runge-Kutta 4th order method */ int i; for (i = 0; i < NS; i++) y[i] - y0[i];
+		if (method == 2)
+		{
+			// Runge-Kutta 4th order
+			for (i = 0; i < NS; i++)
+				ys3[i] = y[i] + (tstep / 2) * s2[i];
+			PoleStateSpaceModel(s3, t + tstep / 2, ys3, force[steps]);
+			for (i = 0; i < NS; i++)
+				ys4[i] = y[i] + tstep * s3[i];
+			PoleStateSpaceModel(s4, t + tstep, ys4, force[steps]);
+		}
 
-				PoleStateSpaceModel(s1, t, y, force[steps]); // Euler's
-				for (i = 0; i < NS; i++)
-					ys2[i] = y[i] + (tstep / 2) * s1[i];
-				PoleStateSpaceModel(s2, t + tstep / 2, ys2, force[steps]);
-
-				if (method == 2)
-				{
-					// Runge-Kutta 4th order
+		// solution:
+		if (method == 0) // Euler's Method
+			for (i = 0; i < NS; i++)
+				y[i] = y[i] + tstep * s1[i];
+		else if (method == 1)
+			for (i = 0; i < NS; i++)
+				y[i] = y[i] + tstep * s2[i];
+		else if (method == 2)
+			for (i = 0; i < NS; i++)
+				y[i] = y[i] + tstep * s1[i] / 6 + tstep * s2[i] / 3 + tstep * s3[i] / 3 + tstep * s4[i] / 6,
 					for (i = 0; i < NS; i++)
-						ys3[i] = y[i] + (tstep / 2) * s2[i];
-					PoleStateSpaceModel(s3, t + tstep / 2, ys3, force[steps]);
-					for (i = 0; i < NS; i++)
-						ys4[i] = y[i] + tstep * s3[i];
-					PoleStateSpaceModel(s4, t + tstep, ys4, force[steps]);
-				}
-
-				// solution:
-				if (method == 0) // Euler's Method
-					for (i = 0; i < NS; i++)
-						y[i] = y[i] + tstep * s1[i];
-				else if (method == 1)
-					for (i = 0; i < NS; i++)
-						y[i] = y[i] + tstep * s2[i];
-				else if (method == 2)
-					for (i = 0; i < NS; i++)
-						y[i] = y[i] + tstep * s1[i] / 6 + tstep * s2[i] / 3 + tstep * s3[i] / 3 + tstep * s4[i] / 6,
-							for (i = 0; i < NS; i++)
-								states[i] = y[i]; // return states
+						states[i] = y[i]; // return states
 }
+
+
+
+
+
+
+
+
 
 // STATE SPACE MODEL FOR POLE SYSTEM SIMULATIONS: Returns dtdx[NS]
 void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
