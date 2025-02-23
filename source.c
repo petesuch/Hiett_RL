@@ -1,5 +1,6 @@
 /*
- *
+ *  Hello Dave. Nice to see you. 
+ * 
  *  C++ Source Code from Original Masters Thesis Named:
  *
  *  "Reinforcement Learning Experiments with State Classifiers
@@ -1893,7 +1894,7 @@ int TIPWindow::RunWeightSave()
   return Choice;
 }
 
-// Hello world 129  NOTTTTTTTT
+
 //-- Page 129 ------------------------------------------------------------------
 class TIPControlApp : public TApplication
 {
@@ -1951,8 +1952,12 @@ int OwlMain(int /*argc*/, char * /*argv*/[])
 //  Algorithm: Bang-Bang Control
 //  Initialize Neural ACE ASE variables here
 
+
+
 //-- Page 130 ------------------------------------------------------------------
 
+
+// -- BEGIN of InitializeNeuralACEASE --
 void InitializeNeuralACEASE(int IC, int OtherWeights)
 {
   int i, j, B;
@@ -2045,7 +2050,7 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
 
  }   // -- End of InitializeNeuralACEASE --
 
-//  hello world
+// -- End of InitializeNeuralACEASE --
 
 void ace()
 {
