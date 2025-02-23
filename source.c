@@ -1893,27 +1893,30 @@ int TIPWindow::RunWeightSave()
   return Choice;
 }
 
-//----------------------------------------------------------------------------
 
+//-- Page 129 ------------------------------------------------------------------
 class TIPControlApp : public TApplication
 {
 public:
-  //-- Page 129 ------------------------------------------------------------------
-  TIPControlApp(const char *name)
+  TIPControlApp(const char* name)
       : TApplication(name) {};
   void InitMainWindow();
   void InitInstance();
 };
 
+
+
 void TIPControlApp::InitMainWindow()
 {
   EnableCtl3d();
-  TIPWindow *IPWindow = new TIPWindow(0);
-  IPWindow->GetPIDOptions();
-  IPWindow->GetCalibOptions();
-  IPWindow->GetGraphics();
+  TIPWindow* IPWindow = new TIPWindow(0);
+  IPWindow -> GetPIDOptions();
+  IPWindow -> GetCalibOptions();
+  IPWindow -> GetGraphics();
   MainWindow = IPWindow;
 }
+
+
 
 void TIPControlApp::InitInstance()
 {
@@ -1932,7 +1935,11 @@ void TIPControlApp::InitInstance()
     TApplication::InitInstance();
 }
 
+
+
 #pragma argsused
+
+
 int OwlMain(int /*argc*/, char * /*argv*/[])
 {
   TIPControlApp app("IPControlApp");
@@ -1953,7 +1960,7 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
   float ThetaBoxSpacing = ThetaExtreme / NumThetaBoxes;
   float DThetaBoxSpacing = DThetaExtreme / NumDThetaBoxes;
   float MinDisX, MinDisY, Dx, Dy;
-  static int quant[2] = {10, 10};
+  static int quant[2] = { 10, 10 };
   IC = 1;
   tstep = 1 / fs;
   NumOfNodes = NumThetaBoxes * NumDThetaBoxes;
@@ -1968,12 +1975,8 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
     clear_cmac_weights(cmac_id);
   }
 
-  if (!OtherWeights)
-    TrialNum = 0;
-
-  for (i = 0; i < 100; i++)
-    trx[i] = 0;
-
+  if (!OtherWeights) TrialNum = 0;
+  for (i = 0; i < 100; i++) trx[i] = 0;
   steps = 0;
   jj = 1;
   failure = 0;
@@ -1986,7 +1989,7 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
   Gamma = 0.95;
   Lamda = 0.8;
 
-  if (!Other Weights)
+  if (!OtherWeights)
   {
     for (i = 1; i <= NumOfNodes; i++)
     {
@@ -2008,102 +2011,113 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
     force[i] = 0;
     V_reff[i] = 0;
   }
-  // Determine Sigma (Overlap) for all centers
+
   //-- Page 131 ------------------------------------------------------------------------
+  
+  // Determine Sigma (Overlap) for all centers
   for (i = 1; i <= NumOfNodes; i++)
   {
     SigmaTheta[i] = sqrt(-(pow(ThetaBoxSpacing, 2)) / (2.0 * log(Overlap)));
     SigmaDTheta[i] = sqrt(-(pow(DThetaBoxSpacing, 2)) / (2.0 * log(Overlap)));
-    FailAng = 12 * Ang2Rad; // Failure Angle (by degrees)
+  }
 
-    if (NeuralACEASEOptions.Uniform)
+  FailAng = 12 * Ang2Rad; // Failure Angle (by degrees)
+  
+  if (NeuralACEASEOptions.Uniform)
+  {
+    for (i = 0; i < NumThetaBoxes; i++) // Input space normalized to -1 and 1
     {
-      for (i = 0; i < NumThetaBoxes; i++) // Input space normalized to -1 and 1
+      // Determine Sigma (Overlap) for all centers
+      for (j = 0; j < NumDThetaBoxes; j++)
       {
-        for (j = 0; j < NumDThetaBoxes; j++)
-        {
-          // nc = node or box center
-          ncx[j + 1 + i * NumDThetaBoxes] = -DThetaExtreme + j * DThetaBoxSpacing * 2 + DThetaBoxSpacing;
-          ncy[j + 1 + i * NumDThetaBoxes] = -ThetaExtreme + i * ThetaBoxSpacing * 2 + ThetaBoxSpacing;
-        }
+        // nc = node or box center
+        ncx[j + 1 + i * NumDThetaBoxes] = -DThetaExtreme + j * DThetaBoxSpacing * 2 + DThetaBoxSpacing;
+        ncy[j + 1 + i * NumDThetaBoxes] = -ThetaExtreme + i * ThetaBoxSpacing * 2 + ThetaBoxSpacing;
       }
+    }
+  }
+  for (i = 1; i <= NumOfNodes; i++) ISNode[i] = 0.0;
 
-      for (i = 1; i <= NumOfNodes; i++)
-        ISNode[i] = 0.0;
+  reinf = 0;
+  prevt = 0;
+  y0[0] = 0; // State 1 (Angle) theta Initial Condition
+  y0[1] = 0; // State 2 (Angular Velocity) theta prime
 
-      reinf = 0;
-      prevt = 0;
+ }   // -- End of InitializeNeuralACEASE --
 
-      y0[0] = 0; // State 1 (Angle) theta Initial Condition
-      y0[1] = 0; // State 2 (Angular Velocity) theta prime
+
+
+void ace()
+{
+  double vtsum = 0;
+  int i, j;
+
+  // ADAPTIVE CRITIC ELEMENT
+  // RETURNS: internal reinforcement (internal_reinf),
+  // weights for ACE(vt), and predition (pred)
+
+  if (failure) vtsum = 0;
+  else
+    for (i = 1; i <= NumOfNodes; i++)
+      vtsum = vtsum + vt[i] * ISNode[i];
+
+  pred = vtsum;
+  // Internal Reinforcement (for on-line adaptation)
+  internal_reinf = reinf + (Gamma * pred) - predlast;
+ 
+  for (i = 1; i <= NumOfNodes; i++)
+  {
+    // Update Value Function for All Nodes
+    vt[i] = vt[i] + (Beta * internal_reinf * xbar[i]);
+  }
+
+ }  // -- End of ace() --
+
+ 
+ 
+ void ase()
+ {
+   //  Action Network Associative Search Element
+  double noise;
+  int i, j;
+  //-- Page 132 ------------------------------------------------------------------------
+  double wtsum = 0.0, dom;
+  // x = 0 means zero input
+  // variance = 0.01
+  // to produce a probability density function value
+  noise = ((double)(random(700) - 300)) / 10000;
+
+  if (failure)
+    wtsum = 0.0;
+  else
+    for (i = 1; i <= NumOfNodes; i++)
+      wtsum = wtsum + ISNode[i] * wt[i];
+
+  dom = wtsum + noise;
+  if (NeuralACEASEOptions.OutSigmoid)
+    action = 2 * (1 / (1 + exp(-dom)) - 0.50); // Sigmoidal Function (between +1 and 1)
+  else
+  {
+    // Bang Bang Output
+    if (dom >= 0)
+      action = 1.0;
+    else
+      action = -1.0;
+  }
+
+  // Ref is used as a disturbance signal
+  if (NeuralACEASEOptions.DisturbanceYes)
+  {
+    V_reff[steps] = Ref(1) * 10;
+    action += V_reff[steps];
+  }
+  // Update the weights:
+  for (i = 1; i <= NumOfNodes; i++)
+    wt[i] = wt[i] + Alpha * internal_reinf * elg[i];
     }
 
-    void ace()
-    {
-      double vtsum = 0;
-      int i, j;
-
-      // ADAPTIVE CRITIC ELEMENT
-      // RETURNS: internal reinforcement (internal_reinf),
-      // weights for ACE(vt), and predition (pred)
-
-      if (failure)
-        vtsum = 0;
-      else
-        for (i = 1; i <= NumOfNodes; i++)
-          vtsum = vtsum + vt[i] * ISNode[i];
-
-      pred = vtsum;
-      // Internal Reinforcement (for on-line adaptation)
-      internal_reinf = reinf + (Gamma * pred) - predlast;
-      // Update Value Function for All Nodes
-      for (i = 1; i <= NumOfNodes; i++)
-        vt[i] = vt[i] + (Beta * internal_reinf * xbar[i]);
-    }
-
-    //  Action Network Associative Search Element
-    void ase()
-    {
-      double noise;
-      int i, j;
-      //-- Page 132 ------------------------------------------------------------------------
-      double wtsum = 0.0, dom;
-      // x = 0 means zero input
-      // variance = 0.01
-      // to produce a probability density function value
-      noise = ((double)(random(700) - 300)) / 10000;
-
-      if (failure)
-        wtsum = 0.0;
-      else
-        for (i = 1; i <= NumOfNodes; i++)
-          wtsum = wtsum + ISNode[i] * wt[i];
-
-      dom = wtsum + noise;
-      if (NeuralACEASEOptions.OutSigmoid)
-        action = 2 * (1 / (1 + exp(-dom)) - 0.50); // Sigmoidal Function (between +1 and 1)
-      else
-      {
-        // Bang Bang Output
-        if (dom >= 0)
-          action = 1.0;
-        else
-          action = -1.0;
-      }
-
-      // Ref is used as a disturbance signal
-      if (NeuralACEASEOptions.DisturbanceYes)
-      {
-        V_reff[steps] = Ref(1) * 10;
-        action += V_reff[steps];
-      }
-      // Update the weights:
-      for (i = 1; i <= NumOfNodes; i++)
-        wt[i] = wt[i] + Alpha * internal_reinf * elg[i];
-    }
-
-    void decoder()
-    {
+void decoder()
+{
       int i, j, idx;
       double Theta, DTheta, D;
       double tn, td, dn, dd, et, ed;
