@@ -1,5 +1,5 @@
 /*
- * 
+ *  Hello.  This is original C++ code. 
  *  C++ Source Code from Original Masters Thesis Named:
  *
  *  "Reinforcement Learning Experiments with State Classifiers
@@ -10,6 +10,10 @@
  *  (hardware/software: IBM PC clone running MS Windows 3.10, compiled with
  *   Borland C++ Compiler 4.52)
  *  
+ *  WARNING: This file uses UNIX-style LF line endings.
+ *  Ensure your editor is configured to preserve LF (no CRLF).
+ *  Recommended Git setting: `git config core.autocrlf input`
+ *  If using old Windows tools, convert with `unix2dos` if necessary.
  * 
  */
 
