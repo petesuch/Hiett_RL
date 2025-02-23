@@ -1893,7 +1893,7 @@ int TIPWindow::RunWeightSave()
   return Choice;
 }
 
-
+// Hello world 129
 //-- Page 129 ------------------------------------------------------------------
 class TIPControlApp : public TApplication
 {
@@ -2045,7 +2045,7 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
 
  }   // -- End of InitializeNeuralACEASE --
 
-
+//  hello world
 
 void ace()
 {
