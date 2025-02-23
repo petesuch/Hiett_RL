@@ -1,20 +1,22 @@
 /*
- *  Hello.  This is original C++ code. 
- *  C++ Source Code from Original Masters Thesis Named:
  *
- *  "Reinforcement Learning Experiments with State Classifiers
- *  for Controlling an Inverted Pendulum"
+ *  This is original C++ code from John Hietts Original Masters Thesis:
  *
- *  by John Hiett, Arizona State University 1997
+ *    "Reinforcement Learning Experiments with State Classifiers
+ *       for Controlling an Inverted Pendulum"
+ *
+ *   @author: John Hiett, Arizona State University 1997
  *
  *  (hardware/software: IBM PC clone running MS Windows 3.10, compiled with
- *   Borland C++ Compiler 4.52)
+ *   Borland C++ Compiler 4.52)  Please read the above PDF to understand the 
+ *    setup and other hardware used. 
  *  
  *  WARNING: This file uses UNIX-style LF line endings.
  *  Ensure your editor is configured to preserve LF (no CRLF).
  *  Recommended Git setting: `git config core.autocrlf input`
  *  If using old Windows tools, convert with `unix2dos` if necessary.
- * 
+ *
+ *
  */
 
 //-- Page 96 ------------------------------------------------------------------
@@ -1281,8 +1283,9 @@ void TIPWindow::CmOldDataGraph
   Invalidate();
 }
 
-void TIPWindow::CmBeginControl() //  Refactored with ChatGPT; use with caution.
+void TIPWindow::CmBeginControl() 
 {
+  // Refactored with ChatGPT: Use of GOTO statements eliminated
   int start = 0, Mag = 500;
   char txt[30];
   static float oldx1 = 0;
@@ -1472,16 +1475,16 @@ float far TIPWindow::NeuralACEASE(int IC, int jj, double states[])
 
   randomize();
 
-  // main loop Neural ACE ASE:
+  // Main loop Neural ACE ASE:
 NextTrial:
   if (SIMULATE)
   {
-    // assume zero input for ASE at the 1st time step
+    // Assume zero input for ASE at the 1st time step
     xx = cx * 5 + 1;
     xx2 = cx * 5 + 11; // reset graph line
     tt = 0;
     ace();
-    ase(); // initial action
+    ase(); // Initial action
     Invalidate();
   }
   IC = 1;
@@ -1502,7 +1505,7 @@ NextStep:
   }
   wsprintf(txt, "Runs=%i Trials=%i Steps=%i", RunNum, TrialNum + 1, steps);
   dc.SetTextColor(green);
-  //-- Page 123 -----------------------------------------------------------------
+  //-- Page 123 ----------------------------------------------------------------
   dc.SetBkColor(black);
   if (SIMULATE)
     steps++;
@@ -1577,7 +1580,7 @@ Interrupt: // User Interrupt or Failure Occurs then Jump to Here
     predlast = 0;
     for (i = 1; i <= NumOfNodes; i++)
     {
-      //-- Page 124 ----------------------------------------------------
+      //-- Page 124 ------------------------------------------------------------
       elg[i] = elg0[i];
       xbar[i] = elg0[i];
       ISNode[i] = 0.0;
@@ -1686,7 +1689,6 @@ EndACEASE:
 }
 
 
-
 void TIPWindow::ClusterInputSpace(TDC &dc)
 {
   float DDMAXAVG = 0, DD = 0;
@@ -1706,7 +1708,7 @@ void TIPWindow::ClusterInputSpace(TDC &dc)
   int ridx;
   TRect rect;
   HPEN RedPen, BluePen, WhitePen, BlackPen;
-  //-- Page 126 ---------------------------------------------------------------------
+  //-- Page 126 ----------------------------------------------------------------
   HPEN hOldPen, GreenPen;
   IN = 0;
   sprintf(txt, "xMax=%i yMax=%i ", xMax, yMax);
@@ -1722,7 +1724,7 @@ void TIPWindow::ClusterInputSpace(TDC &dc)
     return;
   }
 
-  // find center of mass of input space
+  // Find center of mass of input space
   avgx = 0;
   avgy = 0;
   Nx = MaxAngMag;
@@ -1733,13 +1735,13 @@ void TIPWindow::ClusterInputSpace(TDC &dc)
     yyc[j] = ang[j] / Nx;
     xxc[j] = (ang[j] - angl[j - 1]) * fs / Ny;
     avgx += xxc[j];
-    avgy += yyc[j];                                                                                                     // plot data to be clustered
+    avgy += yyc[j]; // plot data to be clustered
     dc.Ellipse(xxc[j] * xMax / 2 + xo, yyc[j] * yMax / 2 + yo, xxc[j] * xMax / 2 + 5 + xo, yyc[j] * yMax / 2 + 5 + yo); //  ??
   }
   iscx = avgx / NumOfDataPoints;
   iscy = avgy / NumOfDataPoints;
-  // find closest data point to center of mass of input space data
-  // start dmin with value of 1st data point (initial seed center)
+  // Find closest data point to center of mass of input space data
+  // Start dmin with value of 1st data point (initial seed center)
   dmin = pow(xxc[1] - iscx, 2) + pow(yyc[1] - iscy, 2);
   ccm = 1;
 
@@ -1850,7 +1852,6 @@ end:
   }
 }
 //-- Page 128 ------------------------------------------------------------------
-
 
 
 
