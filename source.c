@@ -2197,7 +2197,6 @@ void decoder()
 		return;
 	}
 //-- Page 133 -------------------------------------------------------------------------
-
 	if (NeuralACEASEOptions.RBF)
 	{
 		for (i = 1; i <= NumOfNodes; i++)
@@ -2211,77 +2210,76 @@ void decoder()
 			ed = exp(dn / dd); // Radial Basis Function for DTheta (angular vel.)
 			ISNode[i] = et * ed;
 		}
-
-		else if (NeuralACEASEOptions.Uniform)
+	}
+	else if (NeuralACEASEOptions.Uniform)
+	{
+	  // Uniform Binary Grid With No Overlap (Rectangular)
+		for (i = 0; i < NumThetaBoxes; i++)
 		{
-		  // Uniform Binary Grid With No Overlap (Rectangular)
-			for (i = 0; i < NumThetaBoxes; i++)
+			// Set Boxes for Extreme Negative Angular Velocity
+			if ((x[1] < (ncx[i * NumDThetaBoxes + 1] + DThetaBoxSpacing))
+         && (x[0] >= (ncy[i * NumDThetaBoxes + 1] - ThetaBoxSpacing))
+         && (x[0] < (ncy[i * NumDThetaBoxes + 1] + ThetaBoxSpacing)))
+			{		
+				// Binary output
+			  ISNode[i * NumDThetaBoxes + 1] = 1.0; 
+			}
+			else
 			{
-				// Set Boxes for Extreme Negative Angular Velocity
-				if ((x[1] < (ncx[i * NumDThetaBoxes + 1] + DThetaBoxSpacing))
-           && (x[0] >= (ncy[i * NumDThetaBoxes + 1] - ThetaBoxSpacing))
-           && (x[0] < (ncy[i * NumDThetaBoxes + 1] + ThetaBoxSpacing)))
-				{		
-					// Binary output
-				  ISNode[i * NumDThetaBoxes + 1] = 1.0; 
+				// Binary output
+				ISNode[i * NumDThetaBoxes + 1] = 0.0;
+			}
+			for (j = 2; j < NumDThetaBoxes; j++)
+			{
+				// Set Boxes Between Extremes
+				idx = j + i * NumDThetaBoxes;
+				if ((x[0] >= (ncy[idx] - ThetaBoxSpacing))
+					&& (x[0] < (ncy[idx] + ThetaBoxSpacing))
+					&& (x[1] >= (ncx[idx] - DThetaBoxSpacing))
+					&& (x[1] < (ncx[idx] + DThetaBoxSpacing)))
+				{
+					// Binary Output
+				 	ISNode[idx] = 1.0;
 				}
 				else
 				{
-					// Binary output
-					ISNode[i * NumDThetaBoxes + 1] = 0.0;
-				}
-				for (j = 2; j < NumDThetaBoxes; j++)
+					// Binary Output	
+				 	ISNode[idx] = 0.0; 
+				}	
+
+				// Set Boxes for Extreme Positive Angular Velocity
+				if ((x[1] >= ncx[(i + 1) * NumDThetaBoxes] - DThetaBoxSpacing)
+				 	&& (x[0] >= ncy[(i + 1) * NumDThetaBoxes] - ThetaBoxSpacing)
+				 	&& (x[0] < ncy[(i + 1) * NumDThetaBoxes] + ThetaBoxSpacing))
 				{
-					// Set Boxes Between Extremes
-					idx = j + i * NumDThetaBoxes;
-					if ((x[0] >= (ncy[idx] - ThetaBoxSpacing))
-						&& (x[0] < (ncy[idx] + ThetaBoxSpacing))
-						&& (x[1] >= (ncx[idx] - DThetaBoxSpacing))
-						&& (x[1] < (ncx[idx] + DThetaBoxSpacing)))
-					{
-						// Binary Output
-				 		ISNode[idx] = 1.0;
-					}
-					else
-					{
-						// Binary Output	
-				  	ISNode[idx] = 0.0; 
-					}	
-
-					// Set Boxes for Extreme Positive Angular Velocity
-					if ((x[1] >= ncx[(i + 1) * NumDThetaBoxes] - DThetaBoxSpacing)
-					 	&& (x[0] >= ncy[(i + 1) * NumDThetaBoxes] - ThetaBoxSpacing)
-					 	&& (x[0] < ncy[(i + 1) * NumDThetaBoxes] + ThetaBoxSpacing))
-					{
-						ISNode[(i + 1) * NumDThetaBoxes] = 1.0;
-					}
-					else
-					{
-						ISNode[(i + 1) * NumDThetaBoxes] = 0.0;
-					}
-			 	}
-			} 
-		}
-
-		else if (NeuralACEASEOptions.CMAC)
+					ISNode[(i + 1) * NumDThetaBoxes] = 1.0;
+				}
+				else
+				{
+					ISNode[(i + 1) * NumDThetaBoxes] = 0.0;
+				}
+		 	}
+		} 
+	}
+	else if (NeuralACEASEOptions.CMAC)
+	{
+		for (i = 0; i <= NumOfNodes; i++)
 		{
-			for (i = 0; i <= NumOfNodes; i++)
-			{
-				TempISNode[i] = 0; // convert to int
-			}
-			for (i = 0; i < NS; i++)
-	 		{
-				xcmac[i] = (int)1000 * x[i];
-				// cmac_response(cmac_id,xcmac,TempISNode); // x is in degrees j
-			}
-			for (i = 1; i <= NumOfNodes; i++)
-			{
-				ISNode[i] = ((float)TempISNode[i - 1]) / 1000;
-				// free(TempISNode);
-			}
-	  }
-//-- Page 134 ---------------------------------------------------------------
-// SOLVE MODEL FOR SIMULATION AND/OR TRAINING: Returns x[NS]=Model States void PoleModelSolve void PoleModelSolve() { /* * function sts-polemod(uf, y0, t, tstep, method) * cart-pole simulation function Solve ODE by using various methods: * method = 0 default: Euler method; method = 1: Runge-Kutta 2nd order method * method = 2: Runge-Kutta 4th order method */ int i; for (i = 0; i < NS; i++) y[i] - y0[i];
+			TempISNode[i] = 0; // convert to int
+		}
+		for (i = 0; i < NS; i++)
+ 		{
+			xcmac[i] = (int)1000 * x[i];
+			// cmac_response(cmac_id,xcmac,TempISNode); // x is in degrees j
+		}
+		for (i = 1; i <= NumOfNodes; i++)
+		{
+			ISNode[i] = ((float)TempISNode[i - 1]) / 1000;
+			// free(TempISNode);
+		}
+	}
+	//-- Page 134 ---------------------------------------------------------------------
+	// SOLVE MODEL FOR SIMULATION AND/OR TRAINING: Returns x[NS]=Model States void PoleModelSolve void PoleModelSolve() { /* * function sts-polemod(uf, y0, t, tstep, method) * cart-pole simulation function Solve ODE by using various methods: * method = 0 default: Euler method; method = 1: Runge-Kutta 2nd order method * method = 2: Runge-Kutta 4th order method */ int i; for (i = 0; i < NS; i++) y[i] - y0[i];
 
 		PoleStateSpaceModel(s1, t, y, force[steps]); // Euler's
 		for (i = 0; i < NS; i++)
@@ -2312,10 +2310,6 @@ void decoder()
 					for (i = 0; i < NS; i++)
 						states[i] = y[i]; // return states
 }
-
-
-
-
 
 
 
