@@ -1,5 +1,4 @@
 /*
- *  Hello Dave. Nice to see you. 
  * 
  *  C++ Source Code from Original Masters Thesis Named:
  *
@@ -10,7 +9,8 @@
  *
  *  (hardware/software: IBM PC clone running MS Windows 3.10, compiled with
  *   Borland C++ Compiler 4.52)
- *  last edit 5:54p feb 20, 2025
+ *  
+ * 
  */
 
 //-- Page 96 ------------------------------------------------------------------
@@ -2123,48 +2123,48 @@ void ace()
 
 void decoder()
 {
-      int i, j, idx;
-      double Theta, DTheta, D;
-      double tn, td, dn, dd, et, ed;
-      double ThetaBoxSpacing = ThetaExtreme / NumThetaBoxes;
-      double DThetaBoxSpacing = DThetaExtreme / NumDThetaBoxes;
-      static float x[NS];
-      static int TempISNode[25];
-      static float xcmac[NS];
+  int i, j, idx;
+  double Theta, DTheta, D;
+  double tn, td, dn, dd, et, ed;
+  double ThetaBoxSpacing = ThetaExtreme / NumThetaBoxes;
+  double DThetaBoxSpacing = DThetaExtreme / NumDThetaBoxes;
+  static float x[NS];
+  static int TempISNode[25];
+  static float xcmac[NS];
 
-      /// if ((TempISNode(int*)malloc(NumOfNodes)) == NULL)
-      ///   exit(-1);
-      //  Dynamically Allocate Temp Memory
+  /// if ((TempISNode(int*)malloc(NumOfNodes)) == NULL)
+  ///   exit(-1);
+  //  Dynamically Allocate Temp Memory
 
-      //  Decoder for states, RETURNS: BoxNum
-      //  Input--2 state vetors from pole system: Normalized
+  //  Decoder for states, RETURNS: BoxNum
+  //  Input--2 state vetors from pole system: Normalized
 
-      x[0] = states[0] * Rad2Ang; // Angle of the pole with the vertical
-      x[1] = states[1] * Rad2Ang; // Aangular velocity all in degrees
+  x[0] = states[0] * Rad2Ang; // Angle of the pole with the vertical
+  x[1] = states[1] * Rad2Ang; // Aangular velocity all in degrees
 
-      for (i = 1; i <= NumOfNodes; i++)
-      {
-        ISNode[i] = 0.0; // Clear Boxes for New State
-      }
-      if (failure)
-      {
-        return;
-      }
-      //-- Page 133 -------------------------------------------------------------------------
-      if (NeuralACEASEOptions.RBF)
-      {
-        for (i = 1; i <= NumOfNodes; i++)
-        {
-          // 2D Gausian, pow(x,y) = x to power of y
-          tn = -pow((x[0] - ncy[i]), 2);
-          td = (2 * pow(SigmaTheta[i], 2));
-          dn = -pow((x[1] - ncx[i]), 2);
-          dd = (2 * pow(SigmaDTheta[i], 2));
-          et = exp(tn / td); // Radial Basis Function for Theta (angle)
-          ed = exp(dn / dd); // Radial Basis Function for DTheta (angular vel.)
-          ISNode[i] = et * ed;
-        }
-      }
+  for (i = 1; i <= NumOfNodes; i++)
+  {
+    ISNode[i] = 0.0; // Clear Boxes for New State
+  }
+  if (failure)
+  {
+    return;
+  }
+  //-- Page 133 -------------------------------------------------------------------------
+  if (NeuralACEASEOptions.RBF)
+  {
+    for (i = 1; i <= NumOfNodes; i++)
+    {
+      // 2D Gausian, pow(x,y) = x to power of y
+      tn = -pow((x[0] - ncy[i]), 2);
+      td = (2 * pow(SigmaTheta[i], 2));
+      dn = -pow((x[1] - ncx[i]), 2);
+      dd = (2 * pow(SigmaDTheta[i], 2));
+      et = exp(tn / td); // Radial Basis Function for Theta (angle)
+      ed = exp(dn / dd); // Radial Basis Function for DTheta (angular vel.)
+      ISNode[i] = et * ed;
+    }
+  }
       else if (NeuralACEASEOptions.Uniform)
       {
         // Uniform Binary Grid With No Overlap (Rectangular)
