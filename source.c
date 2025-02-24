@@ -1,5 +1,5 @@
 /*
- *
+ *  Hello there this is a test of Visual Studio and Git...
  *  This is original C++ code from John Hietts Original Masters Thesis:
  *
  *    "Reinforcement Learning Experiments with State Classifiers
@@ -2396,6 +2396,7 @@ class TNeuralACEASEDlg : public TDialog{} : public : protected : TNeuralACEASEDl
 DEFINE_RESPONSE_TABLE1(TNeuralACEASEDlg, TDialog) EvBangBangSlide), EV_CHILD_NOTIFY_ALL_CODES(IDC_BANGBANGMAG, EV_CHILD_NOTIFY_ALL_CODES(IDC_OVERLAPSLIDER, EvOverlap Slide),
   END_RESPONSE_TABLE;
 
+
   class TCalibDig: public TDialog
   {
   public:
@@ -2604,6 +2605,8 @@ void TCalibDlg::CmCalibok()
   }
 }
 
+
+
 void TCalibDlg::CmCalibCancel()
 {
   KillTimer(1);
@@ -2620,6 +2623,8 @@ void TCalibDlg::CmCalibCancel()
   new TEdit(this, IDC_PIXELSVOLT, 10);
   new TEdit(this, IDC_PIXELSDEGREE, 10);
   SetTransferBuffer(Graphics)
+
+
 
   void TDataDlg::CmSync
   {
