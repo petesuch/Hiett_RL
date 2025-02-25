@@ -412,6 +412,8 @@ protected:
   DECLARE_RESPONSE_TABLE(TIPWindow);
 };
 
+
+
 DEFINE_RESPONSE_TABLE1(TIPWindow, TFrameWindow)
 EV_WM_KEYDOWN,
     EV_WM_MOUSEMOVE,
@@ -455,6 +457,8 @@ TIPWindow::TIPWindow(TWindow *parent) : TFrameWindow(parent, ""), TWindow(parent
   Attr.W = Attr.X * 6;
 }
 
+
+
 void TIPWindow::SetupWindow()
 {
   TFrameWindow::SetupWindow();
@@ -472,11 +476,15 @@ void TIPWindow::SetupWindow()
   board = getBoardToUse(); // int board is in case of >1 boards on system.
 }
 
+
+
 // DESTRUCTOR: They do this to free up memory.
 TIPWindow::~TIPWindow()
 {
   delete windowMenu;
 }
+
+
 
 void TIP Window::InitOptions()
 {
