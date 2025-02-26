@@ -2350,58 +2350,64 @@ void PoleModelSolve void PoleModelSolve()
 
 
 
-// STATE SPACE MODEL FOR POLE SYSTEM SIMULATIONS: Returns dtdx[NS]
 void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
 {
+  // STATE SPACE MODEL FOR POLE SYSTEM SIMULATIONS: Returns dtdx[NS]
   double g, l, md, mr, r, k1, k2, jm;
   double a1, a2, a3, a4;
 
   // Physical Constants of Inverted Pendulum System
   g = 9.8;       // m/sec, Gravity
   l = 0.49927;   // m, Length of Pole
-  md = 0.26164;  // kg, Mass of Disc
-  mr = 0.04240;  // kg, Mass of Pole
+  md = 0.26164   // kg, Mass of Disc
+  mr = 0.04240   // kg, Mass of Pole
   r = 1.44;      // Ohms, resistance of motor windings
-  k1 = 0.0833;   // Nm/amp, Proportionality const. between
-  //-- Page 135 ---------------------------------------------------------------
-  k2 = 0.0821;   // Torque delivered and winding current
-  jm = 0.000044; // Vsec/rad, Proportionality const between induced emf & angular velocity.
-                  // u is DC voltage applied to motor (input)
-                  // //states:
-                  // acceleration
-                  // // // kgm^2, Armature Inertia
-                  // xl = angle, dxldt = angular velocity-x2, dx2dt-angular
-                  // Il constants
+  k1 = 0.0833;   // Nm/amp, Proportionality const. between Torque delivered and winding current
+  //-- Page 135 ----------------------------------------------------------------
+  k2 = 0.0821;   // Vsec/rad, Proportionality const between induced emf & angular velocity.
+  jm = 0.000044; // kgm^2, Armature Inertia
+  //  ????
+  // u is DC voltage applied to motor (input) states
+  // xl = angle, dxldt = angular velocity-x2, dx2dt-angular acceleration
+
+  // Constants
   a1 = g * (md * l + mr * 1 / 2);
   a2 = (k1 * k2) / г;
   a3 = k1 / r;
   a4 = md l * 1 * 1 + (mr * 1 * 1) / 3 + jm;
-  // equations:
+
+  // Equations:
   dtdx[0] = x[1];
   dtdx[1] (a1*sin(x[0]-a2*x[1]+a3*u)/a4;
-}
-  
-// Dialog Definitions
-// *******
-// class TDataDig: public TDialog {
-// public:
-// dataparams);
-// protected:
-// private:
-// TDataDig(TWindow* parent, const char* name, TDataParamStruct&
-// void CmSync();
-// DECLARE_RESPONSE_TABLE(TDataDlg);
-// DEFINE_RESPONSE_TABLE1(TDataDlg, TDialog)
-// EV_COMMAND(IDC_SYNC, CmSync),
-// END_RESPONSE_TABLE;
-// class TFreqDlg: public TDialog {
-// };
-// public:
-// TFreqDlg(TWindow* parent, const char* name, TFrequency& freq);
-// class TPIDDIg: public TDialog {
-// public:
-// TPIDDlg(TWindow parent, PIDStruct* PIDOptions);
-//
+
+} // -- End of PoleStateSpaceModel --
+
+/*
+ *
+ *  Dialog Definitions
+ *
+ */
+
+class TDataDlg: public TDialog
+{
+public:
+	TDataDig(TWindow* parent, const char* name, TDataParamStruct&
+dataparams);
+protected:
+private:
+void CmSync();
+DECLARE_RESPONSE_TABLE(TDataDlg);
+DEFINE_RESPONSE_TABLE1(TDataDlg, TDialog)
+EV_COMMAND(IDC_SYNC, CmSync),
+END_RESPONSE_TABLE;
+class TFreqDlg: public TDialog {
+};
+public:
+TFreqDlg(TWindow* parent, const char* name, TFrequency& freq);
+class TPIDDIg: public TDialog {
+public:
+TPIDDlg(TWindow parent, PIDStruct* PIDOptions);
+
 
 //-- Page 136 ---------------------------------------------------------------------
   };
@@ -2496,8 +2502,7 @@ new TRadioButton(this, IDC_DONTSAVEWEIGHTS);
 SetTransferBuffer(RUNOptions);
 // For Setup
 TNeuralACEASEDlg::TNeuralACEASEDlg(TWindow * parent,
-                                   NeuralACEASEStruct & NeuralACEASEOptions) : TDialog(parent,
-                                                                                       NEURALACEASEDLG)
+  NeuralACEASEStruct & NeuralACEASEOptions) : TDialog(parent, NEURALACEASEDLG)
 {
   char txt[10];
   // note: The order of the new statements must be kept for proper operation
@@ -2543,7 +2548,6 @@ void TNeuralACEASEDlg::SetupWindow()
   sprintf(txt, "%6.2f", Overlap);
   OverlapSTxt->SetText(txt);
 }
-
 
 
 void TNeuralACEASEDig::EvBangBang Slide(UINT)
