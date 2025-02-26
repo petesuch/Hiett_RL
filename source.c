@@ -444,8 +444,7 @@ TIPWindow::TIPWindow(TWindow *parent) : TFrameWindow(parent, ""), TWindow(parent
   GetTextExtentPoint(dc, "A", 1, &size); // A is arbitrary, gets text size
   cx = size.cx;
   cy = size.cy;
-  FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
-                                        "Data Files (*.dat)|*.dat|Weight Files (*.wgt)|*.wgt|Master Files (*.fle)|*.fle|All Files (*.*)|*.*|", 0, "DAT", "WGT");
+  FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, "Data Files (*.dat)|*.dat|Weight Files (*.wgt)|*.wgt|Master Files (*.fle)|*.fle|All Files (*.*)|*.*|", 0, "DAT", "WGT");
 
   //-- Page 104 ------------------------------------------------------------------
   AssignMenu(200);
@@ -739,7 +738,6 @@ NOIC:
 }
 
 
-
 void TIPWindow::Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color)
 {
   HPEN hPen = CreatePen(PS_SOLID, 1, color);
@@ -764,7 +762,6 @@ void TIPWindow::Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color)
   SelectObject(hDC, hOldPen);
   DeleteObject(hPen);
 }
-
 
 
 void TIPWindow::SetupGraph(TDC &dc)
@@ -897,7 +894,6 @@ void TIPWindow::SetMaxCoordinates()
 }
 
 
-
 void TIPWindow::EvSize(UINT sizeType, TSize &size)
 {
   TFrameWindow::EvSize(sizeType, size);
@@ -930,7 +926,6 @@ void TIPWindow::CmSimulate()
 }
 
 
-
 void TIPWindow::CmSetupData()
 {
   char DataParamInfo[sizeof(TDataParamStruct) + 5 + 1];
@@ -950,7 +945,6 @@ void TIPWindow::CmSetupData()
     ss = "You Selected Cancel";
   MessageBox(ss, GetApplication()->GetName(), MB_OK);
 }
-
 
 
 void TIPWindow::CmFrequency()
