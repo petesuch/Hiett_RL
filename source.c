@@ -436,7 +436,12 @@ TIPWindow::TIPWindow(TWindow *parent) : TFrameWindow(parent, ""), TWindow(parent
   cx = size.cx;
   cy = size.cy;
   FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, "Data Files (*.dat)|*.dat|Weight Files (*.wgt)|*.wgt|Master Files (*.fle)|*.fle|All Files (*.*)|*.*|", 0, "DAT", "WGT");
+<<<<<<< HEAD
   //-- Page 104 ---------------------------------------------------------------------
+=======
+
+  //-- Page 104 ------------------------------------------------------------------
+>>>>>>> 2231abd0f7c0e8b142a1e95c2f158faed27ba832
   AssignMenu(200);
   InitOptions();
   Attr.X = GetSystemMetrics(SM_CXSCREEN) / 8;
@@ -920,7 +925,6 @@ void TIPWindow::CmSetupData()
     MessageBox(DataParamInfo, "Data Param Settings", MB_OK);
     ss = "You Selected Ok";
   }
-
   else
     ss = "You Selected Cancel";
   MessageBox(ss, GetApplication()->GetName(), MB_OK);
