@@ -169,9 +169,7 @@ double ncx[MAX_NUM_NODES];
 double ISNode[MAX_NUM_NODES];
 double predlast, pred, tstep, Delta;
 int reinf;
-
-//-- Page 99 -------------------------------------------------------------------
-
+//-- Page 99 ------------------------------------------------------------------------
 double internal_reinf;
 float BangBangGain = DEF_BANG_BANG_GAIN;
 float Overlap = DEF_OVERLAP_VALUE;
@@ -226,9 +224,7 @@ long x = 1;
 TColor white(255, 255, 255), green(0, 255, 0), black(0, 0, 0);
 TColor red(255, 0, 0), blue(0, 0, 255), yellow(255, 255, 0);
 TColor colorArray[10];
-
-//-- Page 100 ------------------------------------------------------------------
-
+//-- Page 100 -----------------------------------------------------------------------
 int delay = 0;
 int xx;
 int xx2;
@@ -282,9 +278,7 @@ struct NeuralACEASEStruct
   WORD WeightFromFile;
   char WeightFileName[40];
   WORD Uniform;
-
-  //-- Page 101 ------------------------------------------------------------------
-
+  //-- Page 101 ---------------------------------------------------------------------
   WORD Nonuniform;
   WORD CMAC;
   char NumThetaBoxes[10];
@@ -337,14 +331,12 @@ extern "C"
 
 #include "ipdlg3_1.cpp" // Definitions for Dialog functions
 #include "acease48.cpp" // Neural ACE, ASE control algorithm
-                        //------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 class TIPWindow : public TFrameWindow
 {
   int xMax, yMax; // Max client area coordinates
   int yBase;
-
-  //-- Page 102 ------------------------------------------------------------------
-
+  //-- Page 102 ---------------------------------------------------------------------
   int yOffset, xOffset;
 
 public:
@@ -396,8 +388,7 @@ protected:
   void CmFileSave();
   void CmPID();
   void CmNeuralACEASE();
-
-  //-- Page 103 ------------------------------------------------------------------
+  //-- Page 103 ---------------------------------------------------------------------
   void CmCalibration();
   void CmDisplay();
   void CmOldDataGraph();
@@ -410,7 +401,6 @@ protected:
   void EvMButtonDown(UINT modKeys, TPoint &point);
   DECLARE_RESPONSE_TABLE(TIPWindow);
 };
-
 
 
 DEFINE_RESPONSE_TABLE1(TIPWindow, TFrameWindow)
@@ -435,6 +425,7 @@ EV_WM_KEYDOWN,
     EV_COMMAND(CM_SERIESOFSTEPS, CmRefSeriesOfSteps),
     END_RESPONSE_TABLE;
 
+
 // MAIN WINDOW CONSTRUCTOR(INITIALIZATION)
 TIPWindow::TIPWindow(TWindow *parent) : TFrameWindow(parent, ""), TWindow(parent, "")
 {
@@ -444,10 +435,8 @@ TIPWindow::TIPWindow(TWindow *parent) : TFrameWindow(parent, ""), TWindow(parent
   GetTextExtentPoint(dc, "A", 1, &size); // A is arbitrary, gets text size
   cx = size.cx;
   cy = size.cy;
-  FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
-                                        "Data Files (*.dat)|*.dat|Weight Files (*.wgt)|*.wgt|Master Files (*.fle)|*.fle|All Files (*.*)|*.*|", 0, "DAT", "WGT");
-
-  //-- Page 104 ------------------------------------------------------------------
+  FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, "Data Files (*.dat)|*.dat|Weight Files (*.wgt)|*.wgt|Master Files (*.fle)|*.fle|All Files (*.*)|*.*|", 0, "DAT", "WGT");
+  //-- Page 104 ---------------------------------------------------------------------
   AssignMenu(200);
   InitOptions();
   Attr.X = GetSystemMetrics(SM_CXSCREEN) / 8;
@@ -455,7 +444,6 @@ TIPWindow::TIPWindow(TWindow *parent) : TFrameWindow(parent, ""), TWindow(parent
   Attr.H = Attr.Y * 6;
   Attr.W = Attr.X * 6;
 }
-
 
 
 void TIPWindow::SetupWindow()
@@ -476,13 +464,11 @@ void TIPWindow::SetupWindow()
 }
 
 
-
 // DESTRUCTOR: They do this to free up memory.
 TIPWindow::~TIPWindow()
 {
   delete windowMenu;
 }
-
 
 
 void TIP Window::InitOptions()
@@ -497,9 +483,7 @@ void TIP Window::InitOptions()
   DataParamStruct.LifeTimes = TRUE;
   DataParamStruct.States = FALSE;
   strcpy(Frequency.Freq, DEF_FREQUENCY);
-
-  //-- Page 105 ------------------------------------------------------------------
-
+  //-- Page 105 ---------------------------------------------------------------------
   PIDOptions.SingleLoop = FALSE;
   PIDOptions.DualLoop = TRUE;
   RUNOptions.KeepSimGoing = TRUE;
@@ -551,8 +535,7 @@ void TIP Window::InitOptions()
   colorArray[0] = white;
   colorArray[1] = yellow;
   colorArray[2] = blue;
-
-  //-- Page 106 ------------------------------------------------------------------
+  //-- Page 106 ---------------------------------------------------------------------
   colorArray[3] = green;
   colorArray[4] = red;
   colorArray[5] = white;
@@ -578,6 +561,7 @@ void TIPWindow::Paint(TDC &dc, BOOL, TRect &)
   }
 }
 
+
 BOOL TIPWindow::EvEraseBkgnd(HDC hDC)
 {
   RECT rect;
@@ -585,12 +569,14 @@ BOOL TIPWindow::EvEraseBkgnd(HDC hDC)
   FillRect(hDC, &rect, HBRUSH(GetStockObject(BLACK_BRUSH)));
 }
 
+
 void TIPWindow::EvChar(UINT, UINT, UINT)
 {
   TClientDC dc(*this);
   char s[100] = "YOU PRESSED A KEY";
   dc.TextOut(10, 10, s, strlen(s));
 }
+
 
 void TIPWindow::EvMouseMove(UINT modKeys, TPoint &point)
 {
@@ -603,6 +589,7 @@ void TIPWindow::EvMouseMove(UINT modKeys, TPoint &point)
   }
 }
 
+
 void TIPWindow::EvMButtonDown(UINT modKeys, TPoint &point)
 {
   if (delay > 500)
@@ -612,7 +599,9 @@ void TIPWindow::EvMButtonDown(UINT modKeys, TPoint &point)
   }
 }
 
-//-- Page 107 ------------------------------------------------------------------
+
+//-- Page 107 -----------------------------------------------------------------------
+
 
 void TIPWindow::EvKeyDown(UINT key, UINT, UINT)
 {
@@ -663,20 +652,15 @@ NOIC:
     buff = buff + del;
     goto jp;
     break;
-
   case 90: // Z pressed, Before Alexander used 'u'
     buff = buff + (del / 10.0);
     goto jp;
-
-    //-- Page 108 ------------------------------------------------------------------
-
+    //-- Page 108 -------------------------------------------------------------------
     break;
-
   case 68: // D pressed
     buff = buff - del;
     goto jp;
     break;
-
   case 89: // Y pressed, Before Alexander used 'd'
     buff = buff - (del / 10.0);
 
@@ -693,7 +677,6 @@ NOIC:
       break;
     }
     break;
-
   case 83:
     /*  S pressed: If a "S" is pressed set the "data_rec" flag high start data
      *  recording. If any other key is pressed (except those mentioned
@@ -701,17 +684,14 @@ NOIC:
      */
     data_rec = 1;
     break;
-
   case 67: // C pressed
     calibrate = current_measure1;
     break;
-
   case VK_SPACE:
     if (NIDAQENABLE)
       AO_VWrite(board, 0, 0.0);
     data rec = -1;
     break;
-
   default:
     if (NIDAQENABLE)
       AO_VWrite(board, 0, 0.0);
@@ -737,7 +717,6 @@ NOIC:
     break;
   } // END CASE
 }
-
 
 
 void TIPWindow::Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color)
@@ -766,7 +745,6 @@ void TIPWindow::Line(HDC hDC, int x1, int y1, int x2, int y2, COLORREF color)
 }
 
 
-
 void TIPWindow::SetupGraph(TDC &dc)
 {
   SIZE size;
@@ -793,7 +771,7 @@ void TIPWindow::SetupGraph(TDC &dc)
   htxt = strlen(txt);
   strcpy(txt, "Green=Reference Input");
   dc.TextOut(10 + cx * (4 + htxt), yMax - (10 + cy * 2), txt, strlen(txt));
-  //-- Page 110 ------------------------------------------------------------------
+  //-- Page 110 ---------------------------------------------------------------------
   dc.SetTextColor(red);
   htxt += strlen(txt);
   strcpy(txt, "Red=Compensator Output");
@@ -829,7 +807,6 @@ void TIPWindow::SetupGraph(TDC &dc)
 }
 
 
-
 void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOutput[], int jj)
 {
   TClientDC dc(*this);
@@ -852,7 +829,7 @@ void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOut
   if (xx2 >= xMax)
     xx2 = cx * 5;
 
-  //-- Page 111 ------------------------------------------------------------------
+  //-- Page 111 ---------------------------------------------------------------------
 
   // Erase Old Graph
   if (xx2 != cx * 5) // cx*5 is Vertical (Angular) Axis Line
@@ -885,7 +862,6 @@ void TIPWindow::Graph(float far Angle[], float far RefInput[], float far CompOut
 }
 
 
-
 void TIPWindow::SetMaxCoordinates()
 {
   // Set up maximum coordinate values
@@ -897,7 +873,6 @@ void TIPWindow::SetMaxCoordinates()
 }
 
 
-
 void TIPWindow::EvSize(UINT sizeType, TSize &size)
 {
   TFrameWindow::EvSize(sizeType, size);
@@ -906,7 +881,8 @@ void TIPWindow::EvSize(UINT sizeType, TSize &size)
   UpdateWindow(); // Optional
 }
 
-//-- Page 112 ------------------------------------------------------------------
+
+//-- Page 112 -----------------------------------------------------------------------
 
 
 void TIPWindow::CmNIDAQEnable() 
@@ -919,7 +895,6 @@ void TIPWindow::CmNIDAQEnable()
 }
 
 
-
 void TIPWindow::CmSimulate() 
 {
   // Allow Simulation
@@ -928,7 +903,6 @@ void TIPWindow::CmSimulate()
   SIMULATE = 1;
   windowMenu->CheckMenuItem(CM_SETUPNIDAQENABLE, MF_BYCOMMAND | MF_UNCHECKED);
 }
-
 
 
 void TIPWindow::CmSetupData()
@@ -953,7 +927,6 @@ void TIPWindow::CmSetupData()
 }
 
 
-
 void TIPWindow::CmFrequency()
 {
   char s[40];
@@ -967,7 +940,7 @@ void TIPWindow::CmFrequency()
 }
 
 
-//-- Page 113 ------------------------------------------------------------------
+//-- Page 113 -----------------------------------------------------------------------
 
 
 void TIPWindow::CmPID()
@@ -981,7 +954,6 @@ void TIPWindow::CmPID()
   if (PIDDlg->Execute() == IDOK)
     ControlType = PID;
 }
-
 
 
 void TIPWindow::CmNeuralACEASE() // Setup
@@ -1020,8 +992,7 @@ void TIPWindow::CmNeuralACEASE() // Setup
     if (NeuralACEASEOptions.WeightFromFile)
     {
       OtherWeights = 1;
-      FileData = new TOpenSaveDialog::TData(
-          OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
+      FileData = new TOpenSaveDialog::TData( OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
           "Weight Files (*.wgt)|*.wgt|All Files (*.*)|*.*|", 0, "WGT", "*");
 
       strcpy(FileData->FileName, NeuralACEASEOptions.WeightFileName);
@@ -1081,7 +1052,6 @@ void TIPWindow::CmNeuralACEASE() // Setup
 }
 
 
-
 void TIPWindow::CmCalibration()
 {
   if (!NIDAQENABLE)
@@ -1110,7 +1080,6 @@ void TIPWindow::CmCalibration()
 }
 
 
-
 void TIPWindow::CmDisplay()
 {
   TGraphicsDlg *GraphicsDig = new TGraphicsDig(this, &Graphics);
@@ -1121,7 +1090,6 @@ void TIPWindow::CmDisplay()
     MagPD = atoi(Graphics.PixelsPerDegree);
   }
 }
-
 
 
 void TIPWindow::CmFileOpen()
@@ -1205,7 +1173,6 @@ void TIPWindow::CmFileOpen()
     }
   }
 }
-
 
 
 void TIPWindow::CmFileSave()
