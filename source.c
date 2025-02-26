@@ -5,7 +5,7 @@
  *    "Reinforcement Learning Experiments with State Classifiers
  *       for Controlling an Inverted Pendulum"
  *
- *   @author: John Hiett, Arizona State University 1997
+ *   @author: John Harley Hiett, Arizona State University 1997
  *
  *  (hardware/software: IBM PC clone running MS Windows 3.10, compiled with
  *   Borland C++ Compiler 4.52)  Please read the above PDF to understand the 
@@ -137,8 +137,7 @@ double countt, fcount, tme;
 char cr, c;
 float rads;
 
-// NEURAL CONTROL ACE and ASE
-// NEURAL DEFAULTS
+// NEURAL DEFAULTS: CONTROL ACE and ASE
 #define DEFALPHA 1000
 #define MAX_NUM_BOXES 20
 #define DEF_NUM_OF_THETA_BOXES 5
@@ -152,7 +151,7 @@ float rads;
 #define DEF_DTHETA_EXTREME 50.0 // deg/sec
 #define THETA_MAX 90
 #define DTHETA_MAX 50
-// Global ACE and ASE variables
+// Global ACE and ASE Variables
 int NumThetaBoxes = DEF_NUM_OF_THETA_BOXES;
 int NumDThetaBoxes = DEF_NUM_OF_DTHETA_BOXES;
 float ThetaExtreme = DEF_THETA_EXTREME;
@@ -2295,38 +2294,61 @@ void decoder()
       // free(TempISNode);
     }
   }
- //-- Page 134 ----------------------------------------------------------------
-      // SOLVE MODEL FOR SIMULATION AND/OR TRAINING: Returns x[NS]=Model States void PoleModelSolve void PoleModelSolve() { /* * function sts-polemod(uf, y0, t, tstep, method) * cart-pole simulation function Solve ODE by using various methods: * method = 0 default: Euler method; method = 1: Runge-Kutta 2nd order method * method = 2: Runge-Kutta 4th order method */ int i; for (i = 0; i < NS; i++) y[i] - y0[i];
+}  // -- End of decoder --
 
-      PoleStateSpaceModel(s1, t, y, force[steps]); // Euler's
-      for (i = 0; i < NS; i++)
-        ys2[i] = y[i] + (tstep / 2) * s1[i];
-      PoleStateSpaceModel(s2, t + tstep / 2, ys2, force[steps]);
 
-      if (method == 2)
-      {
-        // Runge-Kutta 4th order
-        for (i = 0; i < NS; i++)
-          ys3[i] = y[i] + (tstep / 2) * s2[i];
-        PoleStateSpaceModel(s3, t + tstep / 2, ys3, force[steps]);
-        for (i = 0; i < NS; i++)
-          ys4[i] = y[i] + tstep * s3[i];
-        PoleStateSpaceModel(s4, t + tstep, ys4, force[steps]);
-      }
+//-- Page 134 ------------------------------------------------------------------
+void PoleModelSolve void PoleModelSolve()
+{
+  /*
+   *  SOLVE MODEL FOR SIMULATION AND/OR TRAINING: Returns x[NS] = Model States
+   *  function sts-polemod(uf, y0, t, tstep, method)
+   *  cart-pole simulation function
+   *  Solve ODE by using various methods:
+   *  method = 0 default: Euler method
+   *  method = 1: Runge-Kutta 2nd order method
+   *  method = 2: Runge-Kutta 4th order method
+   */
 
-      // solution:
-      if (method == 0) // Euler's Method
-        for (i = 0; i < NS; i++)
-          y[i] = y[i] + tstep * s1[i];
-      else if (method == 1)
-        for (i = 0; i < NS; i++)
-          y[i] = y[i] + tstep * s2[i];
-      else if (method == 2)
-        for (i = 0; i < NS; i++)
-          y[i] = y[i] + tstep * s1[i] / 6 + tstep * s2[i] / 3 + tstep * s3[i] / 3 + tstep * s4[i] / 6,
-          for (i = 0; i < NS; i++)
-              states[i] = y[i]; // return states
-    }
+  int i;
+
+  for (i = 0; i < NS; i++)
+    y[i] - y0[i];
+
+  PoleStateSpaceModel(s1, t, y, force[steps]); // Euler's
+  for (i = 0; i < NS; i++)
+    ys2[i] = y[i] + (tstep / 2) * s1[i];
+  PoleStateSpaceModel(s2, t + tstep / 2, ys2, force[steps]);
+  if (method == 2)
+  {
+    // Runge-Kutta 4th order
+    for (i = 0; i < NS; i++)
+      ys3[i] = y[i] + (tstep / 2) * s2[i];
+    PoleStateSpaceModel(s3, t + tstep / 2, ys3, force[steps]);
+    for (i = 0; i < NS; i++)
+      ys4[i] = y[i] + tstep * s3[i];
+    PoleStateSpaceModel(s4, t + tstep, ys4, force[steps]);
+  }
+
+  // solution:
+  if (method == 0) // Euler's Method
+    for (i = 0; i < NS; i++)
+      y[i] = y[i] + tstep * s1[i];
+
+  else if (method == 1)
+    for (i = 0; i < NS; i++)
+      y[i] = y[i] + tstep * s2[i];
+
+  else if (method == 2)
+    for (i = 0; i < NS; i++)
+      y[i] = y[i] + tstep * s1[i]/6 + tstep * s2[i]/3 + tstep * s3[i]/3 + tstep * s4[i]/6,
+          
+  for (i = 0; i < NS; i++)
+    states[i] = y[i]; // return states
+
+} // -- End of PoleModelSolve --
+
+
 
 // STATE SPACE MODEL FOR POLE SYSTEM SIMULATIONS: Returns dtdx[NS]
 void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
@@ -2381,7 +2403,7 @@ void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
 // TPIDDlg(TWindow parent, PIDStruct* PIDOptions);
 //
 
- //-- Page 136 ---------------------------------------------------------------------
+//-- Page 136 ---------------------------------------------------------------------
   };
   class TRUNDlg : public TDialog
   {
@@ -2564,13 +2586,11 @@ TCalibDlg::~TCalibDlg()
 }
 
 
-
 void TCalibDig::SetupWindow()
 {
   TWindow::SetupWindow();
   SetTimer(TIMER_ID, 10);
 }
-
 
 
 void TCalibDlg::EvTimer(UINT /*timerId*/)
