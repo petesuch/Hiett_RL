@@ -1,6 +1,6 @@
 /*
- *  Hello there this is a test of Visual Studio and Git...
- *  This is original C++ code from John Hietts Original Masters Thesis:
+ *  
+ *  This is the original C++ code from John Hietts Original Masters Thesis:
  *
  *    "Reinforcement Learning Experiments with State Classifiers
  *       for Controlling an Inverted Pendulum"
@@ -2012,7 +2012,6 @@ int OwlMain(int /*argc*/, char * /*argv*/[])
 //  FILENAME=acease.cpp
 //  Neural Adaptive Critic Element (ACE) and Associative Search Element (ASE)
 //  Algorithm: Bang-Bang Control
-//  Initialize Neural ACE ASE variables here
 
 
 //-- Page 130 ------------------------------------------------------------------
@@ -2020,6 +2019,7 @@ int OwlMain(int /*argc*/, char * /*argv*/[])
 
 void InitializeNeuralACEASE(int IC, int OtherWeights)
 {
+	// -- Initialize Neural ACE ASE variables here
   // -- BEGIN of InitializeNeuralACEASE --
   int i, j, B;
   float s0to1, s1toб, sбto12;
@@ -2077,6 +2077,7 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
     force[i] = 0;
     V_reff[i] = 0;
   }
+
   //-- Page 131 ---------------------------------------------------------------
   for (i = 1; i <= NumOfNodes; i++)
   {
@@ -2087,11 +2088,11 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
 
   FailAng = 12 * Ang2Rad; // Failure Angle degrees
   
-  if (NeuralACEASEOptions.Uniform)
+	if (NeuralACEASEOptions.Uniform)
   {
-    for (i = 0; i < NumThetaBoxes; i++) // Input space normalized to -1 and 1
+  	for (i = 0; i < NumThetaBoxes; i++)
     {
-      // Determine Sigma (Overlap) for all centers
+			// Input space normalized to -1 and 1
       for (j = 0; j < NumDThetaBoxes; j++)
       {
         // nc = node or box center
@@ -2107,8 +2108,7 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
   y0[0] = 0; // State 1 (Angle) theta Initial Condition
   y0[1] = 0; // State 2 (Angular Velocity) theta prime
 
- } // -- End of InitializeNeuralACEASE --
-// -- End of InitializeNeuralACEASE --
+} // -- End of InitializeNeuralACEASE --
 
 
 
@@ -2137,13 +2137,12 @@ void ace()
     vt[i] = vt[i] + (Beta * internal_reinf * xbar[i]);
   }
 } // -- End of ACE --
-// -- End of ACE --
 
 
 
- void ase()
- {
-  // Action Network, Associative Search Element ase
+void ase()
+{
+	// Action Network, Associative Search Element ase
   double noise;
   int i, j;
   //-- Page 132 ---------------------------------------------------------------
@@ -2198,12 +2197,12 @@ void decoder()
   static int TempISNode[25];
   static float xcmac[NS];
 
-  /// if ((TempISNode(int*)malloc(NumOfNodes)) == NULL)
-  ///   exit(-1);
-  //  Dynamically Allocate Temp Memory
+  //  if ((TempISNode(int*)malloc(NumOfNodes)) == NULL)
+  //    exit(-1);
+  // Dynamically Allocate Temp Memory
 
-  //  Decoder for states, RETURNS: BoxNum
-  //  Input--2 state vetors from pole system: Normalized
+  // Decoder for states, RETURNS: BoxNum
+  // Input--2 state vetors from pole system: Normalized
 
   x[0] = states[0] * Rad2Ang; // Angle of the pole with the vertical
   x[1] = states[1] * Rad2Ang; // Aangular velocity all in degrees
@@ -2213,9 +2212,7 @@ void decoder()
     ISNode[i] = 0.0; // Clear Boxes for New State
   }
   if (failure)
-  {
     return;
-  }
   //-- Page 133 ---------------------------------------------------------------
   if (NeuralACEASEOptions.RBF)
   {
