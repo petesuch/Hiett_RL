@@ -2391,15 +2391,19 @@ void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
 class TDataDlg: public TDialog
 {
 public:
-	TDataDig(TWindow* parent, const char* name, TDataParamStruct&
-dataparams);
+	TDataDig(TWindow* parent, const char* name, TDataParamStruct& dataparams);
+
 protected:
+
 private:
+
+
 void CmSync();
 DECLARE_RESPONSE_TABLE(TDataDlg);
 DEFINE_RESPONSE_TABLE1(TDataDlg, TDialog)
 EV_COMMAND(IDC_SYNC, CmSync),
 END_RESPONSE_TABLE;
+
 class TFreqDlg: public TDialog {
 };
 public:
