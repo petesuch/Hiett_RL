@@ -946,7 +946,6 @@ void TIPWindow::CmSetupData()
     MessageBox(DataParamInfo, "Data Param Settings", MB_OK);
     ss = "You Selected Ok";
   }
-
   else
     ss = "You Selected Cancel";
   MessageBox(ss, GetApplication()->GetName(), MB_OK);
