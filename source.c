@@ -1897,8 +1897,6 @@ void TIPWindow::TrainCMAC()
 }
 
 
-
-
 int TIPWindow::RunWeightSave()
 {
   int Choice;
@@ -2340,10 +2338,10 @@ void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
   // xl = angle, dxldt = angular velocity-x2, dx2dt-angular acceleration
 
   // Constants
-  a1 = g * (md * l + mr * 1 / 2);
+  a1 = g * (md * l + mr * l / 2);
   a2 = (k1 * k2) / г;
   a3 = k1 / r;
-  a4 = md l * 1 * 1 + (mr * 1 * 1) / 3 + jm;
+  a4 = md*l*l + (mr * l*l) / 3 + jm;
 
   // Equations:
   dtdx[0] = x[1];
