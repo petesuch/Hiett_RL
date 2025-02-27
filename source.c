@@ -2106,7 +2106,7 @@ void ace()
     // Update Value Function for All Nodes
     vt[i] = vt[i] + (Beta * internal_reinf * xbar[i]);
   }
-} // -- End of ACE --
+} // -- End of ace --
 
 
 
@@ -2152,7 +2152,7 @@ void ase()
   // Update the weights:
   for (i = 1; i <= NumOfNodes; i++)
     wt[i] = wt[i] + Alpha * internal_reinf * elg[i];
-} // -- END of ASE --
+} // -- END of ase --
 
 
 
@@ -2252,20 +2252,21 @@ void decoder()
   {
     for (i = 0; i <= NumOfNodes; i++)
     {
-      TempISNode[i] = 0; // convert to int
+      // convert to int
+			TempISNode[i] = 0; 
     }
     for (i = 0; i < NS; i++)
     {
-      xcmac[i] = (int)1000 * x[i];
       // cmac_response(cmac_id,xcmac,TempISNode); // x is in degrees j
+      xcmac[i] = (int)1000 * x[i];
     }
     for (i = 1; i <= NumOfNodes; i++)
     {
-      ISNode[i] = ((float)TempISNode[i - 1]) / 1000;
       // free(TempISNode);
+      ISNode[i] = ((float)TempISNode[i - 1]) / 1000;
     }
   }
-}  // -- End of decoder --
+} // -- End of decoder --
 
 
 //-- Page 134 ------------------------------------------------------------------
