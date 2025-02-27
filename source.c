@@ -2359,79 +2359,106 @@ public:
 	TDataDig(TWindow* parent, const char* name, TDataParamStruct& dataparams);
 
 protected:
+  void CmSync();
 
 private:
+  DECLARE_RESPONSE_TABLE(TDataDlg);
+
+};
 
 
-void CmSync();
-DECLARE_RESPONSE_TABLE(TDataDlg);
 DEFINE_RESPONSE_TABLE1(TDataDlg, TDialog)
-EV_COMMAND(IDC_SYNC, CmSync),
+  EV_COMMAND(IDC_SYNC, CmSync),
 END_RESPONSE_TABLE;
 
-class TFreqDlg: public TDialog {
+
+class TFreqDlg: public TDialog
+{
+public:
+  TFreqDlg(TWindow* parent, const char* name, TFrequency& freq);
 };
-public:
-TFreqDlg(TWindow* parent, const char* name, TFrequency& freq);
-class TPIDDIg: public TDialog {
-public:
-TPIDDlg(TWindow parent, PIDStruct* PIDOptions);
 
 
+class TPIDDlg: public TDialog
+{
+public:
+  TPIDDlg(TWindow* parent, PIDStruct* PIDOptions);
 //-- Page 136 ---------------------------------------------------------------------
-  };
-  class TRUNDlg : public TDialog
-  {
-  };
+};
 
+
+class TRUNDlg : public TDialog
+{
 public:
   TRUNDIg(TWindow * parent, RUNStruct * RUNOptions);
-class TNeuralACEASEDlg : public TDialog{} : public : protected : TNeuralACEASEDlg(TWindow * parent,
-                                                                                  NeuralACEASEStruct & NeuralACEASEOptions);
+};
+
+
+class TNeuralACEASEDlg : public TDialog
+{
+public : 
+  TNeuralACEASEDlg(TWindow * parent, NeuralACEASEStruct & NeuralACEASEOptions);
+
+protected : 
   void SetupWindow();
   void EvBangBangSlide(UINT code);
   void EvOverlapSlide(UINT code);
   TStatic BBMagSTxt;
   TStatic OverlapSTxt;
-  NeuralACEASEStruct ACEASEOptions;
-  TScrollBar BangBangSlider, TScrollBar OverlapSlider, DECLARE_RESPONSE_TABLE(TNeuralACEASED !g);
-DEFINE_RESPONSE_TABLE1(TNeuralACEASEDlg, TDialog) EvBangBangSlide), EV_CHILD_NOTIFY_ALL_CODES(IDC_BANGBANGMAG, EV_CHILD_NOTIFY_ALL_CODES(IDC_OVERLAPSLIDER, EvOverlap Slide),
-  END_RESPONSE_TABLE;
+  NeuralACEASEStruct *ACEASEOptions;
+  TScrollBar* BangBangSlider;
+  TScrollBar OverlapSlider;
+
+DECLARE_RESPONSE_TABLE(TNeuralACEASEDlg);
+};
 
 
-  class TCalibDig: public TDialog
-  {
+DEFINE_RESPONSE_TABLE1(TNeuralACEASEDlg, TDialog)
+  EV_CHILD_NOTIFY_ALL_CODES(IDC_BANGBANGMAG, EvBangBangSlide),
+  EV_CHILD_NOTIFY_ALL_CODES(IDC_OVERLAPSLIDER, EvOverlap Slide),
+END_RESPONSE_TABLE;
+
+
+class TCalibDig: public TDialog
+{
   public:
-  private:
-  protected:
     TCalibDlg(TWindow * parent, TCalibration Calibration);
     TStatic *SAngleTxt;
-    ~TCalibDlg();
-    // Destructor
-    // virtual void SetupWindow();
-    // TRect rect;
+    ~TCalibDlg();// Destructor
+    virtual void SetupWindow();
+    TRect rect;
     int xxMax, yyMax;
+
+  private:
     int x;
-    // TCalibration "Calib,
+    TCalibration *Calib;
+
+  protected:
     int CalDone; // for calibration Loop
     void CmCalibOk();
     void CmCalibCancel();
-    // void CmCalibZeroize();
+    void CmCalibZeroize();
     void EvTimer(UINT timerld);
-    DECLARE_RESPONSE_TABLE(TCalibDlg);
-    DEFINE_RESPONSE_TABLE1(TCalibDlg, TDialog)
-    EV_COMMAND(IDOKCALIB, CmCalibOk),
+  DECLARE_RESPONSE_TABLE(TCalibDlg);
+};
 
-        //-- Page 137 ---------------------------------------------------------------------
+DEFINE_RESPONSE_TABLE1(TCalibDlg, TDialog)
+  EV_COMMAND(IDOKCALIB, CmCalibOk),
+  //-- Page 137 ---------------------------------------------------------------------
+  EV_COMMAND(IDCANCELCALIB, CmCalibCancel),
+  EV_COMMAND(IDC_ZEROIZE, CmCalibZeroize),
+  EV_WM_TIMER,
+END_RESPONSE_TABLE;
 
-        EV_COMMAND(IDCANCEL CALIB, CmCalibCancel).EV_COMMAND(IDC_ZEROIZE, CmCalibZeroize), EV_WM_TIMER, END_RESPONSE_TABLE;
-    class TGraphicsDig : public TDialog
-    {
-    };
 
+class TGraphicsDig : public TDialog
+{
   public:
     TGraphicsDlg(TWindow * parent, TGraphics * Graphics);
-    class TSin WavRefDlg : public TDialog
+};
+
+
+class TSin WavRefDlg : public TDialog
     {
     public:
     };
