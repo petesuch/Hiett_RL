@@ -2541,11 +2541,10 @@ TNeuralACEASEDlg::TNeuralACEASEDlg(TWindow* parent, NeuralACEASEStruct& NeuralAC
   OverlapSlider = new TScrollBar(this, IDC_OVERLAPSLIDER);
   OverlapSTxt = new TStatic(this, IDC_OVERLAPVALUE, 10);
 
-
   TransferBuffer = (void far *)&NeuralACEASEOptions;
-  // Set TransferBuffer(NeuralACEASEOptions); //ACEASEOptions = NeuralACEASEOptions;
+  //  Set TransferBuffer(NeuralACEASEOptions);
+  //  ACEASEOptions = NeuralACEASEOptions;
 }
-
 
 
 void TNeuralACEASEDlg::SetupWindow()
@@ -2553,25 +2552,25 @@ void TNeuralACEASEDlg::SetupWindow()
   //-- Page 139 ----------------------------------------------------------------
   TWindow::SetupWindow();
   char txt[10] = "";
-  BangBangSlider->SetRange(1, 600);
-  OverlapSlider->SetRange(1, 100);
+  BangBangSlider -> SetRange(1, 600);
+  OverlapSlider -> SetRange(1, 100);
   // Initial Thumb Position
-  BangBangSlider->SetPosition((int)(BangBangGain * 10));
-  OverlapSlider->SetPosition(100 * Overlap);
-  sprintf(txt, "%6.2f", BangBangGain), BBMagSTxt->SetText(txt);
+  BangBangSlider -> SetPosition((int)(BangBangGain * 10));
+  OverlapSlider -> SetPosition(100 * Overlap);
+  sprintf(txt, "%6.2f", BangBangGain);
+  BBMagSTxt -> SetText(txt);
   sprintf(txt, "%6.2f", Overlap);
-  OverlapSTxt->SetText(txt);
+  OverlapSTxt -> SetText(txt);
 }
 
 
-void TNeuralACEASEDig::EvBangBang Slide(UINT)
+void TNeuralACEASEDlg::EvBangBang Slide(UINT)
 {
   char txt[10] = "";
-  BangBangGain = ((float)BangBang Slider->GetPosition()) / 10;
+  BangBangGain = ((float)BangBang Slider -> GetPosition()) / 10;
   sprintf(txt, "%6.2f", BangBangGain);
-  BBMagSTxt->SetText(txt);
+  BBMagSTxt -> SetText(txt);
 }
-
 
 
 void TNeuralACEASEDlg::EvOverlapSlide(UINT)
@@ -2579,32 +2578,33 @@ void TNeuralACEASEDlg::EvOverlapSlide(UINT)
   char txt[10] = "";
   Overlap((float)(OverlapSlider->GetPosition()) / 100);
   sprintf(txt, "%6.2f", Overlap);
-  OverlapSTxt->SetText(txt);
-  TCalibDlg::TCalibDlg(TWindow * parent, TCalibration * Calibration)
+  OverlapSTxt -> SetText(txt);
 }
-:TDialog(parent, CALIBRATIONDIALOG)
+
+TCalibDlg::TCalibDlg(TWindow* parent, TCalibration * Calibration)
+  :TDialog(parent, CALIBRATIONDIALOG)
 {
   new TRadioButton(this, IDC_DIRECTCONTROL);
   new TRadioButton(this, IDC_CENTERPOSITION);
   new TRadioButton(this, IDC_ENDPOSITION);
   new TControl(this, IDC_ZEROIZE);
   SAngleTxt = new TStatic(this, IDC_ENCODER);
-  Calib Calibration;
+  Calib = Calibration;
   SetTransferBuffer(Calib);
   CalDone = 0;
 }
-// Destructor
 
 //-- Page 140 ---------------------------------------------------------------------
 
 
+// Destructor
 TCalibDlg::~TCalibDlg()
 {
   KillTimer(TIMER_ID);
 }
 
 
-void TCalibDig::SetupWindow()
+void TCalibDlg::SetupWindow()
 {
   TWindow::SetupWindow();
   SetTimer(TIMER_ID, 10);
@@ -2615,78 +2615,92 @@ void TCalibDlg::EvTimer(UINT /*timerId*/)
 {
   char Degrees[10];
   char txt[30] = "";
-  ClientDC dc(*this);
-  printf(Degrees, "%f", Rad2 Ang Digital_Input(board.cal_jmp, 0));
+  TClientDC dc(*this);
+
+  sprintf(Degrees, "%f", Rad2Ang * Digital_Input(board,cal_jmp, 0));
   AngleTxt->SetText(Degrees);
 }
 
 
-
-void TCalibDlg::CmCalibok()
+void TCalibDlg::CmCalibOk()
 {
   char txt[30];
   TransferData(tdGetData); // From Controls to Transfer Buffer
-  if (Calib->DirectlyDriven)
+  if (Calib -> DirectlyDriven)
   {
     wsprintf(txt, "x%i", x);
-    encoder_constant = 2 * pi / 1024.0, max_dif = 3.5;
+    encoder_constant = 2 * pi / 1024.0;
+    max_dif = 3.5;
     gear_type = 1;
-    else if (Calib->CenterPosition)
-    {
-      encoder_constant = (2 * pi) / (1024.0 * 3.75);
-      max_dif = 0.6702;
-      gear_type = 2;
-      else if (Calib->EndPosition)
-      {
-        encoder_constant(2 * pi) / (1024.0 14.05);
-        max_dif - 0.1745;
-        gear_type = 3;
-      }
-      KillTimer(1);
-      Destroy(0);
-    }
   }
+  else if (Calib -> CenterPosition)
+  {
+    encoder_constant = (2 * pi) / (1024.0 * 3.75);
+    max_dif = 0.6702;
+    gear_type = 2;
+  }
+  else if (Calib -> EndPosition)
+  {
+    encoder_constant(2 * pi) / (1024.0 * 14.05);
+    max_dif = 0.1745;
+    gear_type = 3;
+  }
+  KillTimer(1);
+  Destroy(0);
 }
-
 
 
 void TCalibDlg::CmCalibCancel()
 {
   KillTimer(1);
   //-- Page 141 ------------------------------------------------------------------
-
   Destroy(0);
-  void TCalibDlg::CmCalibZeroize()
-    calibrate -
-    current_measurel;
-  TGraphicsDlg::TGraphicsDlg(TWindow" parent, TGraphics Graphics)
+}
+
+
+void TCalibDlg::CmCalibZeroize()
+{
+    calibrate = current_measure1;
+}
+
+
+TGraphicsDlg::TGraphicsDlg(TWindow* parent, TGraphics* Graphics)
     :TDialog(parent, GRAPHICSDIALOG)
-    new TRadioButton(this, IDC_GRAPHICSON);
+{
+  new TRadioButton(this, IDC_GRAPHICSON);
   new TRadioButton(this, IDC_GRAPHICSOFF);
   new TEdit(this, IDC_PIXELSVOLT, 10);
   new TEdit(this, IDC_PIXELSDEGREE, 10);
   SetTransferBuffer(Graphics)
-
-
-
-  void TDataDlg::CmSync
-  {
-    // dataparams CollectSync-dataparams CollectSync
-    if (!dataparams.CollectSync)
-      return;
-    string s "Data Collected in Sync??";
-    MessageBeep(0);
-    MessageBox(s.c_str(), "Sync", MB_OK);
-    TFreqDlg::TFreqDlg(TWindow * parent, const char* name, TFrequency & freq)
-        : TDialog(parent, name), TWindow(parent) new TEdit(this, IDC_FREQUENCY, sizeof(freq));
-    TransferBuffer = (void far*) & freq;
-    TSinWavRefDig:
-    TSinWayRefDig(TWindow * parent, const char* name,
-                  TSinWavRefParam & SinWayRefParam)
-        : TDialog(parent, DIASINEREF), TWindow(parent) new TEdit(this, IDC_SINE_REF_AMP sizeof(SaWayRefParam.Amp));
-    new TEdit(this, IDC_SINE_REF_FREQ sizeof(SaWayRefParam.Freq));
-                TransferBuffer = (void for*)& S
-  }
 }
 
-//  Holy Cow what a beast to wrestle with.  The End. 
+
+void TDataDlg::CmSync
+{
+    // dataparams.CollectSync= -dataparams.CollectSync;
+    // if (!dataparams.CollectSync) return;
+    string s = "Data Collected in Sync??";
+    MessageBeep(0);
+    MessageBox(s.c_str(), "Sync", MB_OK);
+}
+
+
+TFreqDlg::TFreqDlg(TWindow* parent, const char* name, TFrequency& freq)
+  :TDialog(parent, name), TWindow(parent)
+{
+  new TEdit(this, IDC_FREQUENCY, sizeof(freq));
+    TransferBuffer = (void far*) & freq;
+}
+
+
+TSinWavRefDig::TSinWavRefDlg(TWindow* parent, const char* name, TSinWavRefParam& SinWavRefParam)
+  :TDialog(parent, DIASINEREF), TWindow(parent) 
+{  
+  new TEdit(this, IDC_SINE_REF_AMP, sizeof(SinWavRefParam.Amp));
+  new TEdit(this, IDC_SINE_REF_FREQ, sizeof(SinWavRefParam.Freq));
+
+  TransferBuffer = (void far*)&SinWavRefParam;
+}
+
+
+//  What a Beast -- The End.
