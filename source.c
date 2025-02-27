@@ -1937,7 +1937,6 @@ public:
 };
 
 
-
 void TIPControlApp::InitMainWindow()
 {
   EnableCtl3d();
@@ -1947,7 +1946,6 @@ void TIPControlApp::InitMainWindow()
   IPWindow -> GetGraphics();
   MainWindow = IPWindow;
 }
-
 
 
 void TIPControlApp::InitInstance()
@@ -2320,12 +2318,12 @@ void PoleModelSolve void PoleModelSolve()
 void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
 {
   // STATE SPACE MODEL FOR POLE SYSTEM SIMULATIONS: Returns dtdx[NS]
-  double g, l, md, mr, r, k1, k2, jm;
+  double g, L, md, mr, r, k1, k2, jm;
   double a1, a2, a3, a4;
 
   // Physical Constants of Inverted Pendulum System
   g = 9.8;       // m/sec, Gravity
-  l = 0.49927;   // m, Length of Pole
+  L = 0.49927;   // Length of Pole
   md = 0.26164   // kg, Mass of Disc
   mr = 0.04240   // kg, Mass of Pole
   r = 1.44;      // Ohms, resistance of motor windings
@@ -2335,13 +2333,13 @@ void PoleStateSpaceModel(double dtdx[], double t, double x[], float u)
   jm = 0.000044; // kgm^2, Armature Inertia
   //  ????
   // u is DC voltage applied to motor (input) states
-  // xl = angle, dxldt = angular velocity-x2, dx2dt-angular acceleration
+  // x1 = angle, dx1dt = angular velocity = x2, dx2dt = angular acceleration   ???
 
   // Constants
-  a1 = g * (md * l + mr * l / 2);
+  a1 = g * (md * L + mr * L / 2);  // ?? assuming  Ls instead of 1's
   a2 = (k1 * k2) / г;
   a3 = k1 / r;
-  a4 = md*l*l + (mr * l*l) / 3 + jm;
+  a4 = md * L*L + (mr*L*L) / 3 + jm;  // ?? assuming  Ls instead of 1's
 
   // Equations:
   dtdx[0] = x[1];
