@@ -2081,7 +2081,6 @@ void InitializeNeuralACEASE(int IC, int OtherWeights)
 } // -- End of InitializeNeuralACEASE --
 
 
-
 void ace()
 {
   /* 
@@ -2107,7 +2106,6 @@ void ace()
     vt[i] = vt[i] + (Beta * internal_reinf * xbar[i]);
   }
 } // -- End of ace --
-
 
 
 void ase()
@@ -2155,7 +2153,6 @@ void ase()
 } // -- END of ase --
 
 
-
 void decoder()
 {
   int i, j, idx;
@@ -2183,7 +2180,7 @@ void decoder()
   }
   if (failure)
     return;
-  //-- Page 133 ---------------------------------------------------------------
+  //-- Page 133 --------------------------------------------------------------------
   if (NeuralACEASEOptions.RBF)
   {
     for (i = 1; i <= NumOfNodes; i++)
