@@ -22,7 +22,8 @@
 
 
  *  transcribed: Peter Suchsland (petesuch)  February 27th, 2025
- *  To my mind what makes this project so special is the period in which
+
+ *  To my mind what makes this project especially unique is the period in which
  *  this was accomplished. If this project was submitted in 1997 the 
  *  majority of work had to have been done in the early/mid 90's decades before 
  *  Artificial Intelligence and Reinforcement Learning were an everyday
@@ -2676,7 +2677,7 @@ void TCalibDlg::CmCalibCancel()
 
 void TCalibDlg::CmCalibZeroize()
 {
-    calibrate = current_measure1;
+  calibrate = current_measure1;
 }
 
 
@@ -2693,11 +2694,11 @@ TGraphicsDlg::TGraphicsDlg(TWindow* parent, TGraphics* Graphics)
 
 void TDataDlg::CmSync
 {
-    // dataparams.CollectSync= -dataparams.CollectSync;
-    // if (!dataparams.CollectSync) return;
-    string s = "Data Collected in Sync??";
-    MessageBeep(0);
-    MessageBox(s.c_str(), "Sync", MB_OK);
+  // dataparams.CollectSync= -dataparams.CollectSync;
+  // if (!dataparams.CollectSync) return;
+  string s = "Data Collected in Sync??";
+  MessageBeep(0);
+  MessageBox(s.c_str(), "Sync", MB_OK);
 }
 
 
@@ -2719,4 +2720,4 @@ TSinWavRefDig::TSinWavRefDlg(TWindow* parent, const char* name, TSinWavRefParam&
 }
 
 
-//  What a Beast -- The End.
+//  What a Beast -- The End
