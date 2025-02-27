@@ -1,6 +1,6 @@
 /*
- *  
- *  This is the original C++ code from John Hietts Original Masters Thesis:
+ *
+ *  This is the original C++ code from John Hiett's Original Masters Thesis:
  *
  *    "Reinforcement Learning Experiments with State Classifiers
  *       for Controlling an Inverted Pendulum"
@@ -8,14 +8,29 @@
  *   @author: John Harley Hiett, Arizona State University 1997
  *
  *  (hardware/software: IBM PC clone running MS Windows 3.10, compiled with
- *   Borland C++ Compiler 4.52)  Please read the above PDF to understand the 
- *    setup and other hardware used. 
- *  
+ *   Borland C++ Compiler 4.52)  Please read the above mentioned PDF to
+ *   understand the setup and other hardware used. Simply put, however, this 
+ *   this software runs and learns to balance an inverted pendulum, of which
+ *   there are many videos available today.  Mr Hiett's inspiration came from
+ *   Barto and Sutton's famous classic "Reinforcement Learning"
+
+
  *  WARNING: This file uses UNIX-style LF line endings.
  *  Ensure your editor is configured to preserve LF (no CRLF).
  *  Recommended Git setting: `git config core.autocrlf input`
  *  If using old Windows tools, convert with `unix2dos` if necessary.
- *
+
+
+ *  transcribed: Peter Suchsland (petesuch)  February 27th, 2025
+ *  To my mind what makes this project so special is the period in which
+ *  this was accomplished. If this project was submitted in 1997 the 
+ *  majority of work had to have been done in the early/mid 90's decades before 
+ *  Artificial Intelligence and Reinforcement Learning were an everyday
+ *  part of our lives.
+
+ *  For consistancy and readability I chose to use ALLMAN-style indentation
+ *  and 2 space indents expanded as spaces. I would have prefered 3 spaces,
+ *  but 4 seemed too much. And 3 spaces is just weird.  Good luck reading.
  *
  */
 
@@ -49,7 +64,7 @@
 
 // Physical System Constants
 #define MOTORVOLT_GAIN 10.58 // See Alexander Thesis
-                             // #define PIE 3.141592654
+// #define PIE 3.141592654
 #define PIE 3.14159265358979323846
 
 // Sample Dialog Constants
@@ -101,7 +116,8 @@ const WORD IDC_BANGBANGVALUE = 201;
 #define SPACEATRIGHT 40      // Reserved pixels at right of chart
 #define YSCALEMAX 100.0      // Maximum Y scale value
 #define YSCALEINCREMENT 10.0 // Increment for Y scale markers
-                             // DISPLAY VARIABLES Constant expressions
+
+// DISPLAY VARIABLES Constant expressions
 #define SPACEVERTICAL (SPACEATTOP + SPACEATBOTTOM)
 #define SPACEHORIZONTAL (SPACEATLEFT + SPACEATRIGHT)
 #define HALFSPACEATBOTTOM (SPACEATBOTTOM / 2)
