@@ -2451,58 +2451,74 @@ DEFINE_RESPONSE_TABLE1(TCalibDlg, TDialog)
 END_RESPONSE_TABLE;
 
 
-class TGraphicsDig : public TDialog
+class TGraphicsDlg: public TDialog
 {
   public:
-    TGraphicsDlg(TWindow * parent, TGraphics * Graphics);
+    TGraphicsDlg(TWindow* parent, TGraphics* Graphics);
 };
 
 
-class TSin WavRefDlg : public TDialog
-    {
-    public:
-    };
-    TSinWavRefDlg(TWindow * parent, const char *name, TSinWavRefParam &SinWavRefParam);
-    class TBeginControlDlg : public TDialog
-    {
-    public:
-    };
-    TBeginControlDlg(TWindow * parent, TResId resId) : TDialog(parent, resId) {}
-
-    // Dialog Constructors
-    /// #
-  TDataDig::TDataDig(TWindow* parent, const char* name,
-      }
-      TDataParamStruct& dataparams)
-  : TDialog(parcnt, DATADIALOG), TWindow(parent)
-    new TEdit(this, DATAFILENAME, sizeof(dataparams.DataFileName));
-new TEdit(this, NUMBEROFDATAPOINTS, sizeof(dataparams.NumOutPoints));
-new TEdit(this, NUMSKIrDATAPOINTS, sizeof(dataparams.NumSkipPoints));
-new TRadioButton(this, IDC_SYNC);
-new TRadioButton(this, IDC_LIFETIMES);
-new TRadioButton(this, IDC_STATES);
-dataparams.CollectSync = FALSE;
-TransferBuffer = (void far *)&dataparams;
-TPIDDIg::TPIDDIg(TWindow * parent, PIDStruct * PIDOptions){}
-    : TDialog(parent, PIDDIALOG) new TRadioButton(this, IDC_SINGLELOOP);
-new TRadioButton(this, IDC_DUALLOOP);
-SetTransferBuffer(PIDOptions);
-TRUNDig::TRUNDlg(TWindow * parent, RUNStruct * RUNOptions)
-    /// 01~
-//-- Page 138 --------------------------------------------------------------------
-
-    : TDialog(parent, DIASIMBREAK) new TRadioButton(this, IDC_KEEPSIMGOING);
-new TRadioButton(this, IDC_SAVEWEIGHTSMEM);
-new TRadioButton(this, IDC_SAVEWEIGHTSFILE);
-new TRadioButton(this, IDC_DONTSAVEWEIGHTS);
-SetTransferBuffer(RUNOptions);
-// For Setup
-TNeuralACEASEDlg::TNeuralACEASEDlg(TWindow * parent,
-  NeuralACEASEStruct & NeuralACEASEOptions) : TDialog(parent, NEURALACEASEDLG)
+class TSinWavRefDlg: public TDialog
 {
+  public:
+    TSinWavRefDlg(TWindow * parent, const char *name, TSinWavRefParam& SinWavRefParam);
+};
+
+
+class TBeginControlDlg: public TDialog
+{
+  public:
+    TBeginControlDlg(TWindow* parent, TResId resId) : TDialog(parent, resId) {}
+};
+
+
+/*
+ *  Dialog Constructors
+ */
+
+
+TDataDlg::TDataDlg(TWindow* parent, const char* name, TDataParamStruct& dataparams)
+  :TDialog(parent, DATADIALOG), TWindow(parent)
+{
+  new TEdit(this, DATAFILENAME, sizeof(dataparams.DataFileName));
+  new TEdit(this, NUMBEROFDATAPOINTS, sizeof(dataparams.NumOutPoints));
+  new TEdit(this, NUMSKIPDATAPOINTS, sizeof(dataparams.NumSkipPoints));
+  new TRadioButton(this, IDC_SYNC);
+  new TRadioButton(this, IDC_LIFETIMES);
+  new TRadioButton(this, IDC_STATES);
+  dataparams.CollectSync = FALSE;
+  TransferBuffer = (void far*)&dataparams;
+}
+
+
+TPIDDlg::TPIDDlg(TWindow* parent, PIDStruct* PIDOptions)
+    :TDialog(parent, PIDDIALOG) 
+{
+  new TRadioButton(this, IDC_SINGLELOOP);
+  new TRadioButton(this, IDC_DUALLOOP);
+  SetTransferBuffer(PIDOptions);
+}
+
+
+TRUNDlg::TRUNDlg(TWindow* parent, RUNStruct* RUNOptions)
+//-- Page 138 --------------------------------------------------------------------
+  : TDialog(parent, DIASIMBREAK) 
+{
+  new TRadioButton(this, IDC_KEEPSIMGOING);
+  new TRadioButton(this, IDC_SAVEWEIGHTSMEM);
+  new TRadioButton(this, IDC_SAVEWEIGHTSFILE);
+  new TRadioButton(this, IDC_DONTSAVEWEIGHTS);
+  SetTransferBuffer(RUNOptions);
+}
+
+
+// For Setup
+TNeuralACEASEDlg::TNeuralACEASEDlg(TWindow* parent, NeuralACEASEStruct& NeuralACEASEOptions)
+  :TDialog(parent, NEURALACEASEDLG)
+{
+  //  NOTE: The order of the new statements must be kept for proper operation
+  //  and their size in memory must be the same as transferbuffer
   char txt[10];
-  // note: The order of the new statements must be kept for proper operation
-  // and their size in memory must be the same as transferbuffer
   new TRadioButton(this, IDC_ZEROIZEWEIGHTS);
   new TRadioButton(this, IDC_USESIMULATIONWEIGHTS);
   new TRadioButton(this, IDC_WEIGHTSFROMFILE);
@@ -2513,19 +2529,21 @@ TNeuralACEASEDlg::TNeuralACEASEDlg(TWindow * parent,
   new TEdit(this, IDC_NUMTHETABOXES, sizeof(NeuralACEASEOptions.NumThetaBoxes));
   new TEdit(this, IDC_NUMDTHETABOXES, sizeof(NeuralACEASEOptions.NumDThetaBoxes));
   new TEdit(this, IDC_THETAEXTREME, sizeof(NeuralACEASEOptions.ThetaExtreme));
-  new TEdit(this, IDC_DTHETAEXTREME, sizeof(NeuralACEASEOption.DThctaExtrcmc));
+  new TEdit(this, IDC_DTHETAEXTREME, sizeof(NeuralACEASEOptions.DThetaExtreme));
   new TEdit(this, IDC_ALPHA, sizeof(NeuralACEASEOptions.Alpha));
   new TRadioButton(this, IDC_SIGMOIDALOUT);
   new TRadioButton(this, IDC_BANGBANGOUT);
   new TRadioButton(this, IDC_DISTURBANCEYES);
   new TRadioButton(this, IDC_DISTURBANCENO);
-  new TCheckBox(this, IDC_RBF),
-
+  new TCheckBox(this, IDC_RBF);
   BangBangSlider = new TScrollBar(this, IDC_BANGBANGMAG);
   BBMagSTxt = new TStatic(this, IDC_VOLTS, 10);
   OverlapSlider = new TScrollBar(this, IDC_OVERLAPSLIDER);
   OverlapSTxt = new TStatic(this, IDC_OVERLAPVALUE, 10);
-  TransferBuffer = (void far *)&NeuralACEASEOptions; // Set TransferBuffer(NeuralACEASEOptions); //ACEASEOptions = NeuralACEASEOptions;
+
+
+  TransferBuffer = (void far *)&NeuralACEASEOptions;
+  // Set TransferBuffer(NeuralACEASEOptions); //ACEASEOptions = NeuralACEASEOptions;
 }
 
 
