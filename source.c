@@ -421,26 +421,26 @@ protected:
 
 
 DEFINE_RESPONSE_TABLE1(TIPWindow, TFrameWindow)
-EV_WM_KEYDOWN,
-    EV_WM_MOUSEMOVE,
-    EV_WM_MBUTTONDOWN,
-    EV_WM_ERASEBKGND,
-    EV_COMMAND(CM_FREQUENCY, CmFrequency),
-    EV_COMMAND(CM_FILEOPEN, CmFileOpen),
-    EV_COMMAND(CM_FILESAVE, CmFileSave),
-    EV_COMMAND(CM_FILEEXIT, CmFileExit),
-    EV_COMMAND(CM_SETUPSIMULATE, CmSimulate),
-    EV_COMMAND(CM_SETUPNIDAQENABLE, CmNIDAQEnable),
-    EV_COMMAND(CM_SETUPDATA, CmSetupData),
-    EV_COMMAND(CM_PIDCONTROL, CmPID),
-    EV_COMMAND(CM_NEURAL_ACEASE, CmNeuralACEASE),
-    EV_COMMAND(CM_CALIBRATION, CmCalibration),
-    EV_COMMAND(CM_DISPLAYSETUP, CmDisplay),
-    EV_COMMAND(CM_OLD_DATA_GRAPH, CmOldDataGraph),
-    EV_COMMAND(CM_BEGINCONTROL, CmBeginControl),
-    EV_COMMAND(CM_SINEWAVE, CmRefSineWave),
-    EV_COMMAND(CM_SERIESOFSTEPS, CmRefSeriesOfSteps),
-    END_RESPONSE_TABLE;
+  EV_WM_KEYDOWN,
+  EV_WM_MOUSEMOVE,
+  EV_WM_MBUTTONDOWN,
+  EV_WM_ERASEBKGND,
+  EV_COMMAND(CM_FREQUENCY, CmFrequency),
+  EV_COMMAND(CM_FILEOPEN, CmFileOpen),
+  EV_COMMAND(CM_FILESAVE, CmFileSave),
+  EV_COMMAND(CM_FILEEXIT, CmFileExit),
+  EV_COMMAND(CM_SETUPSIMULATE, CmSimulate),
+  EV_COMMAND(CM_SETUPNIDAQENABLE, CmNIDAQEnable),
+  EV_COMMAND(CM_SETUPDATA, CmSetupData),
+  EV_COMMAND(CM_PIDCONTROL, CmPID),
+  EV_COMMAND(CM_NEURAL_ACEASE, CmNeuralACEASE),
+  EV_COMMAND(CM_CALIBRATION, CmCalibration),
+  EV_COMMAND(CM_DISPLAYSETUP, CmDisplay),
+  EV_COMMAND(CM_OLD_DATA_GRAPH, CmOldDataGraph),
+  EV_COMMAND(CM_BEGINCONTROL, CmBeginControl),
+  EV_COMMAND(CM_SINEWAVE, CmRefSineWave),
+  EV_COMMAND(CM_SERIESOFSTEPS, CmRefSeriesOfSteps),
+END_RESPONSE_TABLE;
 
 
 // MAIN WINDOW CONSTRUCTOR(INITIALIZATION)
@@ -453,12 +453,7 @@ TIPWindow::TIPWindow(TWindow *parent) : TFrameWindow(parent, ""), TWindow(parent
   cx = size.cx;
   cy = size.cy;
   FileData = new TOpenSaveDialog::TData(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, "Data Files (*.dat)|*.dat|Weight Files (*.wgt)|*.wgt|Master Files (*.fle)|*.fle|All Files (*.*)|*.*|", 0, "DAT", "WGT");
-<<<<<<< HEAD
-  //-- Page 104 ---------------------------------------------------------------------
-=======
-
   //-- Page 104 ------------------------------------------------------------------
->>>>>>> 2231abd0f7c0e8b142a1e95c2f158faed27ba832
   AssignMenu(200);
   InitOptions();
   Attr.X = GetSystemMetrics(SM_CXSCREEN) / 8;
