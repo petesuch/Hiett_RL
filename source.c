@@ -2695,17 +2695,23 @@ TGraphicsDlg::TGraphicsDlg(TWindow* parent, TGraphics* Graphics)
 void TDataDlg::CmSync
 {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   // dataparams.CollectSync= -dataparams.CollectSync;
   // if (!dataparams.CollectSync) return;
   string s = "Data Collected in Sync??";
   MessageBeep(0);
   MessageBox(s.c_str(), "Sync", MB_OK);
 =======
+=======
+>>>>>>> Stashed changes
 	// dataparams.CollectSync= -dataparams.CollectSync;
 	// if (!dataparams.CollectSync) return;
 	string s = "Data Collected in Sync??";
 	MessageBeep(0);
 	MessageBox(s.c_str(), "Sync", MB_OK);
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 }
 
