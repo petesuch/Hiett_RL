@@ -2705,7 +2705,7 @@ TFreqDlg::TFreqDlg(TWindow* parent, const char* name, TFrequency& freq)
   :TDialog(parent, name), TWindow(parent)
 {
   new TEdit(this, IDC_FREQUENCY, sizeof(freq));
-    TransferBuffer = (void far*) & freq;
+  TransferBuffer = (void far*) & freq;
 }
 
 
